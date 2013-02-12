@@ -11,9 +11,6 @@ import java.util.ArrayList;
  * @version 0.1
  */
  
- 
-//Pushtest
-
 public interface NeuralLayerInterface {
 	/**
 	 * TODO
