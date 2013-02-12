@@ -39,3 +39,4 @@ public interface NeuralLayerInterface {
 }
 
 // nu gaat er vast iets raars gebeuren
+//a;oiefjh;aef
