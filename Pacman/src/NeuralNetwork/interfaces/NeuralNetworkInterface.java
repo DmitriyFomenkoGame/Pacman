@@ -37,7 +37,6 @@ public interface NeuralNetworkInterface {
 	 *  		should not be mandatory
 	 */
 	
-	
 	/**
 	 * This will save the neural network to the file system. This includes the structure
 	 * as well as the weight on the edges.
