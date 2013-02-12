@@ -37,3 +37,5 @@ public interface NeuralLayerInterface {
 	 */
 	public ArrayList<NeuralNodeInterface> getNodes();
 }
+
+// nu gaat er vast iets raars gebeuren
