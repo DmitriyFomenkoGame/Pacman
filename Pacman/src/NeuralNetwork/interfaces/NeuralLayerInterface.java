@@ -11,8 +11,6 @@ import java.util.ArrayList;
  * @version 0.1
  */
  
-//kan jij deze comment lezen in eclipse eric ?
-
 public interface NeuralLayerInterface {
 	/**
 	 * TODO
@@ -37,6 +35,3 @@ public interface NeuralLayerInterface {
 	 */
 	public ArrayList<NeuralNodeInterface> getNodes();
 }
-
-// nu gaat er vast iets raars gebeuren
-//a;oiefjh;aef
