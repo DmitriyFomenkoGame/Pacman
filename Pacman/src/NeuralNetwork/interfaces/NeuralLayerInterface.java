@@ -11,6 +11,8 @@ import java.util.ArrayList;
  * @version 0.1
  */
  
+//kan jij deze comment lezen in eclipse eric ?
+
 public interface NeuralLayerInterface {
 	/**
 	 * TODO
