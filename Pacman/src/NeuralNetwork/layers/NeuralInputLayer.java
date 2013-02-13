@@ -2,20 +2,20 @@ package NeuralNetwork.layers;
 
 import java.util.ArrayList;
 
-import NeuralNetwork.interfaces.NeuralLayerInterface;
-import NeuralNetwork.interfaces.NeuralNodeInterface;
+import NeuralNetwork.NeuralLayer;
+import NeuralNetwork.NeuralNode;
 import NeuralNetwork.interfaces.layers.NeuralInputLayerInterface;
 
 public class NeuralInputLayer implements NeuralInputLayerInterface {
 
 	@Override
-	public void connectTo(NeuralLayerInterface layer, int method) {
+	public void connectTo(NeuralLayer layer, int method) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public ArrayList<NeuralNodeInterface> getNodes() {
+	public ArrayList<NeuralNode> getNodes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -31,5 +31,6 @@ public class NeuralInputLayer implements NeuralInputLayerInterface {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

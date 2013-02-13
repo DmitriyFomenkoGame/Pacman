@@ -1,5 +1,7 @@
 package NeuralNetwork.interfaces;
 
+import NeuralNetwork.NeuralNode;
+
 /**
  * The NeuralNode implementation groups the NeuralInputNode, NeuralHiddenNode,
  * NeuralOutputNode and NeuralBiasNode implementations.
@@ -23,7 +25,7 @@ public interface NeuralNodeInterface {
 	 * @param weight
 	 * 		The weight which that edge should hold
 	 */
-	public void linkTo(NeuralNodeInterface node, double weight);
+	public void linkTo(NeuralNode node, double weight);
 	
 	/**
 	 * When another node points to this one, this function is used to store the edge
@@ -34,7 +36,7 @@ public interface NeuralNodeInterface {
 	 * @param weight
 	 * 		The weight of the edge.
 	 */
-	public void linkFrom(NeuralNodeInterface node, double weight);
+	public void linkFrom(NeuralNode node, double weight);
 	
 	/**
 	 * This method will return the current value of the node in the network. It can be the

@@ -3,6 +3,9 @@ package NeuralNetwork.interfaces;
 
 import java.util.ArrayList;
 
+import NeuralNetwork.NeuralLayer;
+import NeuralNetwork.NeuralNode;
+
 /**
  * The NeuralLayer implementation groups the NeuralInputLayer, NeuralHiddenLayer and
  * NeuralOutputLayer implementations.
@@ -26,12 +29,13 @@ public interface NeuralLayerInterface {
 	 * 		The method which should be used to connect the nodes from both layers
 	 * 		TODO: Which methods should be supported? Random/One-on-one/One-on-one-mixed/Full
 	 */
-	public void connectTo(NeuralLayerInterface layer, int method);
+	public void connectTo(NeuralLayer layer, int method);
 	
 	/**
 	 * This method will give insight in the NeuralNodes contained in the instance.
 	 * These will be used mainly to connect layers together.
 	 * @return
+	 * 		The list of NeuralNodes
 	 */
-	public ArrayList<NeuralNodeInterface> getNodes();
+	public ArrayList<NeuralNode> getNodes();
 }

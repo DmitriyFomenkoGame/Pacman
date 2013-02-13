@@ -2,20 +2,20 @@ package NeuralNetwork.layers;
 
 import java.util.ArrayList;
 
-import NeuralNetwork.interfaces.NeuralLayerInterface;
-import NeuralNetwork.interfaces.NeuralNodeInterface;
+import NeuralNetwork.NeuralLayer;
+import NeuralNetwork.NeuralNode;
 import NeuralNetwork.interfaces.layers.NeuralHiddenLayerInterface;
 
 public class NeuralHiddenLayer implements NeuralHiddenLayerInterface {
 
 	@Override
-	public void connectTo(NeuralLayerInterface layer, int method) {
+	public void connectTo(NeuralLayer layer, int method) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public ArrayList<NeuralNodeInterface> getNodes() {
+	public ArrayList<NeuralNode> getNodes() {
 		// TODO Auto-generated method stub
 		return null;
 	}

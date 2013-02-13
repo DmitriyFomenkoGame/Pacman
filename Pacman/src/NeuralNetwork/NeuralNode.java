@@ -5,13 +5,13 @@ import NeuralNetwork.interfaces.NeuralNodeInterface;
 public class NeuralNode implements NeuralNodeInterface {
 
 	@Override
-	public void linkTo(NeuralNodeInterface node, double weight) {
+	public void linkTo(NeuralNode node, double weight) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void linkFrom(NeuralNodeInterface node, double weight) {
+	public void linkFrom(NeuralNode node, double weight) {
 		// TODO Auto-generated method stub
 		
 	}

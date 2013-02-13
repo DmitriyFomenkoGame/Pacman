@@ -1,18 +1,18 @@
 package NeuralNetwork.nodes;
 
-import NeuralNetwork.interfaces.NeuralNodeInterface;
+import NeuralNetwork.NeuralNode;
 import NeuralNetwork.interfaces.nodes.NeuralOutputNodeInterface;
 
 public class NeuralOutputNode implements NeuralOutputNodeInterface {
 
 	@Override
-	public void linkTo(NeuralNodeInterface node, double weight) {
+	public void linkTo(NeuralNode node, double weight) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void linkFrom(NeuralNodeInterface node, double weight) {
+	public void linkFrom(NeuralNode node, double weight) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -28,5 +28,6 @@ public class NeuralOutputNode implements NeuralOutputNodeInterface {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

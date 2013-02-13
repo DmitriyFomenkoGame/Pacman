@@ -1,18 +1,18 @@
 package NeuralNetwork.nodes;
 
-import NeuralNetwork.interfaces.NeuralNodeInterface;
+import NeuralNetwork.NeuralNode;
 import NeuralNetwork.interfaces.nodes.NeuralBiasNodeInterface;
 
 public class NeuralBiasNode implements NeuralBiasNodeInterface {
 
 	@Override
-	public void linkTo(NeuralNodeInterface node, double weight) {
+	public void linkTo(NeuralNode node, double weight) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void linkFrom(NeuralNodeInterface node, double weight) {
+	public void linkFrom(NeuralNode node, double weight) {
 		// TODO Auto-generated method stub
 		
 	}
