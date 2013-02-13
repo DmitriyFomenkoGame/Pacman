@@ -10,7 +10,7 @@ import NeuralNetwork.interfaces.NeuralNodeInterface;
  * TODO: Sigmoid function in the calculate method for normalizing the value?
  * 
  * @author Eric de Kruijf
- * @version 0.1
+ * @version 0.1 
  */
 
 public interface NeuralOutputNodeInterface extends NeuralNodeInterface {	

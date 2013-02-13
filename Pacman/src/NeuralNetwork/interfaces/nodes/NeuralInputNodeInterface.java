@@ -8,7 +8,7 @@ import NeuralNetwork.interfaces.NeuralNodeInterface;
  * weights, these are stored in the node which is pointed to.
  * 
  * @author Eric de Kruijf
- * @version 0.1
+ * @version 0.1 
  */
 public interface NeuralInputNodeInterface extends NeuralNodeInterface {
 	

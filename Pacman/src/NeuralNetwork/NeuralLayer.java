@@ -4,11 +4,18 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import NeuralNetwork.interfaces.NeuralLayerInterface;
+import NeuralNetwork.NeuralNode;
 
-public class NeuralLayer<N extends NeuralNode> implements NeuralLayerInterface<NeuralNode> {
+public class NeuralLayer<N extends NeuralNode> implements NeuralLayerInterface<N> {
 
 	@Override
 	public void evaluate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void connectTo(NeuralLayer<NeuralNode> layer, int method) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -42,12 +49,5 @@ public class NeuralLayer<N extends NeuralNode> implements NeuralLayerInterface<N
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public void connectTo(NeuralLayer<NeuralNode> layer, int method) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 }

@@ -9,7 +9,7 @@ import NeuralNetwork.interfaces.NeuralNodeInterface;
  * the next layer will always have an input.
  * 
  * @author Eric de Kruijf
- * @version 0.1
+ * @version 0.1 
  */
 
 public interface NeuralBiasNodeInterface extends NeuralNodeInterface{

@@ -8,7 +8,7 @@ public class NeuralHiddenNode implements NeuralHiddenNodeInterface {
 	@Override
 	public void linkTo(NeuralNode node, double weight) {
 		// TODO Auto-generated method stub
-		
+		 
 	}
 
 	@Override

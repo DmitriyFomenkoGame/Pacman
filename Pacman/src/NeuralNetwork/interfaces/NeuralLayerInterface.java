@@ -71,7 +71,7 @@ public interface NeuralLayerInterface<N extends NeuralNode> {
 	 */
 	public ArrayList<Double> get();
 
-	/**
+	/** 
 	 * When the layer is labeled, this method will return the output labels
 	 * with their respective output value in a map format.
 	 * @return
