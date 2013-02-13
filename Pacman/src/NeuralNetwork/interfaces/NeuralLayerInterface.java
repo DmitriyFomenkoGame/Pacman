@@ -12,7 +12,6 @@ import NeuralNetwork.NeuralNode;
  * NeuralOutputLayer implementations.
  * 
  * @author Eric de Kruijf
- * @version 0.1
  */
  
 public interface NeuralLayerInterface<N extends NeuralNode> {

@@ -13,7 +13,6 @@ import java.util.Map;
  * be assigned a name for easy value assignment.
  * 
  * @author Eric de Kruijf
- * @version 0.1 
  */
 
 public interface NeuralNetworkInterface {

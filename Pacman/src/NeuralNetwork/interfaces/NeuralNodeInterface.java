@@ -7,7 +7,6 @@ import NeuralNetwork.NeuralNode;
  * NeuralOutputNode and NeuralBiasNode implementations.
  * 
  * @author Eric de Kruijf
- * @version 0.1 
  */
 
 public interface NeuralNodeInterface {
