@@ -1,15 +1,20 @@
 package NeuralNetwork.interfaces;
 
+import java.util.ArrayList;
+
 import NeuralNetwork.NeuralNode;
 
 /**
- * The NeuralNode implementation groups the NeuralInputNode, NeuralHiddenNode,
- * NeuralOutputNode and NeuralBiasNode implementations.
+ * The NeuralNode class will mimick all the types of nodes in the network. They are
+ * distinguishable by an identifier.
  * 
  * @author Eric de Kruijf
  */
 
 public interface NeuralNodeInterface {
+	/**
+	 * Identifiers:
+	 */
 	public final static int NODE_INPUT = 0,
 							NODE_OUTPUT = 1,
 						    NODE_HIDDEN = 2,
@@ -43,11 +48,11 @@ public interface NeuralNodeInterface {
 	public void linkFrom(NeuralNode node, double weight);
 	
 	/**
-	 * This method will return the current value of the node in the network. It can be the
-	 * case that the network isn't fully evaluated yet. This can result into inaccurate
-	 * results.
+	 * Input nodes will be assigned a value before evaluating the neural network.
+	 * @params value
+	 * 		This is the value the node will contain.
 	 */
-	public double get();
+	public void set(double value);
 
 	/**
 	 * This function will update its value by looking at the values of the pointing
@@ -56,9 +61,17 @@ public interface NeuralNodeInterface {
 	public void calculate();
 	
 	/**
-	 * Input nodes will be assigned a value before evaluating the neural network.
-	 * @params value
-	 * 		This is the value the node will contain.
+	 * This method will return the current value of the node in the network. It can be the
+	 * case that the network isn't fully evaluated yet. This can result into inaccurate
+	 * results.
 	 */
-	public void set(double value);
+	public double get();
+	
+	/**
+	 * To save the neural network to a file, the links with their respective weight need
+	 * to be retrieved from the node.
+	 * @return
+	 * 		A list of doubles which represent the weights.
+	 */
+	public ArrayList<Double> getWeights();
 }

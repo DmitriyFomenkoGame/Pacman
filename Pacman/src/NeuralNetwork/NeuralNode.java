@@ -1,9 +1,17 @@
 package NeuralNetwork;
 
+import java.util.ArrayList;
+
 import NeuralNetwork.interfaces.NeuralNodeInterface;
 
 public class NeuralNode implements NeuralNodeInterface {
-
+	private int node_type;
+	
+	public NeuralNode(int type) {
+		node_type = type;
+	}
+	
+	
 	@Override
 	public void linkTo(NeuralNode node, double weight) {
 		// TODO Auto-generated method stub
@@ -32,6 +40,13 @@ public class NeuralNode implements NeuralNodeInterface {
 	public void set(double value) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public ArrayList<Double> getWeights() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

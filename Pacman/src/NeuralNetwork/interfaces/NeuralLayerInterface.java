@@ -8,27 +8,15 @@ import NeuralNetwork.NeuralLayer;
 import NeuralNetwork.NeuralNode;
 
 /**
- * The NeuralLayer implementation groups the NeuralInputLayer, NeuralHiddenLayer and
- * NeuralOutputLayer implementations.
+ * The NeuralLayer implementation will hold nodes and can hold node labels for the input and output nodes.
  * 
  * @author Eric de Kruijf
  */
  
 public interface NeuralLayerInterface<N extends NeuralNode> {
-	/**
-	 * TODO
-	 */
 
 	/**
-	 * This method will evaluate the full set of NeuralHiddenNodes contained in this
-	 * layer.
-	 */
-	public void evaluate();
-	
-	/**
-	 * This method will connect the NeuralInputLayer to another layer. This other layer
-	 * can be a NeuralHiddenLayer or a NeuralOutputLayer. Connecting it to another
-	 * NeuralInputLayer will result in undetermined behavior.
+	 * This method will connect the layer to another layer.
 	 * @param layer
 	 * 		The layer to connect to
 	 * @param method
@@ -36,20 +24,11 @@ public interface NeuralLayerInterface<N extends NeuralNode> {
 	 * 		TODO: Which methods should be supported? Random/One-on-one/One-on-one-mixed/Full
 	 */
 	public void connectTo(NeuralLayer<NeuralNode> layer, int method);
-	
+
 	/**
-	 * This method will give insight in the NeuralNodes contained in the instance.
-	 * These will be used mainly to connect layers together.
-	 * @return
-	 * 		The list of NeuralNodes
-	 */
-	public ArrayList<NeuralNode> getNodes();
-	
-	/**
-	 * This method gives the names for the NeuralInputNodes in a list. Used to
-	 * assign the values in the next method.
+	 * This method gives the names for the nodes in a list, if they have any.
 	 * @param labels
-	 * 		The labels.
+	 * 		The labels if assigned, null if they do not have labels assigned.
 	 */
 	public void setLabels(ArrayList<String> labels);
 	
@@ -57,10 +36,22 @@ public interface NeuralLayerInterface<N extends NeuralNode> {
 	 * The set method from the NeuralNetwork implementation is forwarded to this
 	 * method.
 	 * @param values
-	 * 		This list contains the values which the InputNodes should have.
+	 * 		This list contains the values at which the nodes should be set.
 	 */
 	public void set(ArrayList<Double> values);
+
+	/**
+	 * This method will evaluate the full set of nodes contained in this layer.
+	 */
+	public void evaluate();
 	
+	/**
+	 * This method will give insight in the nodes contained in the instance.
+	 * These will be used mainly to connect layers together.
+	 * @return
+	 * 		The list of NeuralNodes
+	 */
+	public ArrayList<NeuralNode> getNodes();	
 	
 	/**
 	 * When the layer is not labeled, this method can be used to return the
