@@ -2,10 +2,8 @@ package NeuralNetwork.interfaces;
 
 import java.util.ArrayList;
 
-import NeuralNetwork.NeuralNode;
-
 /**
- * The NeuralNode class will mimick all the types of nodes in the network. They are
+ * The NeuralNode class will mimic all the types of nodes in the network. They are
  * distinguishable by an identifier.
  * 
  * @author Eric de Kruijf
@@ -19,33 +17,6 @@ public interface NeuralNodeInterface {
 							NODE_OUTPUT = 1,
 						    NODE_HIDDEN = 2,
 						    NODE_BIAS = 3;
-	
-	/**
-	 * @constructor
-	 * 		The constructor will prepare some datastructures for storing connections from
-	 * 		nodes and bookkeeping of all the weights on the incoming edges.
-	 */
-	
-	/**
-	 * This links the input node to another node, which will remember the assigned weight.
-	 * If the nodes are already linked, the weight will be overwritten
-	 * @param node
-	 * 		The node where this node is pointing to
-	 * @param weight
-	 * 		The weight which that edge should hold
-	 */
-	public void linkTo(NeuralNode node, double weight);
-	
-	/**
-	 * When another node points to this one, this function is used to store the edge
-	 * information in this node. This node therefore needs to remember the assigned
-	 * weight, opposed to the linkTo method.
-	 * @param node
-	 * 		The node from which the edge is coming.
-	 * @param weight
-	 * 		The weight of the edge.
-	 */
-	public void linkFrom(NeuralNode node, double weight);
 	
 	/**
 	 * Input nodes will be assigned a value before evaluating the neural network.

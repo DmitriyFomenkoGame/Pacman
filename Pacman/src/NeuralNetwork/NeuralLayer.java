@@ -9,21 +9,9 @@ import NeuralNetwork.NeuralNode;
 public class NeuralLayer<N extends NeuralNode> implements NeuralLayerInterface<N> {
 
 	@Override
-	public void evaluate() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void connectTo(NeuralLayer<NeuralNode> layer, int method) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public ArrayList<NeuralNode> getNodes() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -36,6 +24,18 @@ public class NeuralLayer<N extends NeuralNode> implements NeuralLayerInterface<N
 	public void set(ArrayList<Double> values) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void evaluate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ArrayList<NeuralNode> getNodes() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

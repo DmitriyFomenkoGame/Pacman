@@ -11,7 +11,7 @@ public class NeuralNetwork implements NeuralNetworkInterface {
 	@Override
 	public void save(String filename) {
 		// TODO Auto-generated method stub
-		 
+		
 	}
 
 	@Override

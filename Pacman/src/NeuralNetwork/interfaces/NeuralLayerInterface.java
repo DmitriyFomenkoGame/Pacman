@@ -9,6 +9,7 @@ import NeuralNetwork.NeuralNode;
 
 /**
  * The NeuralLayer implementation will hold nodes and can hold node labels for the input and output nodes.
+ * Also the links between this layer and the next are stored in this class.
  * 
  * @author Eric de Kruijf
  */

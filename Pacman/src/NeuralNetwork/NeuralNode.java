@@ -10,24 +10,11 @@ public class NeuralNode implements NeuralNodeInterface {
 	public NeuralNode(int type) {
 		node_type = type;
 	}
-	
-	
-	@Override
-	public void linkTo(NeuralNode node, double weight) {
-		// TODO Auto-generated method stub
-		 
-	}
 
 	@Override
-	public void linkFrom(NeuralNode node, double weight) {
+	public void set(double value) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public double get() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
@@ -37,11 +24,10 @@ public class NeuralNode implements NeuralNodeInterface {
 	}
 
 	@Override
-	public void set(double value) {
+	public double get() {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
-
 
 	@Override
 	public ArrayList<Double> getWeights() {
