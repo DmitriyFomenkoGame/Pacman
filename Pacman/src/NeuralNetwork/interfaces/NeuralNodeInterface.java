@@ -11,6 +11,11 @@ import NeuralNetwork.NeuralNode;
  */
 
 public interface NeuralNodeInterface {
+	public final static int NODE_INPUT = 0,
+							NODE_OUTPUT = 1,
+						    NODE_HIDDEN = 2,
+						    NODE_BIAS = 3;
+	
 	/**
 	 * @constructor
 	 * 		The constructor will prepare some datastructures for storing connections from
@@ -44,4 +49,17 @@ public interface NeuralNodeInterface {
 	 * results.
 	 */
 	public double get();
+
+	/**
+	 * This function will update its value by looking at the values of the pointing
+	 * nodes and the weights on the edge.
+	 */
+	public void calculate();
+	
+	/**
+	 * Input nodes will be assigned a value before evaluating the neural network.
+	 * @params value
+	 * 		This is the value the node will contain.
+	 */
+	public void set(double value);
 }

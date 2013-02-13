@@ -22,4 +22,16 @@ public class NeuralNode implements NeuralNodeInterface {
 		return 0;
 	}
 
+	@Override
+	public void calculate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void set(double value) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
