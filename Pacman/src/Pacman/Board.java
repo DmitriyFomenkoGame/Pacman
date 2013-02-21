@@ -10,6 +10,8 @@ public class Board implements Cloneable {
 	public static final byte GHOST_NONE	   = 0,
 							 GHOST_NORMAL  = 1,
 							 GHOST_EDIBLE  = 2;
+	public static final int  WIDTH         = 28,
+							 HEIGHT        = 31;
 	
 	private Pacman pacman;
 	private Ghost[] ghosts;
@@ -65,18 +67,18 @@ public class Board implements Cloneable {
 		initDots();
 	}
 	private void initWalls() {
-		wallgrid = new boolean[28][31];
-		for(int j = 0; j < 31; j++) {
-			for(int i = 0; i < 28; i++) {
-				wallgrid[i][j] = (boarddata.charAt(j * 28 + i) == 'W');
+		wallgrid = new boolean[WIDTH][HEIGHT];
+		for(int j = 0; j < HEIGHT; j++) {
+			for(int i = 0; i < WIDTH; i++) {
+				wallgrid[i][j] = (boarddata.charAt(j * WIDTH + i) == 'W');
 			}
 		}
 	}
 	private void initDots() {
-		dotgrid = new byte[28][31];
-		for(int j = 0; j < 31; j++) {
-			for(int i = 0; i < 28; i++) {
-				char c = boarddata.charAt(j * 28 + i);
+		dotgrid = new byte[WIDTH][HEIGHT];
+		for(int j = 0; j < HEIGHT; j++) {
+			for(int i = 0; i < WIDTH; i++) {
+				char c = boarddata.charAt(j * WIDTH + i);
 				dotgrid[i][j] = (c == 'D') ? DOT_DOT : ((c == 'E') ? DOT_ENERGIZER : DOT_NONE);
 			}
 		}		
@@ -121,15 +123,19 @@ public class Board implements Cloneable {
 		return getGhostPosition(Ghost.GHOST_CLYDE);
 	}
 	
+	public boolean[][] getWalls() {
+		return wallgrid.clone();
+	}
+	
 	public Object clone(){ //Clones are readonly
 		try{
 			Board cloned = (Board) super.clone();
 			cloned.pacman = (Pacman) pacman.clone();
 			cloned.ghosts = new Ghost[4];
-			cloned.ghosts[Ghost.GHOST_BLINKY] = (Ghost) cloned.ghosts[Ghost.GHOST_BLINKY].clone();
-			cloned.ghosts[Ghost.GHOST_PINKY]  = (Ghost) cloned.ghosts[Ghost.GHOST_PINKY].clone();
-			cloned.ghosts[Ghost.GHOST_INKY]   = (Ghost) cloned.ghosts[Ghost.GHOST_INKY].clone();
-			cloned.ghosts[Ghost.GHOST_CLYDE]  = (Ghost) cloned.ghosts[Ghost.GHOST_CLYDE].clone();
+			cloned.ghosts[Ghost.GHOST_BLINKY] = (Ghost) ghosts[Ghost.GHOST_BLINKY].clone();
+			cloned.ghosts[Ghost.GHOST_PINKY]  = (Ghost) ghosts[Ghost.GHOST_PINKY].clone();
+			cloned.ghosts[Ghost.GHOST_INKY]   = (Ghost) ghosts[Ghost.GHOST_INKY].clone();
+			cloned.ghosts[Ghost.GHOST_CLYDE]  = (Ghost) ghosts[Ghost.GHOST_CLYDE].clone();
 			cloned.locked = true;
 			return cloned;
 		}
