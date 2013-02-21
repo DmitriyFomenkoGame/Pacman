@@ -42,7 +42,4 @@ public class PacmanGame {
 		return (PacmanScore) score.clone();
 	}
 	
-	
-	
-	
 }
