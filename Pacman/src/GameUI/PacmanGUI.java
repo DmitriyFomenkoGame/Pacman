@@ -1,6 +1,7 @@
 package GameUI;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
@@ -34,7 +35,7 @@ public class PacmanGUI {
 		for(int j = 0; j < BOARD_HEIGHT; j++) {
 			for(int i = 0; i < BOARD_WIDTH; i++) {
 				if (walls[i][j]) {
-					image.setRGB(i, j, Color.blue.getRGB());
+					imageTrySet(image, i, j, Color.blue);
 				}
 			}
 		}
@@ -42,13 +43,34 @@ public class PacmanGUI {
 				pinky  = b.getPinkyPosition(),
 				inky   = b.getInkyPosition(),
 				clyde  = b.getClydePosition();
-		image.setRGB((int) Math.round(blinky.getX()), (int) Math.round(blinky.getY()), Color.red.getRGB());
-		image.setRGB((int) Math.round(pinky.getX()),  (int) Math.round(pinky.getY()),  Color.pink.getRGB());
-		image.setRGB((int) Math.round(inky.getX()),   (int) Math.round(inky.getY()),   Color.cyan.getRGB());
-		image.setRGB((int) Math.round(clyde.getX()),  (int) Math.round(clyde.getY()),  Color.orange.getRGB());
+		imageTrySet(image, blinky.getX(), blinky.getY(), Color.red);
+		imageTrySet(image, pinky.getX(),  pinky.getY(),  Color.pink);
+		imageTrySet(image, inky.getX(),   inky.getY(),   Color.cyan);
+		imageTrySet(image, clyde.getX(),  clyde.getY(),  Color.orange);
 		
 		panel.setImage(image);
-		//TODO: Add redraw...
+	}
+	
+	//TODO: Check redraw...
+	public void redraw() {
+		panel.invalidate();
+		frame.getContentPane().invalidate();
+		frame.getContentPane().validate();
+		panel.validate();
+		panel.repaint();
+		frame.repaint();
+		
+	}
+	
+	private void imageTrySet(BufferedImage image, double x, double y, Color c) {
+		int xx = (int) Math.round(x),
+			yy = (int) Math.round(y);
+		if (xx >= 0 && xx < BOARD_WIDTH && yy >= 0 && yy < BOARD_HEIGHT) {
+			image.setRGB(xx, yy, c.getRGB());			
+		}
+	}
+	private void imageTrySet(BufferedImage image, int x, int y, Color c) {
+		imageTrySet(image, (double) x, (double) y, c);
 	}
 	
 }
