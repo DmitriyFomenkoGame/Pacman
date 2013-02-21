@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 import Pacman.Board;
 
@@ -19,7 +18,7 @@ public class PacmanGUI {
 		frame = new JFrame("Pacman GUI");
 		panel = new ImagePanel(null);
 		frame.setContentPane(panel);
-		frame.setSize(280, 310);
+		frame.setSize(560, 620);
 		frame.setBackground(Color.black);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -34,7 +33,7 @@ public class PacmanGUI {
 		for(int j = 0; j < BOARD_HEIGHT; j++) {
 			for(int i = 0; i < BOARD_WIDTH; i++) {
 				if (walls[i][j]) {
-					image.setRGB(i, j, Color.red.getRGB());
+					image.setRGB(i, j, Color.blue.getRGB());
 				}
 			}
 		}
