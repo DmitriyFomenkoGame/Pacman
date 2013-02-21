@@ -11,8 +11,10 @@ public class PacmanControllerManual {
 		gui.show();
 		while(true) {
 			try {
-				Thread.sleep(1000);
-				//gui.setBoard(game.getBoard());
+				Thread.sleep(500);
+				game.bypassMove();
+				gui.setBoard(game.getBoard());
+				gui.redraw();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

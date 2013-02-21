@@ -106,24 +106,28 @@ public class Board implements Cloneable {
 	
 	private void updateGhosts() {
 		//foreach ghost, check if next position is intersection, ifso, calculate direction for that tile, ifnot, continue in same direction if not in corner
+		/*for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
+			ghosts[g].continueMove();
+		}*/
+		ghosts[Ghost.GHOST_BLINKY].continueMove();
 	}
 	
-	public Point2D getGhostPosition(int ghost) { //Positions are real numbers, not integers
+	public Point2D.Double getGhostPosition(int ghost) { //Positions are real numbers, not integers
 		if (ghost < Ghost.GHOST_BLINKY || ghost > Ghost.GHOST_CLYDE) {
 			throw new Error("Ghost identifier is unknown! (" + String.valueOf(ghost) + ")");
 		}
 		return ghosts[ghost].getPosition();
 	}
-	public Point2D getBlinkyPosition() {
+	public Point2D.Double getBlinkyPosition() {
 		return getGhostPosition(Ghost.GHOST_BLINKY);
 	}
-	public Point2D getPinkyPosition() {
+	public Point2D.Double getPinkyPosition() {
 		return getGhostPosition(Ghost.GHOST_PINKY);
 	}
-	public Point2D getInkyPosition() {
+	public Point2D.Double getInkyPosition() {
 		return getGhostPosition(Ghost.GHOST_INKY);
 	}
-	public Point2D getClydePosition() {
+	public Point2D.Double getClydePosition() {
 		return getGhostPosition(Ghost.GHOST_CLYDE);
 	}
 	

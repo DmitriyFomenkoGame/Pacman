@@ -22,8 +22,8 @@ public class Ghost implements Cloneable {
 	public Ghost(Pacman pacman, int type) {
 		this.pacman    = pacman;
 		this.type      = type;
-		this.direction = PacmanGame.DIR_UP;
-		this.position  = new Point();
+		this.direction = PacmanGame.DIR_LEFT;
+		this.position  = new Point2D.Double();
 		switch (type) {
 			case GHOST_BLINKY: position.setLocation(13, 11); break;
 			case GHOST_PINKY:  position.setLocation(14, 14); break;
@@ -42,8 +42,18 @@ public class Ghost implements Cloneable {
 		this.mode = mode;
 	}
 	
-	public Point2D getPosition() {
-		return (Point2D) position.clone();
+	public Point2D.Double getPosition() {
+		return (Point2D.Double) position.clone();
+	}
+	
+	public void continueMove() {
+		if (direction == PacmanGame.DIR_LEFT) {
+			moveRelative(-0.5, 0);
+		}
+	}
+	
+	private void moveRelative(double dx, double dy) {
+		position.setLocation(position.getX() + dx, position.getY() + dy);
 	}
 	
 	public Object clone(){
