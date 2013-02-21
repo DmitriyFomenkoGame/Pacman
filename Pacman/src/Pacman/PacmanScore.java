@@ -30,6 +30,19 @@ public class PacmanScore implements Cloneable {
 		this.ghosts 	+= p.ghosts;
 		this.gameticks 	+= p.gameticks;
 	}
+	
+	public int getDots() {
+		return dots;
+	}
+	public int getEnergizers() {
+		return energizers;
+	}
+	public int getGhosts() {
+		return ghosts;
+	}
+	public int getGameticks() {
+		return gameticks;
+	}
 
 	public Object clone(){
 		try{
