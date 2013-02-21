@@ -4,6 +4,7 @@ public class Board implements Cloneable {
 
 	private Pacman pacman;
 	private Ghost blinky, pinky, inky, clyde;
+	private boolean locked;
 	
 	public Board() {
 		pacman = new Pacman();
@@ -11,6 +12,7 @@ public class Board implements Cloneable {
 		pinky  = new Ghost(pacman, Ghost.GHOST_PINKY);
 		inky   = new Ghost(pacman, Ghost.GHOST_INKY);
 		clyde  = new Ghost(pacman, Ghost.GHOST_CLYDE);
+		locked = false;
 	}
 
 	public PacmanScore doMove(int direction) {
@@ -19,7 +21,7 @@ public class Board implements Cloneable {
 	}
 	
 	
-	public Object clone(){
+	public Object clone(){ //Clones are readonly
 		try{
 			Board cloned = (Board) super.clone();
 			cloned.pacman = (Pacman) pacman.clone();
@@ -27,6 +29,7 @@ public class Board implements Cloneable {
 			cloned.pinky  = (Ghost) pinky.clone();
 			cloned.inky   = (Ghost) inky.clone();
 			cloned.clyde  = (Ghost) clyde.clone();
+			cloned.locked = true;
 			return cloned;
 		}
 		catch(CloneNotSupportedException e){
