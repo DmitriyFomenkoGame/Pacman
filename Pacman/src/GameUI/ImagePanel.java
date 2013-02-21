@@ -18,15 +18,24 @@ public class ImagePanel extends JComponent implements ComponentListener {
     	        xoffset = 0,
     	        yoffset = 0;
     
+    public ImagePanel() {
+    	this(null);
+    }
+    
     public ImagePanel(Image image) {
         this.image = image;
         this.addComponentListener(this);
+    }
+    
+    public void setImage(Image image) {
+    	this.image = image;
     }
     
 	public void componentHidden(ComponentEvent arg0) {}
 	public void componentMoved(ComponentEvent arg0) {}
 	public void componentShown(ComponentEvent arg0) {}
 	public void componentResized(ComponentEvent e) {
+		if (image == null){return;}
     	size = this.getSize();
     	float wfrac = size.width / 28, hfrac = size.height / 31;
     	if (wfrac > hfrac) {
@@ -41,6 +50,7 @@ public class ImagePanel extends JComponent implements ComponentListener {
 	}
 	
     protected void paintComponent(Graphics g) {
+    	if (image == null) {return;}
         g.drawImage(image, xoffset, yoffset, width, height, null);
     }
 }

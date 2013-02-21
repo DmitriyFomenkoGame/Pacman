@@ -31,7 +31,7 @@ public class GUItest {
 		}
 		JFrame myJFrame = new JFrame("Pacman test JONGUH");
 		ImagePanel imagePanel = new ImagePanel(myImage);
-		imagePanel.setSize(280, 310);
+//		imagePanel.setSize(280, 310);
 		myJFrame.setContentPane(imagePanel);
 		myJFrame.setSize(280, 310);
 		myJFrame.setBackground(Color.black);
