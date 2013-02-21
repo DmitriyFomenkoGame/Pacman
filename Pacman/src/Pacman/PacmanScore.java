@@ -4,11 +4,11 @@ package Pacman;
 public class PacmanScore implements Cloneable {
 	private int dots, energizers, ghosts, gameticks;
 
-	public PacmanScore() {
+	public PacmanScore() { //Automatically initializes with one gametick, can be incremented of more are executed at once.
 		dots       = 0;
 		energizers = 0;
 		ghosts     = 0;
-		gameticks  = 0;
+		gameticks  = 1;
 	}
 
 	public void addDot() {

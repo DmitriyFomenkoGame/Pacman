@@ -1,5 +1,7 @@
 package Pacman;
 
+import java.awt.geom.Point2D;
+
 public class Pacman implements Cloneable {
 	
 	public Pacman() {
@@ -17,4 +19,10 @@ public class Pacman implements Cloneable {
 			return null;
 		}
 	}
+
+	public Point2D doMove(byte direction) {
+		return null;
+	}
+	
+	
 }
