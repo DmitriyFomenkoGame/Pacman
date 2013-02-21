@@ -24,9 +24,15 @@ public class Ghost implements Cloneable {
 		this.type      = type;
 		this.direction = PacmanGame.DIR_UP;
 		this.position  = new Point();
-		//if type = blaaa position = blaa........
-		this.position.setLocation(0, 0);
-		this.mode = MODE_CHASE;
+		switch (type) {
+			case GHOST_BLINKY: position.setLocation(13, 11); break;
+			case GHOST_PINKY:  position.setLocation(14, 14); break;
+			case GHOST_INKY:   position.setLocation(12, 14); break;
+			case GHOST_CLYDE:  position.setLocation(16, 14); break;
+		}
+//		this.mode = MODE_CHASE;
+		//TODO: BYPASS
+		this.mode = MODE_SCATTER;
 	}
 	
 	public void setMode(int mode) {
@@ -37,8 +43,7 @@ public class Ghost implements Cloneable {
 	}
 	
 	public Point2D getPosition() {
-
-		return null;
+		return (Point2D) position.clone();
 	}
 	
 	public Object clone(){

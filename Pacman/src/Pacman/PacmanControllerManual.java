@@ -12,7 +12,7 @@ public class PacmanControllerManual {
 		while(true) {
 			try {
 				Thread.sleep(1000);
-				
+				//gui.setBoard(game.getBoard());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

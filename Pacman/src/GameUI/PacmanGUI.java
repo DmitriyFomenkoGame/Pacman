@@ -1,6 +1,7 @@
 package GameUI;
 
 import java.awt.Color;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
@@ -37,6 +38,15 @@ public class PacmanGUI {
 				}
 			}
 		}
+		Point2D blinky = b.getBlinkyPosition(),
+				pinky  = b.getPinkyPosition(),
+				inky   = b.getInkyPosition(),
+				clyde  = b.getClydePosition();
+		image.setRGB((int) Math.round(blinky.getX()), (int) Math.round(blinky.getY()), Color.red.getRGB());
+		image.setRGB((int) Math.round(pinky.getX()),  (int) Math.round(pinky.getY()),  Color.pink.getRGB());
+		image.setRGB((int) Math.round(inky.getX()),   (int) Math.round(inky.getY()),   Color.cyan.getRGB());
+		image.setRGB((int) Math.round(clyde.getX()),  (int) Math.round(clyde.getY()),  Color.orange.getRGB());
+		
 		panel.setImage(image);
 		//TODO: Add redraw...
 	}

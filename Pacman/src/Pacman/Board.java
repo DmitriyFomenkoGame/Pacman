@@ -100,6 +100,10 @@ public class Board implements Cloneable {
 		return null;
 	}
 	
+	public void bypassMove() {
+		updateGhosts();
+	}
+	
 	private void updateGhosts() {
 		//foreach ghost, check if next position is intersection, ifso, calculate direction for that tile, ifnot, continue in same direction if not in corner
 	}
