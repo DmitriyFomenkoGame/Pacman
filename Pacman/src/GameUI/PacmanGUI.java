@@ -59,7 +59,6 @@ public class PacmanGUI {
 		panel.validate();
 		panel.repaint();
 		frame.repaint();
-		
 	}
 	
 	private void imageTrySet(BufferedImage image, double x, double y, Color c) {

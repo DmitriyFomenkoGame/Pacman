@@ -16,7 +16,7 @@ public class Ghost implements Cloneable {
 	private Pacman pacman;
 	private int type;
 	private int direction;
-	private Point2D position;
+	private Point2D.Double position;
 	private int mode;
 	
 	public Ghost(Pacman pacman, int type) {
@@ -46,10 +46,15 @@ public class Ghost implements Cloneable {
 		return (Point2D.Double) position.clone();
 	}
 	
-	public void continueMove() {
+	public void continueMove(Board b) {
+		double dx = 0, dy = 0;
 		if (direction == PacmanGame.DIR_LEFT) {
-			moveRelative(-0.5, 0);
+			dx = -0.5; dy = 0;
 		}
+		if (!b.isCorner(position)) {
+			moveRelative(dx, dy);
+		}
+		
 	}
 	
 	private void moveRelative(double dx, double dy) {
@@ -62,7 +67,7 @@ public class Ghost implements Cloneable {
 			cloned.pacman    = (Pacman) pacman.clone();
 			cloned.type      = type;
 			cloned.direction = direction;
-			cloned.position  = (Point2D) position.clone();
+			cloned.position  = (Point2D.Double) position.clone();
 			return cloned;
 		}
 		catch(CloneNotSupportedException e){

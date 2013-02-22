@@ -1,5 +1,6 @@
 package Pacman;
 
+import java.awt.Point;
 import java.awt.geom.Point2D;
 
 public class Board implements Cloneable {
@@ -109,7 +110,7 @@ public class Board implements Cloneable {
 		/*for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
 			ghosts[g].continueMove();
 		}*/
-		ghosts[Ghost.GHOST_BLINKY].continueMove();
+		ghosts[Ghost.GHOST_BLINKY].continueMove(this);
 	}
 	
 	public Point2D.Double getGhostPosition(int ghost) { //Positions are real numbers, not integers
@@ -129,6 +130,44 @@ public class Board implements Cloneable {
 	}
 	public Point2D.Double getClydePosition() {
 		return getGhostPosition(Ghost.GHOST_CLYDE);
+	}
+	
+	public boolean isCorner(Point p) {
+		switch (getDirections(p)) {
+			case 3: case 6: case 9: case 12:
+				return true;
+		}
+		return false;
+	}
+	public boolean isCorner(Point2D.Double p) {
+		return isCorner(new Point((int) Math.round(p.x), (int) Math.round(p.y)));
+	}
+	public boolean isCrossing(Point p) {
+		switch (getDirections(p)) {
+			case 7: case 11: case 13: case 14: case 15: 
+				return true;
+		}
+		return false;
+	}
+	public boolean isCrossing(Point2D.Double p) {
+		return isCrossing(new Point((int) Math.round(p.x), (int) Math.round(p.y)));
+	}
+	public boolean isWall(Point p) {
+		if (p.x >= 0 && p.x < WIDTH && p.y >= 0 && p.y < HEIGHT) {
+			return wallgrid[p.x][p.y];
+		}
+		return true;
+	}
+	public int getDirections(Point p) {
+		int directions = 0;
+		directions = (isWall(new Point(p.x - 1, p.y))) ? (directions | 1) : (directions & ~1);
+		directions <<= 1;
+		directions = (isWall(new Point(p.x, p.y + 1))) ? (directions | 1) : (directions & ~1);
+		directions <<= 1;
+		directions = (isWall(new Point(p.x + 1, p.y))) ? (directions | 1) : (directions & ~1);
+		directions <<= 1;
+		directions = (isWall(new Point(p.x, p.y - 1))) ? (directions | 1) : (directions & ~1);
+		return directions;
 	}
 	
 	public boolean[][] getWalls() {
