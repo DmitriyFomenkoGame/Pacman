@@ -208,10 +208,22 @@ public class Board implements Cloneable {
 		if (!isCrossing(p)) {
 			throw new Error("getCrossingDir called on non-crossing");
 		}
-		int dirs = getDirections(p);
-		
-		
-		return direction;
+		int dirs  = getDirections(p);
+		int blockdir = (direction == PacmanGame.DIR_UP) ? DIRS_D : (direction == PacmanGame.DIR_RIGHT) ? DIRS_L : (direction == PacmanGame.DIR_DOWN) ? DIRS_U : DIRS_R; 
+		if ((dirs & blockdir) != 0) {dirs -= blockdir;}
+		double bestdist = Double.MAX_VALUE;
+		int bestdir = direction;
+		for (int d = PacmanGame.DIR_UP; d <= PacmanGame.DIR_LEFT; d++) {
+			if ((dirs & 1) != 0) {
+				double dist = getNextTile(p, d).distance(t);
+				if (dist < bestdist) {
+					bestdist = dist;
+					bestdir  = d;
+				}
+			}
+			dirs >>= 1;			
+		}
+		return bestdir;
 	}
 	public int getCrossingDir(Point2D.Double p, int direction, Point target) {
 		return getCrossingDir(pointToGrid(p), direction, target);
