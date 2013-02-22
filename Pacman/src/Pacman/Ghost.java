@@ -28,8 +28,7 @@ public class Ghost implements Cloneable {
 		this.type      = type;
 		switch (type) {
 			case GHOST_BLINKY: 
-//				position      = new Point2D.Double(13, 11);
-				position      = new Point2D.Double(13, 23);
+				position      = new Point2D.Double(13, 11);
 				scattertarget = new Point(25, -4);
 				this.direction = PacmanGame.DIR_LEFT;
 			break;
