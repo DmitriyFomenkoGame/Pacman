@@ -211,6 +211,9 @@ public class Board implements Cloneable {
 		int dirs  = getDirections(p);
 		int blockdir = (direction == PacmanGame.DIR_UP) ? DIRS_D : (direction == PacmanGame.DIR_RIGHT) ? DIRS_L : (direction == PacmanGame.DIR_DOWN) ? DIRS_U : DIRS_R; 
 		if ((dirs & blockdir) != 0) {dirs -= blockdir;}
+		if (p.y == 11 || (p.y == 23 && p.x > 9 && p.x < 19)) { //Moving up restriction
+			if ((dirs & DIRS_U) != 0) {dirs -= DIRS_U;}
+		}
 		double bestdist = Double.MAX_VALUE;
 		int bestdir = direction;
 		for (int d = PacmanGame.DIR_UP; d <= PacmanGame.DIR_LEFT; d++) {
