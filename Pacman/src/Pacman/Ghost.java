@@ -65,6 +65,7 @@ public class Ghost implements Cloneable {
 	}
 
 	public void continueMove(Board b) {
+		System.out.printf("%f %f\n", position.x, position.y);
 		if (nexttile == null) {
 			nexttile = b.getNextTile(position, direction);
 			if (b.isCorner(nexttile)) {
