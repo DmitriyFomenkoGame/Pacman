@@ -7,12 +7,10 @@ public class Pacman implements Cloneable {
 	private Point2D.Double position;
 	private byte direction;
 	public static final double PACMAN_SPEED = 0.25;
-	private boolean canmove;
 	
 	public Pacman() {
 		position = new Point2D.Double(13, 23);
 		direction = PacmanGame.DIR_LEFT;
-		canmove = true;
 	}
 
 	public Point2D.Double doMove(Board b, byte direction) {

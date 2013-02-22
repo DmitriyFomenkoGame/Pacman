@@ -20,7 +20,7 @@ public class Ghost implements Cloneable {
 	private int direction, nextdirection;
 	private Point2D.Double position;
 	private int mode;
-	private Point target, nexttile, scattertarget;
+	private Point nexttile, scattertarget;
 
 	public Ghost(Pacman pacman, int type) {
 		this.pacman    = pacman;
@@ -94,13 +94,6 @@ public class Ghost implements Cloneable {
 			case PacmanGame.DIR_LEFT:  dx = -GHOST_SPEED; break;
 		}
 		moveRelative(dx, dy);
-	}
-	private boolean atTile(Point t) {
-		if (t.equals(Board.pointToGrid(position))) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 	private void moveRelative(double dx, double dy) {
 		position.setLocation(position.getX() + dx, position.getY() + dy);

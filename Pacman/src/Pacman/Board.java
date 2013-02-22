@@ -42,7 +42,7 @@ public class Board implements Cloneable {
 							   "WDDDDDDDDDDDDWWDDDDDDDDDDDDW" +
 							   "WDWWWWDWWWWWDWWDWWWWWDWWWWDW" +
 							   "WDWWWWDWWWWWDWWDWWWWWDWWWWDW" +
-							   "WEDDWWDDDDDDDPDDDDDDDDWWDDEW" +
+							   "WEDDWWDDDDDDDDDDDDDDDDWWDDEW" +
 							   "WWWDWWDWWDWWWWWWWWDWWDWWDWWW" +
 							   "WWWDWWDWWDWWWWWWWWDWWDWWDWWW" +
 							   "WDDDDDDWWDDDDWWDDDDWWDDDDDDW" +
@@ -96,13 +96,20 @@ public class Board implements Cloneable {
 			throw new Error("Unknown direction for pacman. (" + String.valueOf(direction) + ")");
 		}
 		PacmanScore s = new PacmanScore();
-		Point2D.Double newpos = pacman.doMove(this, direction);
-		//if newpos is @ wall bla bla
-		//	pacman.undoMove();
-		//else if newpos is @ dot etccccc
-		//  ...
-		//move ghosts!!!
+		Point newpos = pointToGrid(pacman.doMove(this, direction));
 		updateGhosts();
+		if (dotgrid[newpos.x][newpos.y] == DOT_DOT) {
+			s.addDot();
+		} else if (dotgrid[newpos.x][newpos.y] == DOT_ENERGIZER) {
+			s.addEnergizer();
+		}
+		dotgrid[newpos.x][newpos.y] = DOT_NONE;
+		for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
+			Point ghost = pointToGrid(ghosts[g].getPosition());
+			if (newpos.x == ghost.x && newpos.y == ghost.y) {
+				System.out.println("GHOST!");
+			}
+		}
 		return s;
 	}
 	
@@ -259,6 +266,9 @@ public class Board implements Cloneable {
 	
 	public boolean[][] getWalls() {
 		return wallgrid.clone();
+	}
+	public byte[][] getDots() {
+		return dotgrid.clone();
 	}
 	
 	public Object clone(){ //Clones are readonly

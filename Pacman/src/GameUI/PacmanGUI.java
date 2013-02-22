@@ -32,10 +32,16 @@ public class PacmanGUI {
 	public void setBoard(Board b) {
 		BufferedImage image = new BufferedImage(BOARD_WIDTH, BOARD_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		boolean[][] walls = b.getWalls();
+		byte[][] dots = b.getDots();
 		for(int j = 0; j < BOARD_HEIGHT; j++) {
 			for(int i = 0; i < BOARD_WIDTH; i++) {
 				if (walls[i][j]) {
 					imageTrySet(image, i, j, Color.blue);
+				}
+				if (dots[i][j] == Board.DOT_DOT) {
+					imageTrySet(image, i, j, Color.darkGray);					
+				} else if (dots[i][j] == Board.DOT_ENERGIZER) {
+					imageTrySet(image, i, j, Color.gray);					
 				}
 			}
 		}
