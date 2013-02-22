@@ -156,7 +156,7 @@ public class Board implements Cloneable {
 		if (p.x >= 0 && p.x < WIDTH && p.y >= 0 && p.y < HEIGHT) {
 			return wallgrid[p.x][p.y];
 		}
-		return true;
+		return false;
 	}
 	public int getDirections(Point p) {
 		int directions = 0;
@@ -168,6 +168,18 @@ public class Board implements Cloneable {
 		directions <<= 1;
 		directions = (isWall(new Point(p.x, p.y - 1))) ? (directions | 1) : (directions & ~1);
 		return directions;
+	}
+	public Point getNextTile(Point p, int direction) {
+		if (direction < PacmanGame.DIR_UP || direction > PacmanGame.DIR_LEFT) {
+			throw new Error("Unknown direction. (" + String.valueOf(direction) + ")");
+		}
+		switch (direction) {
+			case PacmanGame.DIR_UP:    return new Point(p.x, p.y - 1);
+			case PacmanGame.DIR_RIGHT: return new Point(p.x + 1, p.y);
+			case PacmanGame.DIR_DOWN:  return new Point(p.x, p.y + 1);
+			case PacmanGame.DIR_LEFT:  return new Point(p.x - 1, p.y);		
+		}
+		return null;
 	}
 	
 	public boolean[][] getWalls() {
