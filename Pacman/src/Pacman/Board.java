@@ -237,6 +237,13 @@ public class Board implements Cloneable {
 
 	public boolean directionFree(Point2D.Double p, byte direction) {
 		Point q = pointToGrid(p);
+		if (q.x == 0 || q.x == WIDTH - 1) {
+			if (direction == PacmanGame.DIR_LEFT || direction == PacmanGame.DIR_RIGHT) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 		switch (direction) {
 			case PacmanGame.DIR_UP:	   return !wallgrid[q.x][q.y - 1];
 			case PacmanGame.DIR_RIGHT: return !wallgrid[q.x + 1][q.y];

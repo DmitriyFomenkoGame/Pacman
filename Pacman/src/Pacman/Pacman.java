@@ -33,6 +33,11 @@ public class Pacman implements Cloneable {
 				case PacmanGame.DIR_DOWN:  moveRelative(0,  PACMAN_SPEED); break;
 				case PacmanGame.DIR_LEFT:  moveRelative(-PACMAN_SPEED, 0); break;
 			}
+			if (position.x < 0) {
+				position.x += Board.WIDTH;
+			} else if (position.x >= Board.WIDTH) {
+				position.x -= Board.WIDTH;
+			}
 		}
 		return position;
 	}
