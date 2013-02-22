@@ -16,22 +16,25 @@ public class Pacman implements Cloneable {
 	}
 
 	public Point2D.Double doMove(Board b, byte direction) {
-		System.out.printf("%.2f %.2f\n", position.x, position.y);
+//		System.out.printf("%.2f %.2f\n", position.x, position.y);
+		boolean stop = false;
 		if (position.x == Math.floor(position.x) && position.y == Math.floor(position.y)) {
 			if (b.directionFree(position, direction)) {
 				this.direction = direction;
 			}
-			canmove = !b.isWall(b.getNextTile(position, this.direction));
-		}
-		if (canmove) {
-			double dx = 0, dy = 0;
-			switch (direction) {
-				case PacmanGame.DIR_UP:    dy = -PACMAN_SPEED; break;
-				case PacmanGame.DIR_RIGHT: dx =  PACMAN_SPEED; break;
-				case PacmanGame.DIR_DOWN:  dy =  PACMAN_SPEED; break;
-				case PacmanGame.DIR_LEFT:  dx = -PACMAN_SPEED; break;
+			if (b.isWall(b.getNextTile(position, this.direction))) {
+				stop = true;
 			}
-			moveRelative(dx, dy);
+		}
+		if (!stop) {
+			switch (this.direction) {
+				case PacmanGame.DIR_UP:    moveRelative(0, -PACMAN_SPEED); break;
+				case PacmanGame.DIR_RIGHT: moveRelative( PACMAN_SPEED, 0); break;
+				case PacmanGame.DIR_DOWN:  moveRelative(0,  PACMAN_SPEED); break;
+				case PacmanGame.DIR_LEFT:  moveRelative(-PACMAN_SPEED, 0); break;
+			}
+		} else {
+			System.out.printf("%.2f %.2f\n", position.x, position.y);
 		}
 		return position;
 	}

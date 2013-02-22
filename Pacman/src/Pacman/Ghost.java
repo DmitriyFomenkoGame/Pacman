@@ -13,7 +13,6 @@ public class Ghost implements Cloneable {
 	MODE_SCATTER    = 1,
 	MODE_FRIGHTENED = 2;
 
-	public static double TILE_CENTER_OFFSET = 0;
 	public static double GHOST_SPEED = 0.25; //must fit equally in 1 
 
 	private Pacman pacman;
@@ -75,8 +74,7 @@ public class Ghost implements Cloneable {
 				nextdirection = b.getCrossingDir(nexttile, direction, scattertarget);
 			}
 		} else if (atTile(nexttile)) {
-			double dist = position.distance(nexttile);
-			if (dist <= TILE_CENTER_OFFSET) {
+			if (position.x == nexttile.x && position.y == nexttile.y) {
 				position.setLocation(nexttile.x, nexttile.y);
 				direction = nextdirection;
 				nexttile = b.getNextTile(position, direction);
@@ -85,7 +83,7 @@ public class Ghost implements Cloneable {
 				}
 				if (b.isCrossing(nexttile)) {
 					nextdirection = b.getCrossingDir(nexttile, direction, scattertarget);
-				}
+				}				
 			}
 		}
 
