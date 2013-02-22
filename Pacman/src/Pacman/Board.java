@@ -96,19 +96,19 @@ public class Board implements Cloneable {
 			throw new Error("Unknown direction for pacman. (" + String.valueOf(direction) + ")");
 		}
 		PacmanScore s = new PacmanScore();
-		Point2D newpos = pacman.doMove(direction);
+		Point2D.Double newpos = pacman.doMove(this, direction);
 		//if newpos is @ wall bla bla
 		//	pacman.undoMove();
 		//else if newpos is @ dot etccccc
 		//  ...
 		//move ghosts!!!
-		updateGhosts(); //Or before moving pacman? 
-		return null;
+		updateGhosts();
+		return s;
 	}
 	
-	public void bypassMove() {
+/*	public void bypassMove() {
 		updateGhosts();
-	}
+	}*/
 	
 	private void updateGhosts() {
 		//foreach ghost, check if next position is intersection, ifso, calculate direction for that tile, ifnot, continue in same direction if not in corner
@@ -234,6 +234,17 @@ public class Board implements Cloneable {
 	public int getCrossingDir(Point2D.Double p, int direction, Point target) {
 		return getCrossingDir(pointToGrid(p), direction, target);
 	}
+
+	public boolean directionFree(Point2D.Double p, byte direction) {
+		Point q = pointToGrid(p);
+		switch (direction) {
+			case PacmanGame.DIR_UP:	   return !wallgrid[q.x][q.y - 1];
+			case PacmanGame.DIR_RIGHT: return !wallgrid[q.x + 1][q.y];
+			case PacmanGame.DIR_DOWN:  return !wallgrid[q.x][q.y + 1];
+			case PacmanGame.DIR_LEFT:  return !wallgrid[q.x - 1][q.y];
+		}
+		return false;
+	}
 	
 	public static Point pointToGrid(Point2D.Double p) {
 		return new Point((int) Math.round(p.x), (int) Math.round(p.y));
@@ -260,7 +271,5 @@ public class Board implements Cloneable {
 			return null;
 		}
 	}
-
-
 
 }

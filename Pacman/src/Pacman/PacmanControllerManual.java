@@ -1,20 +1,19 @@
 package Pacman;
 
-import GameUI.PacmanGUI;
 import GameUI.PacmanGUIArrows;
 
 public class PacmanControllerManual {
 
 	public void start() {
-//		PacmanGUI gui = new PacmanGUI();
-		PacmanGUI gui = new PacmanGUIArrows();
+		PacmanGUIArrows gui = new PacmanGUIArrows();
 		PacmanGame game = new PacmanGame(-1);
 		gui.setBoard(game.getBoard());
 		gui.show();
 		while(true) {
 			try {
 				Thread.sleep(100);
-				game.bypassMove();
+				//game.bypassMove();
+				game.doMove(gui.getDirection());
 				gui.setBoard(game.getBoard());
 				gui.redraw();
 			} catch (Exception e) {

@@ -34,9 +34,9 @@ public class PacmanGame {
 		}
 	}
 	
-	public void bypassMove() {
+/*	public void bypassMove() {
 		board.bypassMove();
-	}
+	}*/
 	
 	public Board getBoard() {
 		return (Board) board.clone();
