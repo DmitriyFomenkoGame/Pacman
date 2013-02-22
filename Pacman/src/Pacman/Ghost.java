@@ -13,7 +13,7 @@ public class Ghost implements Cloneable {
 	MODE_SCATTER    = 1,
 	MODE_FRIGHTENED = 2;
 
-	public static double TILE_CENTER_OFFSET = 0.2;
+	public static double TILE_CENTER_OFFSET = 1;//0.2;
 	public static double GHOST_SPEED = 0.3;
 
 	private Pacman pacman;

@@ -136,6 +136,9 @@ public class Board implements Cloneable {
 	public Point2D.Double getClydePosition() {
 		return getGhostPosition(Ghost.GHOST_CLYDE);
 	}
+	public Point2D getPacmanPosition() {
+		return pacman.getPosition();
+	}
 	
 	public boolean isCorner(Point p) {
 		switch (getDirections(p)) {
@@ -257,6 +260,7 @@ public class Board implements Cloneable {
 			return null;
 		}
 	}
+
 
 
 }

@@ -42,11 +42,13 @@ public class PacmanGUI {
 		Point2D blinky = b.getBlinkyPosition(),
 				pinky  = b.getPinkyPosition(),
 				inky   = b.getInkyPosition(),
-				clyde  = b.getClydePosition();
+				clyde  = b.getClydePosition(),
+				pacman = b.getPacmanPosition();
 		imageTrySet(image, blinky.getX(), blinky.getY(), Color.red);
 		imageTrySet(image, pinky.getX(),  pinky.getY(),  Color.pink);
 		imageTrySet(image, inky.getX(),   inky.getY(),   Color.cyan);
 		imageTrySet(image, clyde.getX(),  clyde.getY(),  Color.orange);
+		imageTrySet(image, pacman.getX(), pacman.getY(), Color.yellow);
 		
 		panel.setImage(image);
 	}
