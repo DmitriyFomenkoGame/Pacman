@@ -65,7 +65,6 @@ public class Ghost implements Cloneable {
 	}
 
 	public void continueMove(Board b) {
-		System.out.printf("%f %f\n", position.x, position.y);
 		if (nexttile == null) {
 			nexttile = b.getNextTile(position, direction);
 			if (b.isCorner(nexttile)) {
@@ -75,7 +74,6 @@ public class Ghost implements Cloneable {
 				nextdirection = b.getCrossingDir(nexttile, direction, scattertarget);
 			}
 		} else if (Math.abs(position.x - nexttile.x) < 0.01 && Math.abs(position.y - nexttile.y) < 0.01) {
-			System.out.println("ASDASDAS");
 			position.setLocation(nexttile.x, nexttile.y);
 			direction = nextdirection;
 			nexttile = b.getNextTile(position, direction);
