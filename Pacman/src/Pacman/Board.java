@@ -30,11 +30,11 @@ public class Board implements Cloneable {
 							   "WDDDDDDWWDDDDWWDDDDWWDDDDDDW" +
 							   "WWWWWWDWWWWW WW WWWWWDWWWWWW" +
 							   "WWWWWWDWWWWW WW WWWWWDWWWWWW" +
-							   "WWWWWWDWW    G     WWDWWWWWW" +
+							   "WWWWWWDWW          WWDWWWWWW" +
+							   "WWWWWWDWW WWW WWWW WWDWWWWWW" +
+							   "WWWWWWDWW WWW WWWW WWDWWWWWW" +
+							   "      D   WWW WWWW   D      " +
 							   "WWWWWWDWW WWWWWWWW WWDWWWWWW" +
-							   "WWWWWWDWW W      W WWDWWWWWW" +
-							   "      D   W G G GW   D      " +
-							   "WWWWWWDWW W      W WWDWWWWWW" +
 							   "WWWWWWDWW WWWWWWWW WWDWWWWWW" +
 							   "WWWWWWDWW          WWDWWWWWW" +
 							   "WWWWWWDWW WWWWWWWW WWDWWWWWW" +
@@ -112,10 +112,10 @@ public class Board implements Cloneable {
 	
 	private void updateGhosts() {
 		//foreach ghost, check if next position is intersection, ifso, calculate direction for that tile, ifnot, continue in same direction if not in corner
-		/*for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
-			ghosts[g].continueMove();
-		}*/
-		ghosts[Ghost.GHOST_BLINKY].continueMove(this);
+		for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
+			ghosts[g].continueMove(this);
+		}
+		//ghosts[Ghost.GHOST_BLINKY].continueMove(this);
 	}
 	
 	public Point2D.Double getGhostPosition(int ghost) { //Positions are real numbers, not integers

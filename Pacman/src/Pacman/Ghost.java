@@ -21,24 +21,37 @@ public class Ghost implements Cloneable {
 	private int direction, nextdirection;
 	private Point2D.Double position;
 	private int mode;
-	private Point target, nexttile;
+	private Point target, nexttile, scattertarget;
 
 	public Ghost(Pacman pacman, int type) {
 		this.pacman    = pacman;
 		this.type      = type;
-		this.direction = PacmanGame.DIR_LEFT;
-		this.nextdirection = direction;
-		this.position  = new Point2D.Double();
 		switch (type) {
-			case GHOST_BLINKY: position.setLocation(13, 11); break;
-			case GHOST_PINKY:  position.setLocation(14, 14); break;
-			case GHOST_INKY:   position.setLocation(12, 14); break;
-			case GHOST_CLYDE:  position.setLocation(16, 14); break;
+			case GHOST_BLINKY: 
+				position      = new Point2D.Double(13, 11);
+				scattertarget = new Point(25, -4);
+				this.direction = PacmanGame.DIR_LEFT;
+			break;
+			case GHOST_PINKY:
+				position 	  = new Point2D.Double(13, 14);
+				scattertarget = new Point(2, -4);
+				this.direction = PacmanGame.DIR_UP;
+			break;
+			case GHOST_INKY:
+				position 	  = new Point2D.Double(13, 14);
+				scattertarget = new Point(27, 31);
+				this.direction = PacmanGame.DIR_UP;
+			break;
+			case GHOST_CLYDE:
+				position 	  = new Point2D.Double(13, 14);
+				scattertarget = new Point(0, 31);
+				this.direction = PacmanGame.DIR_UP;
+			break;
 		}
+		this.nextdirection = direction;
 		//		this.mode = MODE_CHASE;
 		//TODO: BYPASS
 		this.mode = MODE_SCATTER;
-		this.target = new Point(25, -4);
 	}
 
 	public void setMode(int mode) {
@@ -55,6 +68,12 @@ public class Ghost implements Cloneable {
 	public void continueMove(Board b) {
 		if (nexttile == null) {
 			nexttile = b.getNextTile(position, direction);
+			if (b.isCorner(nexttile)) {
+				nextdirection = b.getCornerDir(nexttile, direction);
+			}
+			if (b.isCrossing(nexttile)) {
+				nextdirection = b.getCrossingDir(nexttile, direction, scattertarget);
+			}
 		} else if (atTile(nexttile)) {
 			double dist = position.distance(nexttile);
 			if (dist <= TILE_CENTER_OFFSET) {
@@ -65,7 +84,7 @@ public class Ghost implements Cloneable {
 					nextdirection = b.getCornerDir(nexttile, direction);
 				}
 				if (b.isCrossing(nexttile)) {
-					nextdirection = b.getCrossingDir(nexttile, direction, target);
+					nextdirection = b.getCrossingDir(nexttile, direction, scattertarget);
 				}
 			}
 		}
