@@ -1,11 +1,12 @@
 package Pacman;
 
 import GameUI.PacmanGUI;
+import GameUI.PacmanGUIArrows;
 
 public class PacmanControllerManual {
 
 	public void start() {
-		PacmanGUI gui = new PacmanGUI();
+		PacmanGUI gui = new PacmanGUIArrows();
 		PacmanGame game = new PacmanGame(-1);
 		gui.setBoard(game.getBoard());
 		gui.show();

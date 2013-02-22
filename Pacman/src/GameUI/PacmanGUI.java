@@ -10,8 +10,8 @@ import javax.swing.JFrame;
 import Pacman.Board;
 
 public class PacmanGUI {
-	private JFrame frame;
-	private ImagePanel panel;
+	protected JFrame frame;
+	protected ImagePanel panel;
 	
 	public static final int BOARD_WIDTH  = Board.WIDTH,
 							BOARD_HEIGHT = Board.HEIGHT;
