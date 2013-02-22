@@ -33,8 +33,6 @@ public class Pacman implements Cloneable {
 				case PacmanGame.DIR_DOWN:  moveRelative(0,  PACMAN_SPEED); break;
 				case PacmanGame.DIR_LEFT:  moveRelative(-PACMAN_SPEED, 0); break;
 			}
-		} else {
-			System.out.printf("%.2f %.2f\n", position.x, position.y);
 		}
 		return position;
 	}
