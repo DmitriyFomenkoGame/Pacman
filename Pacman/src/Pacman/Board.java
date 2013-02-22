@@ -51,6 +51,11 @@ public class Board implements Cloneable {
 							   "WDDDDDDDDDDDDDDDDDDDDDDDDDDW" +
 							   "WWWWWWWWWWWWWWWWWWWWWWWWWWWW";
 	
+	public static final int DIRS_U    = 1, DIRS_R   = 2,  DIRS_D   = 4,  DIRS_L = 8,
+							DIRS_UR   = 3, DIRS_RD  = 6,  DIRS_DL  = 12, DIRS_LU  = 9,
+					  		DIRS_URD  = 7, DIRS_RDL = 14, DIRS_DLU = 13, DIRS_LUR = 11,
+					  		DIRS_URDL = 15;
+	
 	public Board() {
 		pacman = new Pacman();
 		ghosts = new Ghost[4];
@@ -134,23 +139,23 @@ public class Board implements Cloneable {
 	
 	public boolean isCorner(Point p) {
 		switch (getDirections(p)) {
-			case 3: case 6: case 9: case 12:
+			case DIRS_UR: case DIRS_RD: case DIRS_DL: case DIRS_LU: 
 				return true;
 		}
 		return false;
 	}
 	public boolean isCorner(Point2D.Double p) {
-		return isCorner(new Point((int) Math.round(p.x), (int) Math.round(p.y)));
+		return isCorner(pointToGrid(p));
 	}
 	public boolean isCrossing(Point p) {
 		switch (getDirections(p)) {
-			case 7: case 11: case 13: case 14: case 15: 
+			case DIRS_URD: case DIRS_RDL: case DIRS_DLU: case DIRS_LUR: case DIRS_URDL: 
 				return true;
 		}
 		return false;
 	}
 	public boolean isCrossing(Point2D.Double p) {
-		return isCrossing(new Point((int) Math.round(p.x), (int) Math.round(p.y)));
+		return isCrossing(pointToGrid(p));
 	}
 	public boolean isWall(Point p) {
 		if (p.x >= 0 && p.x < WIDTH && p.y >= 0 && p.y < HEIGHT) {
@@ -160,13 +165,10 @@ public class Board implements Cloneable {
 	}
 	public int getDirections(Point p) {
 		int directions = 0;
-		directions = (isWall(new Point(p.x - 1, p.y))) ? (directions | 1) : (directions & ~1);
-		directions <<= 1;
-		directions = (isWall(new Point(p.x, p.y + 1))) ? (directions | 1) : (directions & ~1);
-		directions <<= 1;
-		directions = (isWall(new Point(p.x + 1, p.y))) ? (directions | 1) : (directions & ~1);
-		directions <<= 1;
-		directions = (isWall(new Point(p.x, p.y - 1))) ? (directions | 1) : (directions & ~1);
+		directions += (!isWall(new Point(p.x, p.y - 1))) ? DIRS_U : 0;
+		directions += (!isWall(new Point(p.x + 1, p.y))) ? DIRS_R : 0;
+		directions += (!isWall(new Point(p.x, p.y + 1))) ? DIRS_D : 0;
+		directions += (!isWall(new Point(p.x - 1, p.y))) ? DIRS_L : 0;
 		return directions;
 	}
 	public Point getNextTile(Point p, int direction) {
@@ -180,6 +182,43 @@ public class Board implements Cloneable {
 			case PacmanGame.DIR_LEFT:  return new Point(p.x - 1, p.y);		
 		}
 		return null;
+	}
+	public Point getNextTile(Point2D.Double p, int direction) {
+		return getNextTile(pointToGrid(p), direction);
+	}
+	
+	public int getCornerDir(Point p, int direction) {
+		//Assumes valid current direction was given...
+		if (!isCorner(p)) {
+			throw new Error("getCornerDir called on a non-corner");
+		}
+		switch (getDirections(p)) {
+			case DIRS_UR: return (direction == PacmanGame.DIR_LEFT)  ? PacmanGame.DIR_UP   : PacmanGame.DIR_RIGHT;
+			case DIRS_RD: return (direction == PacmanGame.DIR_LEFT)  ? PacmanGame.DIR_DOWN : PacmanGame.DIR_RIGHT;
+			case DIRS_DL: return (direction == PacmanGame.DIR_RIGHT) ? PacmanGame.DIR_DOWN : PacmanGame.DIR_LEFT;
+			case DIRS_LU: return (direction == PacmanGame.DIR_RIGHT) ? PacmanGame.DIR_UP   : PacmanGame.DIR_LEFT;
+		}
+		return direction;
+	}
+	public int getCornerDir(Point2D.Double p, int direction) {
+		return getCornerDir(pointToGrid(p), direction);
+	}
+	public int getCrossingDir(Point p, int direction, Point t) {
+		//Assumes valid current direction was given...
+		if (!isCrossing(p)) {
+			throw new Error("getCrossingDir called on non-crossing");
+		}
+		int dirs = getDirections(p);
+		
+		
+		return direction;
+	}
+	public int getCrossingDir(Point2D.Double p, int direction, Point target) {
+		return getCrossingDir(pointToGrid(p), direction, target);
+	}
+	
+	public static Point pointToGrid(Point2D.Double p) {
+		return new Point((int) Math.round(p.x), (int) Math.round(p.y));
 	}
 	
 	public boolean[][] getWalls() {
@@ -203,4 +242,6 @@ public class Board implements Cloneable {
 			return null;
 		}
 	}
+
+
 }

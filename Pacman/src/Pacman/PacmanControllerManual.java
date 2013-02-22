@@ -11,7 +11,7 @@ public class PacmanControllerManual {
 		gui.show();
 		while(true) {
 			try {
-				Thread.sleep(500);
+				Thread.sleep(200);
 				game.bypassMove();
 				gui.setBoard(game.getBoard());
 				gui.redraw();
