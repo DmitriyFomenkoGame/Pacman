@@ -28,7 +28,6 @@ public class PacmanGUIArrows extends PacmanGUI {
 	
 	public void setDirection(byte direction){
 		this.direction = direction;
-		System.out.println(direction);
 	}
 	
 	public byte getDirection(){
