@@ -18,7 +18,7 @@ public class Pinky extends Ghost {
 		this.mode = MODE_CHASE;
 	}
 	
-	protected Point chaseTarget(Board b){
+	protected Point chaseTarget(Board b) {
 		Point2D.Double targetPos = pacman.getPosition();
 		byte dir = pacman.getDirection();
 		switch(dir){

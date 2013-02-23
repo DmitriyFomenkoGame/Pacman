@@ -180,10 +180,9 @@ public class Board implements Cloneable {
 		return isCrossing(pointToGrid(p));
 	}
 	public boolean isWall(Point p) {
-		if (p.x >= 0 && p.x < WIDTH && p.y >= 0 && p.y < HEIGHT) {
-			return wallgrid[p.x][p.y];
-		}
-		return false;
+		int xx = Math.max(0, Math.min(p.x, WIDTH - 1)),
+			yy = Math.max(0, Math.min(p.y, HEIGHT - 1));
+		return wallgrid[xx][yy];
 	}
 	public int getDirections(Point p) {
 		int directions = 0;

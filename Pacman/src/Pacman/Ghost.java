@@ -36,37 +36,38 @@ public class Ghost implements Cloneable {
 		}
 		this.mode = mode;
 	}
-
 	public Point2D.Double getPosition() {
 		return (Point2D.Double) position.clone();
 	}
 
 	public void continueMove(Board b) {
 		switch(mode){
-			case MODE_SCATTER: currenttarget = scattertarget; break;
-			case MODE_CHASE: currenttarget = new Point(chaseTarget(b)); break;
+			case MODE_SCATTER:    currenttarget = scattertarget; break;
+			case MODE_CHASE: 	  currenttarget = new Point(chaseTarget(b)); break;
 			case MODE_FRIGHTENED: currenttarget = scattertarget; break;
 		}
 		if (nexttile == null) {
-			nexttile = b.getNextTile(position, direction);
-			/*if (b.isCorner(nexttile)) {
-				nextdirection = b.getCornerDir(nexttile, direction);
-			}
-			if (b.isCrossing(nexttile)) {
-				nextdirection = b.getCrossingDir(nexttile, direction, scattertarget);
-			}*/
+			updateNextTile(b);
 		} else if (Math.abs(position.x - nexttile.x) < 0.01 && Math.abs(position.y - nexttile.y) < 0.01) {
 			position.setLocation(nexttile.x, nexttile.y);
 			direction = nextdirection;
-			nexttile = b.getNextTile(position, direction);
-			if (b.isCorner(nexttile)) {
-				nextdirection = b.getCornerDir(nexttile, direction);
+			if (position.x < 0) {
+				position.setLocation(position.x + Board.WIDTH, position.y);
+			} else if (position.x >= Board.WIDTH){
+				position.setLocation(position.x - Board.WIDTH, position.y);
 			}
-			if (b.isCrossing(nexttile)) {
-				nextdirection = b.getCrossingDir(nexttile, direction, currenttarget);
-			}				
+			updateNextTile(b);
 		}
 		moveDirection(direction);
+	}
+	public void updateNextTile(Board b) {
+		nexttile = b.getNextTile(position, direction);
+		if (b.isCorner(nexttile)) {
+			nextdirection = b.getCornerDir(nexttile, direction);
+		}
+		if (b.isCrossing(nexttile)) {
+			nextdirection = b.getCrossingDir(nexttile, direction, currenttarget);
+		}
 	}
 	
 	protected Point chaseTarget(Board b){//Blinky method OVERRIDE IN OTHER GHOST CLASSES PLEASE
@@ -84,13 +85,10 @@ public class Ghost implements Cloneable {
 		}
 		moveRelative(dx, dy);
 	}
-	
 	private void moveRelative(double dx, double dy) {
 		position.setLocation(position.getX() + dx, position.getY() + dy);
 	}
 
-	
-	
 	public Object clone(){
 		try{
 			Ghost cloned = (Ghost) super.clone();
