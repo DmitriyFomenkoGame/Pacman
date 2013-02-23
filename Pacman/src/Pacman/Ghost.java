@@ -17,7 +17,7 @@ public class Ghost implements Cloneable {
 	public static double GHOST_SPEED = 0.20; //must fit equally in 1 
 
 	protected Pacman pacman;
-	protected int direction, nextdirection;
+	protected byte direction, nextdirection;
 	protected Point2D.Double position;
 	protected int mode;
 	protected Point nexttile, scattertarget, currenttarget;
@@ -25,7 +25,7 @@ public class Ghost implements Cloneable {
 	public Ghost(Pacman pacman) {
 		this.pacman    = pacman;
 		this.nextdirection = direction;
-		this.mode = MODE_CHASE;
+		this.mode = MODE_FRIGHTENED;
 	}
 
 	public void setMode(int mode) {
@@ -39,11 +39,16 @@ public class Ghost implements Cloneable {
 	}
 
 	public void continueMove(Board b) {
-		switch(mode){
-			case MODE_SCATTER:    currenttarget = scattertarget; 			break;
-			case MODE_CHASE: 	  currenttarget = new Point(chaseTarget(b)); break;
-			case MODE_FRIGHTENED: currenttarget = scattertarget; 			break;
+		if (mode == MODE_CHASE) {
+			currenttarget = new Point(chaseTarget(b));
+		} else {
+			currenttarget = scattertarget;
 		}
+/*		switch(mode){
+			case MODE_SCATTER:    currenttarget = scattertarget; 			  break;
+			case MODE_CHASE: 	  currenttarget = new Point(chaseTarget(b));  break;
+			case MODE_FRIGHTENED: currenttarget = new Point(frightTarget(b)); break;
+		}*/
 		if (nexttile == null) {
 			updateNextTile(b);
 		} else if (Math.abs(position.x - nexttile.x) < 0.01 && Math.abs(position.y - nexttile.y) < 0.01) {
@@ -54,7 +59,11 @@ public class Ghost implements Cloneable {
 			} else if (position.x >= Board.WIDTH){
 				position.setLocation(position.x - Board.WIDTH, position.y);
 			}
-			updateNextTile(b);
+			if (mode == MODE_FRIGHTENED) {
+				updateNextTileRandom(b);
+			} else {
+				updateNextTile(b);
+			}
 		}
 		moveDirection(direction);
 	}
@@ -65,6 +74,19 @@ public class Ghost implements Cloneable {
 		}
 		if (b.isCrossing(nexttile)) {
 			nextdirection = b.getCrossingDir(nexttile, direction, currenttarget);
+		}
+	}
+	public void updateNextTileRandom(Board b) {
+		nexttile = b.getNextTile(position, direction);
+		if (b.isCorner(nexttile)) {
+			nextdirection = b.getCornerDir(nexttile, direction);
+		}
+		if (b.isCrossing(nexttile)) {
+			byte randomdir = b.getRandomDir();
+			while (!b.directionFreeExclude(nexttile, randomdir, direction)) {
+				randomdir = b.getRandomDir();
+			}
+			nextdirection = randomdir;
 		}
 	}
 	

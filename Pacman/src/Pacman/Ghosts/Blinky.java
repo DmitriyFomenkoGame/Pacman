@@ -15,7 +15,6 @@ public class Blinky extends Ghost {
 		position      = new Point2D.Double(13, 11);
 		scattertarget = new Point(25, -4);
 		this.direction = PacmanGame.DIR_LEFT;
-		this.mode = Ghost.MODE_CHASE;
 	}
 	
 	protected Point chaseTarget(Board b){

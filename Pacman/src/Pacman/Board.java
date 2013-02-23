@@ -2,6 +2,7 @@ package Pacman;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.util.Random;
 
 import Pacman.Ghosts.Blinky;
 import Pacman.Ghosts.Clyde;
@@ -21,6 +22,7 @@ public class Board implements Cloneable {
 	
 	private Pacman pacman;
 	private Ghost[] ghosts;
+	private Random generator;
 	private boolean locked;
 	private boolean[][] wallgrid;
 	private byte[][] dotgrid;
@@ -70,6 +72,8 @@ public class Board implements Cloneable {
 		ghosts[Ghost.GHOST_INKY]   = new Inky(pacman);
 		ghosts[Ghost.GHOST_CLYDE]  = new Clyde(pacman);
 		locked = false;
+		
+		generator = new Random(0);
 		
 		initGrids();
 	}
@@ -124,16 +128,8 @@ public class Board implements Cloneable {
 		}
 		return s;
 	}
-	
-/*	public void bypassMove() {
-		updateGhosts();
-	}*/
-	
+
 	private void updateGhosts(int dotseaten) {
-		//foreach ghost, check if next position is intersection, ifso, calculate direction for that tile, ifnot, continue in same direction if not in corner
-		/*for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
-			ghosts[g].continueMove(this);
-		}*/
 		ghosts[Ghost.GHOST_BLINKY].continueMove(this);
 		ghosts[Ghost.GHOST_PINKY].continueMove(this);
 		if (dotseaten > 30) {
@@ -162,7 +158,7 @@ public class Board implements Cloneable {
 	public Point2D.Double getClydePosition() {
 		return getGhostPosition(Ghost.GHOST_CLYDE);
 	}
-	public Point2D getPacmanPosition() {
+	public Point2D.Double getPacmanPosition() {
 		return pacman.getPosition();
 	}
 	
@@ -215,7 +211,7 @@ public class Board implements Cloneable {
 		return getNextTile(pointToGrid(p), direction);
 	}
 	
-	public int getCornerDir(Point p, int direction) {
+	public byte getCornerDir(Point p, byte direction) {
 		//Assumes valid current direction was given...
 		if (!isCorner(p)) {
 			throw new Error("getCornerDir called on a non-corner");
@@ -228,10 +224,10 @@ public class Board implements Cloneable {
 		}
 		return direction;
 	}
-	public int getCornerDir(Point2D.Double p, int direction) {
+	public byte getCornerDir(Point2D.Double p, byte direction) {
 		return getCornerDir(pointToGrid(p), direction);
 	}
-	public int getCrossingDir(Point p, int direction, Point t) {
+	public byte getCrossingDir(Point p, byte direction, Point t) {
 		//Assumes valid current direction was given...
 		if (!isCrossing(p)) {
 			throw new Error("getCrossingDir called on non-crossing");
@@ -243,8 +239,8 @@ public class Board implements Cloneable {
 			if ((dirs & DIRS_U) != 0) {dirs -= DIRS_U;}
 		}
 		double bestdist = Double.MAX_VALUE;
-		int bestdir = direction;
-		for (int d = PacmanGame.DIR_UP; d <= PacmanGame.DIR_LEFT; d++) {
+		byte bestdir = direction;
+		for (byte d = PacmanGame.DIR_UP; d <= PacmanGame.DIR_LEFT; d++) {
 			if ((dirs & 1) != 0) {
 				double dist = getNextTile(p, d).distance(t);
 				if (dist < bestdist) {
@@ -256,7 +252,7 @@ public class Board implements Cloneable {
 		}
 		return bestdir;
 	}
-	public int getCrossingDir(Point2D.Double p, int direction, Point target) {
+	public byte getCrossingDir(Point2D.Double p, byte direction, Point target) {
 		return getCrossingDir(pointToGrid(p), direction, target);
 	}
 
@@ -279,6 +275,18 @@ public class Board implements Cloneable {
 			case PacmanGame.DIR_LEFT:  return !wallgrid[q.x - 1][q.y];
 		}
 		return false;
+	}
+	public boolean directionFreeExclude(Point p, byte direction, byte excludeddirection) {
+		if ((direction == PacmanGame.DIR_UP    && excludeddirection == PacmanGame.DIR_DOWN) ||
+			(direction == PacmanGame.DIR_DOWN  && excludeddirection == PacmanGame.DIR_UP) ||
+			(direction == PacmanGame.DIR_LEFT  && excludeddirection == PacmanGame.DIR_RIGHT) ||
+			(direction == PacmanGame.DIR_RIGHT && excludeddirection == PacmanGame.DIR_LEFT)) {
+			return false;
+		}
+		return directionFree(new Point2D.Double(p.x, p.y), direction);
+	}
+	public byte getRandomDir() {
+		return (byte) generator.nextInt(4);
 	}
 	
 	public static Point pointToGrid(Point2D.Double p) {
@@ -313,5 +321,4 @@ public class Board implements Cloneable {
 			return null;
 		}
 	}
-
 }

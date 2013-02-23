@@ -6,6 +6,7 @@ Ghosts:
 
 Ghost notities:
 - Ghosts móéten switchen van direction als ze van modus wisselen, hier opletten bij om hoeken gaan, misschien prevdir onthouden of ietssss
+- Ghosts moeten niet weer het ghosthouse in kunnen, dus dat moet in de normale pathfinding nog even toegevoegd worden, in fright mode zit het omdat die directionFree gebruikt
 - ...
 
 Pacman:
