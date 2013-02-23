@@ -15,6 +15,7 @@ public class Inky extends Ghost {
 		position 	  = new Point2D.Double(13, 14);
 		scattertarget = new Point(27, 31);
 		this.direction = PacmanGame.DIR_UP;
+		this.active = false;
 	}
 	
 	protected Point chaseTarget(Board b) {

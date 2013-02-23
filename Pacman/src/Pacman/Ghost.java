@@ -14,24 +14,30 @@ public class Ghost implements Cloneable {
 	MODE_SCATTER    = 1,
 	MODE_FRIGHTENED = 2;
 
-	public static double GHOST_SPEED = 0.20; //must fit equally in 1 
+	public static double GHOST_SPEED = 0.20; //must fit equally in 1
+	public static double FRIGHT_SPEED = 0.10;
 
 	protected Pacman pacman;
 	protected byte direction, nextdirection;
 	protected Point2D.Double position;
-	protected int mode;
+	protected int mode, prevMode;
 	protected Point nexttile, scattertarget, currenttarget;
+	protected boolean active;
+	protected int deathTimer = 0, frightTimer = 0, chaseScatterTimer = 70;
 
 	public Ghost(Pacman pacman) {
 		this.pacman    = pacman;
 		this.nextdirection = direction;
-		this.mode = MODE_FRIGHTENED;
+		this.mode = MODE_SCATTER;
+		this.active = true;
 	}
 
 	public void setMode(int mode) {
 		if (mode < MODE_CHASE || mode > MODE_FRIGHTENED) {
 			throw new Error("Unknown mode for ghost. (" + String.valueOf(mode) + ")");
 		}
+		if(this.mode != MODE_FRIGHTENED) prevMode = this.mode;
+		if(mode == MODE_FRIGHTENED) frightTimer = 60;
 		this.mode = mode;
 	}
 	public Point2D.Double getPosition() {
@@ -39,6 +45,7 @@ public class Ghost implements Cloneable {
 	}
 
 	public void continueMove(Board b) {
+		if(!active) return;
 		if (mode == MODE_CHASE) {
 			currenttarget = new Point(chaseTarget(b));
 		} else {
@@ -65,8 +72,10 @@ public class Ghost implements Cloneable {
 				updateNextTile(b);
 			}
 		}
+		decreaseTimer();
 		moveDirection(direction);
 	}
+	
 	public void updateNextTile(Board b) {
 		nexttile = b.getNextTile(position, direction);
 		if (b.isCorner(nexttile)) {
@@ -76,6 +85,7 @@ public class Ghost implements Cloneable {
 			nextdirection = b.getCrossingDir(nexttile, direction, currenttarget);
 		}
 	}
+	
 	public void updateNextTileRandom(Board b) {
 		nexttile = b.getNextTile(position, direction);
 		if (b.isCorner(nexttile)) {
@@ -104,22 +114,43 @@ public class Ghost implements Cloneable {
 		}
 		return currenttarget;
 	}
+	
 	protected Point chaseTarget(Board b){//Blinky method OVERRIDE IN OTHER GHOST CLASSES PLEASE
 		return tilesAheadOfPacman(0);
 	}
 	
 	private void moveDirection(int direction){
 		double dx = 0, dy = 0;
+		double curSpeed = (mode == MODE_FRIGHTENED) ? FRIGHT_SPEED : GHOST_SPEED;
 		switch (direction) {
-			case PacmanGame.DIR_UP:    dy = -GHOST_SPEED; break;
-			case PacmanGame.DIR_RIGHT: dx =  GHOST_SPEED; break;
-			case PacmanGame.DIR_DOWN:  dy =  GHOST_SPEED; break;
-			case PacmanGame.DIR_LEFT:  dx = -GHOST_SPEED; break;
+			case PacmanGame.DIR_UP:    dy = -curSpeed; break;
+			case PacmanGame.DIR_RIGHT: dx =  curSpeed; break;
+			case PacmanGame.DIR_DOWN:  dy =  curSpeed; break;
+			case PacmanGame.DIR_LEFT:  dx = -curSpeed; break;
 		}
 		moveRelative(dx, dy);
 	}
 	private void moveRelative(double dx, double dy) {
 		position.setLocation(position.getX() + dx, position.getY() + dy);
+	}
+	
+	public void setActive(boolean b){
+		active = b;
+	}
+	
+	private void decreaseTimer(){
+		if(mode == MODE_FRIGHTENED){
+			frightTimer--;
+			if(frightTimer == 0){
+				setMode(prevMode);
+			}
+			return;
+		}
+		chaseScatterTimer--;
+		if(chaseScatterTimer == 0){
+			chaseScatterTimer = (mode == MODE_SCATTER) ?  200 :  70;
+			setMode(prevMode);
+		}
 	}
 
 	public Object clone(){

@@ -102,21 +102,23 @@ public class Board implements Cloneable {
 		}		
 	}
 
-	public PacmanScore doMove(byte direction, int dotseaten) {
+	public void doMove(byte direction, PacmanScore s) {
 		if (locked) {throw new Error("Board clones are readonly");}
 		if (direction < PacmanGame.DIR_UP || direction > PacmanGame.DIR_LEFT) {
 			throw new Error("Unknown direction for pacman. (" + String.valueOf(direction) + ")");
 		}
-		PacmanScore s = new PacmanScore();
 		Point newpos = pointToGrid(pacman.doMove(this, direction));
-		updateGhosts(dotseaten);
+		updateGhosts();
 		if (newpos.x >= 0 && newpos.x < WIDTH) {
 			if (dotgrid[newpos.x][newpos.y] == DOT_DOT) {
 				s.addDot();
 				dotsremaining -= 1;
+				if(s.getDots() == 30) ghosts[Ghost.GHOST_INKY].setActive(true);
+				if(s.getDots() == 80) ghosts[Ghost.GHOST_CLYDE].setActive(true);
 			} else if (dotgrid[newpos.x][newpos.y] == DOT_ENERGIZER) {
 				s.addEnergizer();
 				dotsremaining -= 1;
+				setGhostsMode(Ghost.MODE_FRIGHTENED);
 			}
 			dotgrid[newpos.x][newpos.y] = DOT_NONE;
 			for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
@@ -126,17 +128,18 @@ public class Board implements Cloneable {
 				}
 			}
 		}
-		return s;
 	}
 
-	private void updateGhosts(int dotseaten) {
+	private void updateGhosts() {
 		ghosts[Ghost.GHOST_BLINKY].continueMove(this);
 		ghosts[Ghost.GHOST_PINKY].continueMove(this);
-		if (dotseaten > 30) {
-			ghosts[Ghost.GHOST_INKY].continueMove(this);
-		}
-		if (dotseaten > 80) {
-			ghosts[Ghost.GHOST_CLYDE].continueMove(this);
+		ghosts[Ghost.GHOST_INKY].continueMove(this);
+		ghosts[Ghost.GHOST_CLYDE].continueMove(this);
+	}
+	
+	private void setGhostsMode(int mode){
+		for(int i = Ghost.GHOST_BLINKY; i <= Ghost.GHOST_CLYDE; i++){
+			ghosts[i].setMode(mode);
 		}
 	}
 	

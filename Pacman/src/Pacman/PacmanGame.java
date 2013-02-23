@@ -26,7 +26,7 @@ public class PacmanGame {
 	
 	public void doMove(byte direction) {
 		if (gameStatus != GAME_BUSY) {return;}
-		score.addScore(board.doMove(direction, score.getDots()));
+		board.doMove(direction, score);
 		if (maxGameticks > 0) {
 			if (score.getGameticks() > maxGameticks) {
 				gameStatus = GAME_TIMEOUT;

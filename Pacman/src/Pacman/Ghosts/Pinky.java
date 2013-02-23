@@ -15,6 +15,7 @@ public class Pinky extends Ghost {
 		position 	  = new Point2D.Double(13, 14);
 		scattertarget = new Point(2, -4);
 		this.direction = PacmanGame.DIR_UP;
+		this.active = true;
 	}
 	
 	protected Point chaseTarget(Board b) {

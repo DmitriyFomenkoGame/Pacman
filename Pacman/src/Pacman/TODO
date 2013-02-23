@@ -1,8 +1,7 @@
 Ghosts:
 - Andere modi programmeren en in laten stellen via timer/energizer
--- Hierbij herhaaldelijk target bepalen adhv positie van pacman programmeren
 -- Meerdere snelheden zoals aangegeven in pacmandossier, maar niet diezelfde percentages, want dat is kut
-- ...
+- Ghosts moeten nog worden kunnen opgegeten, DeathTimer instellen en checken hoort daar ook bij
 
 Ghost notities:
 - Ghosts móéten switchen van direction als ze van modus wisselen, hier opletten bij om hoeken gaan, misschien prevdir onthouden of ietssss
