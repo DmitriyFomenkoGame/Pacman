@@ -30,7 +30,7 @@ public class PacmanControllerManual {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.exit(1);
+		gui.close();
 	}
 	
 	public static void main(String[] args) {

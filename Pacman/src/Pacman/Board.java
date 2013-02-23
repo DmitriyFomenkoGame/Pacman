@@ -98,16 +98,18 @@ public class Board implements Cloneable {
 		PacmanScore s = new PacmanScore();
 		Point newpos = pointToGrid(pacman.doMove(this, direction));
 		updateGhosts();
-		if (dotgrid[newpos.x][newpos.y] == DOT_DOT) {
-			s.addDot();
-		} else if (dotgrid[newpos.x][newpos.y] == DOT_ENERGIZER) {
-			s.addEnergizer();
-		}
-		dotgrid[newpos.x][newpos.y] = DOT_NONE;
-		for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
-			Point ghost = pointToGrid(ghosts[g].getPosition());
-			if (newpos.x == ghost.x && newpos.y == ghost.y) {
-				s.addDeath();
+		if (newpos.x >= 0 && newpos.x < WIDTH) {
+			if (dotgrid[newpos.x][newpos.y] == DOT_DOT) {
+				s.addDot();
+			} else if (dotgrid[newpos.x][newpos.y] == DOT_ENERGIZER) {
+				s.addEnergizer();
+			}
+			dotgrid[newpos.x][newpos.y] = DOT_NONE;
+			for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
+				Point ghost = pointToGrid(ghosts[g].getPosition());
+				if (newpos.x == ghost.x && newpos.y == ghost.y) {
+					s.addDeath();
+				}
 			}
 		}
 		return s;

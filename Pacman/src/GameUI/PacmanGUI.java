@@ -80,4 +80,7 @@ public class PacmanGUI {
 		imageTrySet(image, (double) x, (double) y, c);
 	}
 	
+	public void close() {
+		frame.dispose();
+	}
 }
