@@ -32,6 +32,9 @@ public class PacmanGame {
 				gameStatus = GAME_TIMEOUT;
 			}
 		}
+		if (score.getDeaths() > 0) {
+			gameStatus = GAME_OVER;
+		}
 	}
 	
 /*	public void bypassMove() {

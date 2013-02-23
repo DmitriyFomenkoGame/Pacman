@@ -9,7 +9,7 @@ public class PacmanControllerManual {
 		PacmanGame game = new PacmanGame(-1);
 		gui.setBoard(game.getBoard());
 		gui.show();
-		while(true) {
+		while(game.getGameStatus() == PacmanGame.GAME_BUSY) {
 			try {
 				Thread.sleep(100);
 				//game.bypassMove();

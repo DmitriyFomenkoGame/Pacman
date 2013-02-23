@@ -107,7 +107,7 @@ public class Board implements Cloneable {
 		for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
 			Point ghost = pointToGrid(ghosts[g].getPosition());
 			if (newpos.x == ghost.x && newpos.y == ghost.y) {
-				System.out.println("GHOST!");
+				s.addDeath();
 			}
 		}
 		return s;
