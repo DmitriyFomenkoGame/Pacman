@@ -98,14 +98,14 @@ public class Board implements Cloneable {
 		}		
 	}
 
-	public PacmanScore doMove(byte direction) {
+	public PacmanScore doMove(byte direction, int dotseaten) {
 		if (locked) {throw new Error("Board clones are readonly");}
 		if (direction < PacmanGame.DIR_UP || direction > PacmanGame.DIR_LEFT) {
 			throw new Error("Unknown direction for pacman. (" + String.valueOf(direction) + ")");
 		}
 		PacmanScore s = new PacmanScore();
 		Point newpos = pointToGrid(pacman.doMove(this, direction));
-		updateGhosts();
+		updateGhosts(dotseaten);
 		if (newpos.x >= 0 && newpos.x < WIDTH) {
 			if (dotgrid[newpos.x][newpos.y] == DOT_DOT) {
 				s.addDot();
@@ -129,13 +129,19 @@ public class Board implements Cloneable {
 		updateGhosts();
 	}*/
 	
-	private void updateGhosts() {
+	private void updateGhosts(int dotseaten) {
 		//foreach ghost, check if next position is intersection, ifso, calculate direction for that tile, ifnot, continue in same direction if not in corner
 		/*for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
 			ghosts[g].continueMove(this);
 		}*/
 		ghosts[Ghost.GHOST_BLINKY].continueMove(this);
-		ghosts[Ghost.GHOST_INKY].continueMove(this);
+		ghosts[Ghost.GHOST_PINKY].continueMove(this);
+		if (dotseaten > 30) {
+			ghosts[Ghost.GHOST_INKY].continueMove(this);
+		}
+		if (dotseaten > 80) {
+			ghosts[Ghost.GHOST_CLYDE].continueMove(this);
+		}
 	}
 	
 	public Point2D.Double getGhostPosition(int ghost) { //Positions are real numbers, not integers
