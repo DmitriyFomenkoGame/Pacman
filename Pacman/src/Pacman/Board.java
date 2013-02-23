@@ -131,10 +131,10 @@ public class Board implements Cloneable {
 	
 	private void updateGhosts() {
 		//foreach ghost, check if next position is intersection, ifso, calculate direction for that tile, ifnot, continue in same direction if not in corner
-		for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
+		/*for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
 			ghosts[g].continueMove(this);
-		}
-		//ghosts[Ghost.GHOST_BLINKY].continueMove(this);
+		}*/
+		ghosts[Ghost.GHOST_CLYDE].continueMove(this);
 	}
 	
 	public Point2D.Double getGhostPosition(int ghost) { //Positions are real numbers, not integers

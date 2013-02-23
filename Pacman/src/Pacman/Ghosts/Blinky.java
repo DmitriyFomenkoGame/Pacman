@@ -3,7 +3,6 @@ package Pacman.Ghosts;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
-import Pacman.Board;
 import Pacman.Ghost;
 import Pacman.Pacman;
 import Pacman.PacmanGame;
@@ -18,9 +17,8 @@ public class Blinky extends Ghost {
 		this.mode = Ghost.MODE_CHASE;
 	}
 	
-	protected Point chaseTarget(Board b){
-		Point2D.Double targetPos = pacman.getPosition();
-		return new Point((int)targetPos.getX(),(int)targetPos.getY());
+	protected Point chaseTarget(){
+		return tilesAheadOfPacman(0);
 	}
 
 }

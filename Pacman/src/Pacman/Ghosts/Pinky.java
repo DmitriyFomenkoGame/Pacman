@@ -3,7 +3,6 @@ package Pacman.Ghosts;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
-import Pacman.Board;
 import Pacman.Ghost;
 import Pacman.Pacman;
 import Pacman.PacmanGame;
@@ -18,7 +17,7 @@ public class Pinky extends Ghost {
 		this.mode = MODE_CHASE;
 	}
 	
-	protected Point chaseTarget(Board b) {
+	protected Point chaseTarget() {
 		return tilesAheadOfPacman(4);
 	}
 

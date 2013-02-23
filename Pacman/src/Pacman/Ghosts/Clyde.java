@@ -15,5 +15,14 @@ public class Clyde extends Ghost {
 		scattertarget = new Point(0, 31);
 		this.direction = PacmanGame.DIR_UP;
 	}
+	
+	protected Point chaseTarget(){
+		if (position.distance(pacman.getPosition()) <= 8) {
+			return scattertarget;
+		} else {
+			return tilesAheadOfPacman(0);
+		}		
+	}
+
 
 }
