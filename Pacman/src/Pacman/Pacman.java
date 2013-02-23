@@ -48,6 +48,10 @@ public class Pacman implements Cloneable {
 		position.setLocation(position.getX() + dx, position.getY() + dy);
 	}
 	
+	public byte getDirection(){
+		return this.direction;
+	}
+	
 	public Object clone(){
 		try{
 			Pacman cloned = (Pacman) super.clone();

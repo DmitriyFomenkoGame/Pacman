@@ -60,10 +60,10 @@ public class Board implements Cloneable {
 	public Board() {
 		pacman = new Pacman();
 		ghosts = new Ghost[4];
-		ghosts[Ghost.GHOST_BLINKY] = new Ghost(pacman, Ghost.GHOST_BLINKY);
-		ghosts[Ghost.GHOST_PINKY]  = new Ghost(pacman, Ghost.GHOST_PINKY);
-		ghosts[Ghost.GHOST_INKY]   = new Ghost(pacman, Ghost.GHOST_INKY);
-		ghosts[Ghost.GHOST_CLYDE]  = new Ghost(pacman, Ghost.GHOST_CLYDE);
+		ghosts[Ghost.GHOST_BLINKY] = new Blinky(pacman);
+		ghosts[Ghost.GHOST_PINKY]  = new Pinky(pacman);
+		ghosts[Ghost.GHOST_INKY]   = new Inky(pacman);
+		ghosts[Ghost.GHOST_CLYDE]  = new Clyde(pacman);
 		locked = false;
 		
 		initGrids();
@@ -251,7 +251,6 @@ public class Board implements Cloneable {
 
 	public boolean directionFree(Point2D.Double p, byte direction) {
 		Point q = pointToGrid(p);
-		System.out.println(q);
 		if (q.x == 0 || q.x == WIDTH - 1) {
 			if (direction == PacmanGame.DIR_LEFT || direction == PacmanGame.DIR_RIGHT) {
 				return true;

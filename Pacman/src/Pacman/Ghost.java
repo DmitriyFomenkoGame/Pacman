@@ -4,49 +4,26 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 
 public class Ghost implements Cloneable {
+	
+	public static final int GHOST_BLINKY = 0,
+	GHOST_PINKY = 1,
+	GHOST_INKY = 2,
+	GHOST_CLYDE = 3;
 
-	public static final int GHOST_BLINKY 	= 0,
-	GHOST_PINKY  	= 1,
-	GHOST_INKY   	= 2,
-	GHOST_CLYDE  	= 3;
 	public static final int MODE_CHASE      = 0,
 	MODE_SCATTER    = 1,
 	MODE_FRIGHTENED = 2;
 
 	public static double GHOST_SPEED = 0.20; //must fit equally in 1 
 
-	private Pacman pacman;
-	private int type;
-	private int direction, nextdirection;
-	private Point2D.Double position;
-	private int mode;
-	private Point nexttile, scattertarget;
+	protected Pacman pacman;
+	protected int direction, nextdirection;
+	protected Point2D.Double position;
+	protected int mode;
+	protected Point nexttile, scattertarget;
 
-	public Ghost(Pacman pacman, int type) {
+	public Ghost(Pacman pacman) {
 		this.pacman    = pacman;
-		this.type      = type;
-		switch (type) {
-			case GHOST_BLINKY: 
-				position      = new Point2D.Double(13, 11);
-				scattertarget = new Point(25, -4);
-				this.direction = PacmanGame.DIR_LEFT;
-			break;
-			case GHOST_PINKY:
-				position 	  = new Point2D.Double(13, 14);
-				scattertarget = new Point(2, -4);
-				this.direction = PacmanGame.DIR_UP;
-			break;
-			case GHOST_INKY:
-				position 	  = new Point2D.Double(13, 14);
-				scattertarget = new Point(27, 31);
-				this.direction = PacmanGame.DIR_UP;
-			break;
-			case GHOST_CLYDE:
-				position 	  = new Point2D.Double(13, 14);
-				scattertarget = new Point(0, 31);
-				this.direction = PacmanGame.DIR_UP;
-			break;
-		}
 		this.nextdirection = direction;
 		//		this.mode = MODE_CHASE;
 		//TODO: BYPASS
@@ -65,6 +42,15 @@ public class Ghost implements Cloneable {
 	}
 
 	public void continueMove(Board b) {
+		int tempDir = 0;
+		switch(mode){
+			case MODE_SCATTER: tempDir = scatterMove(b);
+			//case MODE_CHASE: tempDir = chaseMove(b);
+			//case MODE_FRIGHTENED: tempDir = frightenedMove(b);
+		}
+		moveDirection(tempDir);
+	}
+	private int scatterMove(Board b){
 		if (nexttile == null) {
 			nexttile = b.getNextTile(position, direction);
 			/*if (b.isCorner(nexttile)) {
@@ -84,8 +70,10 @@ public class Ghost implements Cloneable {
 				nextdirection = b.getCrossingDir(nexttile, direction, scattertarget);
 			}				
 		}
-		
-
+		return direction;
+	}
+	
+	private void moveDirection(int direction){
 		double dx = 0, dy = 0;
 		switch (direction) {
 			case PacmanGame.DIR_UP:    dy = -GHOST_SPEED; break;
@@ -95,6 +83,7 @@ public class Ghost implements Cloneable {
 		}
 		moveRelative(dx, dy);
 	}
+	
 	private void moveRelative(double dx, double dy) {
 		position.setLocation(position.getX() + dx, position.getY() + dy);
 	}
@@ -103,7 +92,6 @@ public class Ghost implements Cloneable {
 		try{
 			Ghost cloned = (Ghost) super.clone();
 			cloned.pacman    = (Pacman) pacman.clone();
-			cloned.type      = type;
 			cloned.direction = direction;
 			cloned.position  = (Point2D.Double) position.clone();
 			return cloned;
