@@ -20,7 +20,7 @@ public class Ghost implements Cloneable {
 	protected int direction, nextdirection;
 	protected Point2D.Double position;
 	protected int mode;
-	protected Point nexttile, scattertarget;
+	protected Point nexttile, scattertarget, currenttarget;
 
 	public Ghost(Pacman pacman) {
 		this.pacman    = pacman;
@@ -42,15 +42,11 @@ public class Ghost implements Cloneable {
 	}
 
 	public void continueMove(Board b) {
-		int tempDir = 0;
 		switch(mode){
-			case MODE_SCATTER: tempDir = scatterMove(b);
-			//case MODE_CHASE: tempDir = chaseMove(b);
-			//case MODE_FRIGHTENED: tempDir = frightenedMove(b);
+			case MODE_SCATTER: currenttarget = scattertarget; break;
+			case MODE_CHASE: currenttarget = new Point(chaseTarget(b)); break;
+			case MODE_FRIGHTENED: currenttarget = scattertarget; break;
 		}
-		moveDirection(tempDir);
-	}
-	private int scatterMove(Board b){
 		if (nexttile == null) {
 			nexttile = b.getNextTile(position, direction);
 			/*if (b.isCorner(nexttile)) {
@@ -67,10 +63,15 @@ public class Ghost implements Cloneable {
 				nextdirection = b.getCornerDir(nexttile, direction);
 			}
 			if (b.isCrossing(nexttile)) {
-				nextdirection = b.getCrossingDir(nexttile, direction, scattertarget);
+				nextdirection = b.getCrossingDir(nexttile, direction, currenttarget);
 			}				
 		}
-		return direction;
+		moveDirection(direction);
+	}
+	
+	protected Point chaseTarget(Board b){//Blinky method OVERRIDE IN OTHER GHOST CLASSES PLEASE
+		Point2D.Double targetPos = pacman.getPosition();
+		return new Point((int)targetPos.getX(),(int)targetPos.getY());
 	}
 	
 	private void moveDirection(int direction){
