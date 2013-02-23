@@ -9,9 +9,6 @@ Pacman:
 - ...
 
 Board:
-- Dots toevoegen
-- Energizers toevoegen
-- Controleren of pacman iets gepakt heeft waarvoor punten te krijgen zijn of dat hij DOOD is
 - ...
 
 PacmanGame:
