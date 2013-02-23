@@ -86,4 +86,8 @@ public class PacmanGUI {
 	public boolean isVisible() {
 		return frame.isVisible();
 	}
+	
+	public void setTitle(String str) {
+		frame.setTitle(str);
+	}
 }

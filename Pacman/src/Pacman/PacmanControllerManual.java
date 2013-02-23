@@ -13,6 +13,9 @@ public class PacmanControllerManual {
 			try {
 				Thread.sleep(100);
 				//game.bypassMove();
+				PacmanScore s = game.getScore();
+				String title = "Dots: " + String.valueOf(s.getDots());
+				gui.setTitle(title);
 				game.doMove(gui.getDirection());
 				gui.setBoard(game.getBoard());
 				gui.redraw();

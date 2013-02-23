@@ -40,6 +40,7 @@ public class Ghost implements Cloneable {
 		if(mode == MODE_FRIGHTENED)frightTimer = 60;
 		roundPosition();
 		this.mode = mode;
+		System.out.printf("Mode: %d\n", mode);
 	}
 	public Point2D.Double getPosition() {
 		return (Point2D.Double) position.clone();
@@ -52,11 +53,6 @@ public class Ghost implements Cloneable {
 		} else {
 			currenttarget = scattertarget;
 		}
-/*		switch(mode){
-			case MODE_SCATTER:    currenttarget = scattertarget; 			  break;
-			case MODE_CHASE: 	  currenttarget = new Point(chaseTarget(b));  break;
-			case MODE_FRIGHTENED: currenttarget = new Point(frightTarget(b)); break;
-		}*/
 		if (nexttile == null) {
 			updateNextTile(b);
 		} else if (Math.abs(position.x - nexttile.x) < 0.01 && Math.abs(position.y - nexttile.y) < 0.01) {
