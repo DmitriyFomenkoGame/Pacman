@@ -13,7 +13,7 @@ public class Blinky extends Ghost {
 		this.mode = Ghost.MODE_CHASE;
 	}
 	
-	protected Point chaseTarget(Board b){//Blinky method OVERRIDE IN OTHER GHOST CLASSES PLEASE
+	protected Point chaseTarget(Board b){
 		Point2D.Double targetPos = pacman.getPosition();
 		return new Point((int)targetPos.getX(),(int)targetPos.getY());
 	}
