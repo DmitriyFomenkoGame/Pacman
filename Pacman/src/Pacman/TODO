@@ -4,7 +4,22 @@ Ghosts:
 -- Meerdere snelheden zoals aangegeven in pacmandossier, maar niet diezelfde percentages, want dat is kut
 - ...
 
+Ghost notities:
+- Ghosts móéten switchen van direction als ze van modus wisselen, hier opletten bij om hoeken gaan, misschien prevdir onthouden of ietssss
+- Neem aan dat het niet erg is als een target in een muur zit in plaats van op een beloopbaar vakje, want daar houdt de pathfinding als het goed is rekening mee enzo
+- Blinky heeft als target tile pacmans positie
+- Pinky heeft als target /vier/ tiles voor pacman, behalve als pacmans direction omhoog is, dan is het /vier/ vooruit /en/ /vier/ naar links
+- Pinky funfact:
+	One important implication of Pinky’s targeting method is that Pac-Man can often win a game of “chicken” with him. Since his target tile is set four tiles in front of Pac-Man, if Pac-Man heads directly towards him, Pinky’s target tile will actually be behind himself once they are less than four tiles apart. This will cause Pinky to choose to take any available turn-off in order to loop back around to his target. Because of this, it is a common strategy to momentarily “fake” back towards Pinky if he starts following closely. This will often send him off in an entirely different direction.
+- Inky blijft in de ghosthouse totdat pacman 30 dots heeft gepakt, implementeren of niet?
+- Inky maakt gebruik van Blinky's target voor zijn eigen target. Neem 'twee tiles voor pacman' (incl overflow bug) waar de vector van blinky door deze tile heen gaat als je hem twee keer de lengte geeft, wordt inky's target.
+	http://media.gameinternals.com/pacman-ghosts/inky-targeting.png
+- Clyde blijft in de ghosthouse totdat pacman 1/3 van de dots heeft gepakt, implementeren of niet?
+- Clyde meet de afstand naar pacman, als deze kleiner is dan 8 tiles, heeft hij z'n scatter target, als hij groter is dan 8 tiles, is pacmans positie z'n target
+- ...
+
 Pacman:
+- Zorgen dat je het ghosthouse niet in kunt
 - ...
 
 Board:
