@@ -70,6 +70,21 @@ public class Ghost implements Cloneable {
 		}
 	}
 	
+	protected Point tilesAheadOfPacman(int tiles) {
+		Point targetPos = Board.pointToGrid(pacman.getPosition());
+		if (tiles == 0) {
+			return targetPos;
+		}
+		byte dir = pacman.getDirection();
+		switch(dir){
+			case PacmanGame.DIR_UP:    return new Point(targetPos.x - tiles, targetPos.y - tiles);
+			case PacmanGame.DIR_RIGHT: return new Point(targetPos.x + tiles, targetPos.y - 0	);
+			case PacmanGame.DIR_DOWN:  return new Point(targetPos.x - 0, 	 targetPos.y + tiles);
+			case PacmanGame.DIR_LEFT:  return new Point(targetPos.x - tiles, targetPos.y - 0	);
+		}
+		return currenttarget;
+	}
+	
 	protected Point chaseTarget(Board b){//Blinky method OVERRIDE IN OTHER GHOST CLASSES PLEASE
 		Point2D.Double targetPos = pacman.getPosition();
 		return new Point((int)targetPos.getX(),(int)targetPos.getY());
