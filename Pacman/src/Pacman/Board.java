@@ -3,6 +3,11 @@ package Pacman;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
+import Pacman.Ghosts.Blinky;
+import Pacman.Ghosts.Clyde;
+import Pacman.Ghosts.Inky;
+import Pacman.Ghosts.Pinky;
+
 public class Board implements Cloneable {
 
 	public static final byte DOT_NONE 	   = 0,

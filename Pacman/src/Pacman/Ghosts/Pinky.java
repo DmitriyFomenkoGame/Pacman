@@ -1,7 +1,12 @@
-package Pacman;
+package Pacman.Ghosts;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
+
+import Pacman.Board;
+import Pacman.Ghost;
+import Pacman.Pacman;
+import Pacman.PacmanGame;
 
 public class Pinky extends Ghost {
 

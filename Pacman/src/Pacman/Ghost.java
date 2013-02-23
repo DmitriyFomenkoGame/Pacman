@@ -89,6 +89,8 @@ public class Ghost implements Cloneable {
 		position.setLocation(position.getX() + dx, position.getY() + dy);
 	}
 
+	
+	
 	public Object clone(){
 		try{
 			Ghost cloned = (Ghost) super.clone();
