@@ -73,8 +73,8 @@ public class Ghost implements Cloneable {
 				updateNextTile(b);
 			}
 		}
-		decreaseTimer();
 		moveDirection(direction);
+		decreaseTimer();
 	}
 	
 	public void updateNextTile(Board b) {
