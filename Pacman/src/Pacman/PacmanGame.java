@@ -47,7 +47,7 @@ public class PacmanGame {
 	public PacmanScore getScore() {
 		return (PacmanScore) score.clone();
 	}
-	public byte getGameStatus() {
+	public byte getStatus() {
 		return this.gameStatus;
 	}
 }

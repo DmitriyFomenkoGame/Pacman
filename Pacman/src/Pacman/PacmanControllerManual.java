@@ -9,7 +9,7 @@ public class PacmanControllerManual {
 		PacmanGame game = new PacmanGame(-1);
 		gui.setBoard(game.getBoard());
 		gui.show();
-		while(game.getGameStatus() == PacmanGame.GAME_BUSY) {
+		while(game.getStatus() == PacmanGame.GAME_BUSY) {
 			try {
 				Thread.sleep(100);
 				//game.bypassMove();
@@ -20,6 +20,17 @@ public class PacmanControllerManual {
 				e.printStackTrace();
 			}
 		}
+		switch (game.getStatus()) {
+			case PacmanGame.GAME_OVER:    System.out.println("GAME_OVER");    break;
+			case PacmanGame.GAME_END:     System.out.println("GAME_END");     break;
+			case PacmanGame.GAME_TIMEOUT: System.out.println("GAME_TIMEOUT"); break;
+		}
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.exit(1);
 	}
 	
 	public static void main(String[] args) {
