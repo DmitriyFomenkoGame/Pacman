@@ -37,7 +37,8 @@ public class Ghost implements Cloneable {
 			throw new Error("Unknown mode for ghost. (" + String.valueOf(mode) + ")");
 		}
 		if(this.mode != MODE_FRIGHTENED) prevMode = this.mode;
-		if(mode == MODE_FRIGHTENED) frightTimer = 60;
+		if(mode == MODE_FRIGHTENED)frightTimer = 60;
+		roundPosition();
 		this.mode = mode;
 	}
 	public Point2D.Double getPosition() {
@@ -122,6 +123,7 @@ public class Ghost implements Cloneable {
 	private void moveDirection(int direction){
 		double dx = 0, dy = 0;
 		double curSpeed = (mode == MODE_FRIGHTENED) ? FRIGHT_SPEED : GHOST_SPEED;
+		//double curSpeed = GHOST_SPEED;
 		switch (direction) {
 			case PacmanGame.DIR_UP:    dy = -curSpeed; break;
 			case PacmanGame.DIR_RIGHT: dx =  curSpeed; break;
@@ -151,6 +153,10 @@ public class Ghost implements Cloneable {
 			chaseScatterTimer = (mode == MODE_SCATTER) ?  200 :  70;
 			setMode(prevMode);
 		}
+	}
+	
+	public void roundPosition(){
+		position = new Point2D.Double(Math.round(position.getX()),Math.round(position.getY()));
 	}
 
 	public Object clone(){
