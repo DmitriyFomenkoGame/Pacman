@@ -24,20 +24,24 @@ public class Ghost implements Cloneable {
 	protected Point nexttile, scattertarget, currenttarget;
 	protected boolean active;
 	protected int deathTimer = 0, frightTimer = 0, chaseScatterTimer = 70;
-
+	
 	public Ghost(Pacman pacman) {
-		this.pacman    = pacman;
+		this.pacman    	   = pacman;
 		this.nextdirection = direction;
-		this.mode = MODE_SCATTER;
-		this.active = true;
+		this.mode 		   = MODE_SCATTER;
+		this.active 	   = true;
 	}
 
 	public void setMode(int mode) {
 		if (mode < MODE_CHASE || mode > MODE_FRIGHTENED) {
 			throw new Error("Unknown mode for ghost. (" + String.valueOf(mode) + ")");
 		}
-		if(this.mode != MODE_FRIGHTENED) prevMode = this.mode;
-		if(mode == MODE_FRIGHTENED)frightTimer = 60;
+		if (this.mode != MODE_FRIGHTENED) {
+			prevMode = this.mode;
+		}
+		if (mode == MODE_FRIGHTENED) {
+			frightTimer = 60;
+		}
 		roundPosition();
 		this.mode = mode;
 		System.out.printf("Mode: %d\n", mode);
@@ -82,7 +86,6 @@ public class Ghost implements Cloneable {
 			nextdirection = b.getCrossingDir(nexttile, direction, currenttarget);
 		}
 	}
-	
 	public void updateNextTileRandom(Board b) {
 		nexttile = b.getNextTile(position, direction);
 		if (b.isCorner(nexttile)) {
@@ -96,7 +99,6 @@ public class Ghost implements Cloneable {
 			nextdirection = randomdir;
 		}
 	}
-	
 	protected Point tilesAheadOfPacman(int tiles) {
 		Point targetPos = Board.pointToGrid(pacman.getPosition());
 		if (tiles == 0) {
@@ -111,7 +113,6 @@ public class Ghost implements Cloneable {
 		}
 		return currenttarget;
 	}
-	
 	protected Point chaseTarget(Board b){//Blinky method OVERRIDE IN OTHER GHOST CLASSES PLEASE
 		return tilesAheadOfPacman(0);
 	}
@@ -135,7 +136,6 @@ public class Ghost implements Cloneable {
 	public void setActive(boolean b){
 		active = b;
 	}
-	
 	private void decreaseTimer(){
 		if(mode == MODE_FRIGHTENED){
 			frightTimer--;
@@ -150,7 +150,6 @@ public class Ghost implements Cloneable {
 			setMode(prevMode);
 		}
 	}
-	
 	public void roundPosition(){
 		position = new Point2D.Double(Math.round(position.getX()),Math.round(position.getY()));
 	}
