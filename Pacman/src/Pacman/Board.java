@@ -251,12 +251,16 @@ public class Board implements Cloneable {
 
 	public boolean directionFree(Point2D.Double p, byte direction) {
 		Point q = pointToGrid(p);
+		System.out.println(q);
 		if (q.x == 0 || q.x == WIDTH - 1) {
 			if (direction == PacmanGame.DIR_LEFT || direction == PacmanGame.DIR_RIGHT) {
 				return true;
-			} else {
+			}else {
 				return false;
 			}
+		}
+		if(q.equals(new Point(13,11)) && direction == PacmanGame.DIR_DOWN){
+			return false;
 		}
 		switch (direction) {
 			case PacmanGame.DIR_UP:	   return !wallgrid[q.x][q.y - 1];
