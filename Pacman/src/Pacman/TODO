@@ -10,7 +10,6 @@ Ghost notities:
 - Inky maakt gebruik van Blinky's target voor zijn eigen target. Neem 'twee tiles voor pacman' (incl overflow bug) waar de vector van blinky door deze tile heen gaat als je hem twee keer de lengte geeft, wordt inky's target.
 	http://media.gameinternals.com/pacman-ghosts/inky-targeting.png
 - Clyde blijft in de ghosthouse totdat pacman 1/3 van de dots heeft gepakt, implementeren of niet?
-- Clyde meet de afstand naar pacman, als deze kleiner is dan 8 tiles, heeft hij z'n scatter target, als hij groter is dan 8 tiles, is pacmans positie z'n target
 - ...
 
 Pacman:

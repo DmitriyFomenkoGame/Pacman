@@ -134,7 +134,8 @@ public class Board implements Cloneable {
 		/*for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
 			ghosts[g].continueMove(this);
 		}*/
-		ghosts[Ghost.GHOST_CLYDE].continueMove(this);
+		ghosts[Ghost.GHOST_BLINKY].continueMove(this);
+		ghosts[Ghost.GHOST_INKY].continueMove(this);
 	}
 	
 	public Point2D.Double getGhostPosition(int ghost) { //Positions are real numbers, not integers

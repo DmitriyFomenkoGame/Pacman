@@ -41,7 +41,7 @@ public class Ghost implements Cloneable {
 	public void continueMove(Board b) {
 		switch(mode){
 			case MODE_SCATTER:    currenttarget = scattertarget; 			break;
-			case MODE_CHASE: 	  currenttarget = new Point(chaseTarget()); break;
+			case MODE_CHASE: 	  currenttarget = new Point(chaseTarget(b)); break;
 			case MODE_FRIGHTENED: currenttarget = scattertarget; 			break;
 		}
 		if (nexttile == null) {
@@ -82,7 +82,7 @@ public class Ghost implements Cloneable {
 		}
 		return currenttarget;
 	}
-	protected Point chaseTarget(){//Blinky method OVERRIDE IN OTHER GHOST CLASSES PLEASE
+	protected Point chaseTarget(Board b){//Blinky method OVERRIDE IN OTHER GHOST CLASSES PLEASE
 		return tilesAheadOfPacman(0);
 	}
 	

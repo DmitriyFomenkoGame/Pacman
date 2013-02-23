@@ -3,6 +3,7 @@ package Pacman.Ghosts;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
+import Pacman.Board;
 import Pacman.Ghost;
 import Pacman.Pacman;
 import Pacman.PacmanGame;
@@ -16,7 +17,7 @@ public class Clyde extends Ghost {
 		this.direction = PacmanGame.DIR_UP;
 	}
 	
-	protected Point chaseTarget(){
+	protected Point chaseTarget(Board b){
 		if (position.distance(pacman.getPosition()) <= 8) {
 			return scattertarget;
 		} else {
