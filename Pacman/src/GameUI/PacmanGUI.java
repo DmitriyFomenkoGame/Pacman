@@ -1,7 +1,6 @@
 package GameUI;
 
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
@@ -82,5 +81,9 @@ public class PacmanGUI {
 	
 	public void close() {
 		frame.dispose();
+	}
+	
+	public boolean isVisible() {
+		return frame.isVisible();
 	}
 }

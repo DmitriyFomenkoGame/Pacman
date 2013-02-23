@@ -19,6 +19,7 @@ public class Board implements Cloneable {
 	private boolean locked;
 	private boolean[][] wallgrid;
 	private byte[][] dotgrid;
+	private int dotsremaining;
 	private String boarddata = "WWWWWWWWWWWWWWWWWWWWWWWWWWWW" +
 							   "WDDDDDDDDDDDDWWDDDDDDDDDDDDW" +
 							   "WDWWWWDWWWWWDWWDWWWWWDWWWWDW" +
@@ -82,10 +83,12 @@ public class Board implements Cloneable {
 	}
 	private void initDots() {
 		dotgrid = new byte[WIDTH][HEIGHT];
+		dotsremaining = 0;
 		for(int j = 0; j < HEIGHT; j++) {
 			for(int i = 0; i < WIDTH; i++) {
 				char c = boarddata.charAt(j * WIDTH + i);
 				dotgrid[i][j] = (c == 'D') ? DOT_DOT : ((c == 'E') ? DOT_ENERGIZER : DOT_NONE);
+				dotsremaining += (c == 'D' || c == 'E') ? 1 : 0;
 			}
 		}		
 	}
@@ -101,8 +104,10 @@ public class Board implements Cloneable {
 		if (newpos.x >= 0 && newpos.x < WIDTH) {
 			if (dotgrid[newpos.x][newpos.y] == DOT_DOT) {
 				s.addDot();
+				dotsremaining -= 1;
 			} else if (dotgrid[newpos.x][newpos.y] == DOT_ENERGIZER) {
 				s.addEnergizer();
+				dotsremaining -= 1;
 			}
 			dotgrid[newpos.x][newpos.y] = DOT_NONE;
 			for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
@@ -271,6 +276,10 @@ public class Board implements Cloneable {
 	}
 	public byte[][] getDots() {
 		return dotgrid.clone();
+	}
+	
+	public int getDotsRemaining() {
+		return dotsremaining;
 	}
 	
 	public Object clone(){ //Clones are readonly

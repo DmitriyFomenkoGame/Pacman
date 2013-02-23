@@ -22,6 +22,9 @@ public class PacmanGUIArrows extends PacmanGUI {
     			if(e.getKeyCode() == (KeyEvent.VK_DOWN)){
     				setDirection(Pacman.PacmanGame.DIR_DOWN);
     			}
+    			if(e.getKeyCode() == (KeyEvent.VK_ESCAPE)){
+    				close();
+    			}
     		}
 		});
 	}

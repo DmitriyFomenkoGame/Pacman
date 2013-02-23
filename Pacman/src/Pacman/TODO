@@ -1,5 +1,4 @@
 Ghosts:
-- GHOST_SPEED zorgen dat die iets lager is dan die van pacman en dat het gridsysteem daarmee niet verfuckt raakt
 - Andere modi programmeren en in laten stellen via timer/energizer
 -- Hierbij herhaaldelijk target bepalen adhv positie van pacman programmeren
 -- Meerdere snelheden zoals aangegeven in pacmandossier, maar niet diezelfde percentages, want dat is kut

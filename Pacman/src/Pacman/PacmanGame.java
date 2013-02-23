@@ -35,6 +35,9 @@ public class PacmanGame {
 		if (score.getDeaths() > 0) {
 			gameStatus = GAME_OVER;
 		}
+		if (board.getDotsRemaining() <= 0) {
+			gameStatus = GAME_END;
+		}
 	}
 	
 /*	public void bypassMove() {
