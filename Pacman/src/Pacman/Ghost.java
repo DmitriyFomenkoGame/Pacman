@@ -24,22 +24,31 @@ public class Ghost implements Cloneable {
 	protected Point scattertarget;
 
 	protected Board board;
-	private Point nexttile, deathtarget;
+	private Point nexttile, deathtarget, currenttarget;
 	private byte nextdirection;
 
 	private byte mode, prevMode;
 	
 	public Ghost(Board board) {
-		this.board 		 = board;
-		this.mode  	 	 = MODE_SCATTER;
-		this.deathtarget = new Point(13, 11);
+		this.board 		   = board;
+		this.mode  	 	   = MODE_SCATTER;
+		this.deathtarget   = new Point(13, 11);
+		this.currenttarget = this.deathtarget;
 	}
 
 	public void setMode(byte mode) {
-		if (mode < MODE_CHASE || mode > MODE_FRIGHTENED) {
+		if (mode < MODE_CHASE || mode > MODE_DEAD) {
 			throw new Error("Unknown mode for ghost. (" + String.valueOf(mode) + ")");
 		}
 		if (this.mode == mode) {return;}
+
+		//TODO: GLITCHES FIXEN
+		if (this.mode == MODE_DEAD) {
+			prevMode = mode;
+			roundPosition();
+//			updateNextTile();
+			return;
+		}
 		
 		if (mode == MODE_FRIGHTENED) {
 			prevMode = this.mode;
@@ -50,7 +59,8 @@ public class Ghost implements Cloneable {
 		if (mode != MODE_DEAD) {
 			reverseDirection();
 		} else {
-			updateNextTile(deathtarget);
+			currenttarget = deathtarget;
+			updateNextTile();
 		}
 	}
 	public byte getMode() {
@@ -62,14 +72,19 @@ public class Ghost implements Cloneable {
 		}
 		setMode(MODE_DEAD);
 	}
-	private void roundPosition() {
+	private void roundPosition() {   
 		Point p = Board.pointToGrid(position);
 		position = new Point2D.Double(p.x, p.y);
 	}
 	private void reverseDirection() {
-
-		//TODO: IMPLEMENTEREN
-		//updateNextTile enzo
+		switch (direction) {
+			case PacmanGame.DIR_UP:    direction = PacmanGame.DIR_DOWN;  break;
+			case PacmanGame.DIR_RIGHT: direction = PacmanGame.DIR_LEFT;  break;
+			case PacmanGame.DIR_DOWN:  direction = PacmanGame.DIR_UP;    break;
+			case PacmanGame.DIR_LEFT:  direction = PacmanGame.DIR_RIGHT; break;
+		}
+		nextdirection = direction;
+		updateNextTile();
 	}
 	
 	public Point2D.Double getPosition() {
@@ -77,18 +92,25 @@ public class Ghost implements Cloneable {
 	}
 
 	public void move() {
-		Point currenttarget = scattertarget;
+		currenttarget = scattertarget;
+		if (mode == MODE_DEAD) {
+			currenttarget = deathtarget;
+			if (position.distance(deathtarget) < 0.01) {
+				mode = prevMode;
+			}
+		}
 		if (mode == MODE_CHASE) {
 			currenttarget = new Point(chaseTarget());
 		}
 		if (nexttile == null) {
-			updateNextTile(currenttarget);
-		} else if (Math.abs(position.x - nexttile.x) < 0.01 && Math.abs(position.y - nexttile.y) < 0.01) {
+			updateNextTile();
+		} else if (position.distance(nexttile) < 0.01) {
 			position.setLocation(nexttile.x, nexttile.y);
 			direction = nextdirection;
 			checkPortals();
-			updateNextTile(currenttarget);
+			updateNextTile();
 		}
+		
 		moveDirection(direction);
 	}
 	private void checkPortals() {
@@ -99,7 +121,7 @@ public class Ghost implements Cloneable {
 		}
 	}
 
-	private void updateNextTile(Point target) {
+	private void updateNextTile() {
 		nexttile = board.getNextTile(position, direction);
 		if (board.isCorner(nexttile)) {
 			nextdirection = board.getCornerDir(nexttile, direction);
@@ -112,7 +134,7 @@ public class Ghost implements Cloneable {
 				}
 				nextdirection = randomdir;				
 			} else {
-				nextdirection = board.getCrossingDir(nexttile, direction, target);
+				nextdirection = board.getCrossingDir(nexttile, direction, currenttarget);
 			}
 		}
 	}

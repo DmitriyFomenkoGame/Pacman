@@ -102,13 +102,22 @@ public class Board implements Cloneable {
 		}		
 	}
 
-	public void doMove(byte direction, PacmanScore s) {
+	public void doMove(byte direction) {
 		if (locked) {throw new Error("Board clones are readonly");}
 		if (direction < PacmanGame.DIR_UP || direction > PacmanGame.DIR_LEFT) {
 			throw new Error("Unknown direction for pacman. (" + String.valueOf(direction) + ")");
 		}
-		Point newpos = pointToGrid(pacman.doMove(this, direction));
-		updateGhosts();
+		pacman.doMove(this, direction);
+	}
+	public void updateGhost(int ghost) {
+		if (ghost < Ghost.GHOST_BLINKY || ghost > Ghost.GHOST_CLYDE) {
+			throw new Error("Unknown ghost type (" + String.valueOf(ghost) + ")");
+		}
+		ghosts[ghost].move();
+	}
+	public PacmanScore getScore() {
+		Point newpos = pointToGrid(pacman.getPosition());
+		PacmanScore s = new PacmanScore();
 		if (newpos.x >= 0 && newpos.x < WIDTH) {
 			if (dotgrid[newpos.x][newpos.y] == DOT_DOT) {
 				s.addDot();
@@ -119,21 +128,33 @@ public class Board implements Cloneable {
 			}
 			dotgrid[newpos.x][newpos.y] = DOT_NONE;
 			for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
-				Point ghost = pointToGrid(ghosts[g].getPosition());
-				if (newpos.x == ghost.x && newpos.y == ghost.y) {
-					s.addDeath();
+				Ghost ghost = ghosts[g];
+				Point gpos = pointToGrid(ghosts[g].getPosition());
+				if (newpos.x == gpos.x && newpos.y == gpos.y) {
+					byte gmode = ghost.getMode();
+					if (gmode == Ghost.MODE_CHASE || gmode == Ghost.MODE_SCATTER) {
+						s.addDeath();						
+					} else if (gmode == Ghost.MODE_FRIGHTENED) {
+						ghost.die();
+					}
 				}
 			}
 		}
+		return s;
 	}
 
-	private void updateGhosts() {
-		ghosts[Ghost.GHOST_BLINKY].move();
-		ghosts[Ghost.GHOST_PINKY].move();
-		ghosts[Ghost.GHOST_INKY].move();
-		ghosts[Ghost.GHOST_CLYDE].move();
+	public void setMode(byte modeScatter, int ghost) {
+		if (ghost < Ghost.GHOST_BLINKY || ghost > Ghost.GHOST_CLYDE) {
+			throw new Error("Unknown ghost type (" + String.valueOf(ghost) + ")");
+		}
+		ghosts[ghost].setMode(modeScatter);
 	}
-	
+	public void setModes(byte modeScatter) {
+		for (int ghost = Ghost.GHOST_BLINKY; ghost <= Ghost.GHOST_CLYDE; ghost++) {
+			ghosts[ghost].setMode(modeScatter);					
+		}
+	}
+		
 	public Point2D.Double getGhostPosition(int ghost) { //Positions are real numbers, not integers
 		if (ghost < Ghost.GHOST_BLINKY || ghost > Ghost.GHOST_CLYDE) {
 			throw new Error("Ghost identifier is unknown! (" + String.valueOf(ghost) + ")");
