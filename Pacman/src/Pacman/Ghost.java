@@ -28,18 +28,23 @@ public class Ghost implements Cloneable {
 	private byte nextdirection;
 
 	private byte mode, prevMode;
+	protected boolean active;
 	
 	public Ghost(Board board) {
 		this.board 		   = board;
 		this.mode  	 	   = MODE_SCATTER;
 		this.deathtarget   = new Point(13, 11);
 		this.currenttarget = this.deathtarget;
+		this.active        = false;
 	}
 
 	public void setMode(byte mode) {
 		if (mode < MODE_CHASE || mode > MODE_DEAD) {
 			throw new Error("Unknown mode for ghost. (" + String.valueOf(mode) + ")");
 		}
+		
+		if (!active) {return;}
+		
 		if (this.mode == mode) {return;}
 
 		//TODO: GLITCHES FIXEN
@@ -87,11 +92,16 @@ public class Ghost implements Cloneable {
 		updateNextTile();
 	}
 	
+	public void activate() {
+		this.active = true;
+	}
+	
 	public Point2D.Double getPosition() {
 		return (Point2D.Double) position.clone();
 	}
 
 	public void move() {
+		if (!active) {return;}		
 		currenttarget = scattertarget;
 		if (mode == MODE_DEAD) {
 			currenttarget = deathtarget;
@@ -169,6 +179,7 @@ public class Ghost implements Cloneable {
 			cloned.nextdirection = nextdirection;
 			cloned.mode          = mode;
 			cloned.prevMode      = prevMode;
+			cloned.active 		 = active;
 			return cloned;
 		}
 		catch(CloneNotSupportedException e){

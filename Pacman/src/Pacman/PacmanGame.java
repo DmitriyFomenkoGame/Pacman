@@ -39,10 +39,9 @@ public class PacmanGame {
 	public void doMove(byte direction) {
 		if (gameStatus != GAME_BUSY) {return;}
 		board.doMove(direction);
-		board.updateGhost(Ghost.GHOST_BLINKY);
-		board.updateGhost(Ghost.GHOST_PINKY);
-		if (score.getDots() >= 30) { board.updateGhost(Ghost.GHOST_INKY); }
-		if (score.getDots() >= 90) { board.updateGhost(Ghost.GHOST_CLYDE); }
+		board.updateGhosts();
+		if (score.getDots() >= 30) { board.activateGhost(Ghost.GHOST_INKY); }
+		if (score.getDots() >= 90) { board.activateGhost(Ghost.GHOST_CLYDE); }
 		PacmanScore stepscore = board.getScore();
 		if (stepscore.getEnergizers() > 0) {
 			frightenedTimer = TIME_FRIGHTENED;

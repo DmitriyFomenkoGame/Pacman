@@ -109,11 +109,16 @@ public class Board implements Cloneable {
 		}
 		pacman.doMove(this, direction);
 	}
-	public void updateGhost(int ghost) {
-		if (ghost < Ghost.GHOST_BLINKY || ghost > Ghost.GHOST_CLYDE) {
-			throw new Error("Unknown ghost type (" + String.valueOf(ghost) + ")");
+	public void updateGhosts() {
+		for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
+			ghosts[g].move();
 		}
-		ghosts[ghost].move();
+	}
+	public void activateGhost(int g) {
+		if (g < Ghost.GHOST_BLINKY || g > Ghost.GHOST_CLYDE) {
+			throw new Error("Unknown ghost to activate (" + String.valueOf(g) + ")");
+		}
+		ghosts[g].activate();
 	}
 	public PacmanScore getScore() {
 		Point newpos = pointToGrid(pacman.getPosition());
