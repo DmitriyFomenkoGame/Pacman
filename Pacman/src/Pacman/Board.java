@@ -67,10 +67,10 @@ public class Board implements Cloneable {
 	public Board() {
 		pacman = new Pacman();
 		ghosts = new Ghost[4];
-		ghosts[Ghost.GHOST_BLINKY] = new Blinky(pacman);
-		ghosts[Ghost.GHOST_PINKY]  = new Pinky(pacman);
-		ghosts[Ghost.GHOST_INKY]   = new Inky(pacman);
-		ghosts[Ghost.GHOST_CLYDE]  = new Clyde(pacman);
+		ghosts[Ghost.GHOST_BLINKY] = new Blinky(this);
+		ghosts[Ghost.GHOST_PINKY]  = new Pinky(this);
+		ghosts[Ghost.GHOST_INKY]   = new Inky(this);
+		ghosts[Ghost.GHOST_CLYDE]  = new Clyde(this);
 		locked = false;
 		
 		generator = new Random(0);
@@ -113,12 +113,9 @@ public class Board implements Cloneable {
 			if (dotgrid[newpos.x][newpos.y] == DOT_DOT) {
 				s.addDot();
 				dotsremaining -= 1;
-				if(s.getDots() == 30) ghosts[Ghost.GHOST_INKY].setActive(true);
-				if(s.getDots() == 80) ghosts[Ghost.GHOST_CLYDE].setActive(true);
 			} else if (dotgrid[newpos.x][newpos.y] == DOT_ENERGIZER) {
 				s.addEnergizer();
 				dotsremaining -= 1;
-				setGhostsMode(Ghost.MODE_FRIGHTENED);
 			}
 			dotgrid[newpos.x][newpos.y] = DOT_NONE;
 			for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
@@ -131,16 +128,10 @@ public class Board implements Cloneable {
 	}
 
 	private void updateGhosts() {
-		ghosts[Ghost.GHOST_BLINKY].continueMove(this);
-		ghosts[Ghost.GHOST_PINKY].continueMove(this);
-		ghosts[Ghost.GHOST_INKY].continueMove(this);
-		ghosts[Ghost.GHOST_CLYDE].continueMove(this);
-	}
-	
-	private void setGhostsMode(int mode){
-		for(int i = Ghost.GHOST_BLINKY; i <= Ghost.GHOST_CLYDE; i++){
-			ghosts[i].setMode(mode);
-		}
+		ghosts[Ghost.GHOST_BLINKY].move();
+		ghosts[Ghost.GHOST_PINKY].move();
+		ghosts[Ghost.GHOST_INKY].move();
+		ghosts[Ghost.GHOST_CLYDE].move();
 	}
 	
 	public Point2D.Double getGhostPosition(int ghost) { //Positions are real numbers, not integers
@@ -163,6 +154,19 @@ public class Board implements Cloneable {
 	}
 	public Point2D.Double getPacmanPosition() {
 		return pacman.getPosition();
+	}
+	public Point tilesAheadOfPacman(int tiles) {
+		Point targetPos = Board.pointToGrid(pacman.getPosition());
+		if (tiles == 0) {
+			return targetPos;
+		}
+		byte dir = pacman.getDirection();
+		switch(dir) {
+			case PacmanGame.DIR_UP:    return new Point(targetPos.x - tiles, targetPos.y - tiles);
+			case PacmanGame.DIR_RIGHT: return new Point(targetPos.x + tiles, targetPos.y - 0	);
+			case PacmanGame.DIR_DOWN:  return new Point(targetPos.x - 0, 	 targetPos.y + tiles);
+			default:  				   return new Point(targetPos.x - tiles, targetPos.y - 0	);
+		}
 	}
 	
 	public boolean isCorner(Point p) {

@@ -5,122 +5,125 @@ import java.awt.geom.Point2D;
 
 public class Ghost implements Cloneable {
 	
-	public static final int GHOST_BLINKY = 0,
-	GHOST_PINKY = 1,
-	GHOST_INKY = 2,
-	GHOST_CLYDE = 3;
+	public static final byte GHOST_BLINKY = 0,
+							 GHOST_PINKY  = 1,
+						     GHOST_INKY   = 2,
+							 GHOST_CLYDE  = 3;
 
-	public static final int MODE_CHASE      = 0,
-	MODE_SCATTER    = 1,
-	MODE_FRIGHTENED = 2;
+	public static final byte MODE_CHASE      = 0,
+							 MODE_SCATTER    = 1,
+							 MODE_FRIGHTENED = 2,
+							 MODE_DEAD       = 3;
 
-	public static double GHOST_SPEED = 0.20; //must fit equally in 1
-	public static double FRIGHT_SPEED = 0.10;
+	public static final double SPEED_NORMAL     = 0.20,
+							   SPEED_FRIGHTENED = 0.10,
+							   SPEED_DEAD       = 0.50;
 
-	protected Pacman pacman;
-	protected byte direction, nextdirection;
 	protected Point2D.Double position;
-	protected int mode, prevMode;
-	protected Point nexttile, scattertarget, currenttarget;
-	protected boolean active;
-	protected int deathTimer = 0, frightTimer = 0, chaseScatterTimer = 70;
+	protected byte direction;
+	protected Point scattertarget;
+
+	protected Board board;
+	private Point nexttile, deathtarget;
+	private byte nextdirection;
+
+	private byte mode, prevMode;
 	
-	public Ghost(Pacman pacman) {
-		this.pacman    	   = pacman;
-		this.nextdirection = direction;
-		this.mode 		   = MODE_SCATTER;
-		this.active 	   = true;
+	public Ghost(Board board) {
+		this.board 		 = board;
+		this.mode  	 	 = MODE_SCATTER;
+		this.deathtarget = new Point(13, 11);
 	}
 
-	public void setMode(int mode) {
+	public void setMode(byte mode) {
 		if (mode < MODE_CHASE || mode > MODE_FRIGHTENED) {
 			throw new Error("Unknown mode for ghost. (" + String.valueOf(mode) + ")");
 		}
-		if (this.mode != MODE_FRIGHTENED) {
+		if (this.mode == mode) {return;}
+		
+		if (mode == MODE_FRIGHTENED) {
 			prevMode = this.mode;
 		}
-		if (mode == MODE_FRIGHTENED) {
-			frightTimer = 60;
-		}
-		roundPosition();
 		this.mode = mode;
-		System.out.printf("Mode: %d\n", mode);
+		
+		roundPosition();
+		if (mode != MODE_DEAD) {
+			reverseDirection();
+		} else {
+			updateNextTile(deathtarget);
+		}
 	}
+	public byte getMode() {
+		return mode;
+	}
+	public void die() {
+		if (mode != MODE_FRIGHTENED) {
+			throw new Error("Ghost killed when not in fright mode?");
+		}
+		setMode(MODE_DEAD);
+	}
+	private void roundPosition() {
+		Point p = Board.pointToGrid(position);
+		position = new Point2D.Double(p.x, p.y);
+	}
+	private void reverseDirection() {
+
+		//TODO: IMPLEMENTEREN
+		//updateNextTile enzo
+	}
+	
 	public Point2D.Double getPosition() {
 		return (Point2D.Double) position.clone();
 	}
 
-	public void continueMove(Board b) {
-		if(!active) return;
+	public void move() {
+		Point currenttarget = scattertarget;
 		if (mode == MODE_CHASE) {
-			currenttarget = new Point(chaseTarget(b));
-		} else {
-			currenttarget = scattertarget;
+			currenttarget = new Point(chaseTarget());
 		}
 		if (nexttile == null) {
-			updateNextTile(b);
+			updateNextTile(currenttarget);
 		} else if (Math.abs(position.x - nexttile.x) < 0.01 && Math.abs(position.y - nexttile.y) < 0.01) {
 			position.setLocation(nexttile.x, nexttile.y);
 			direction = nextdirection;
-			if (position.x < 0) {
-				position.setLocation(position.x + Board.WIDTH, position.y);
-			} else if (position.x >= Board.WIDTH){
-				position.setLocation(position.x - Board.WIDTH, position.y);
-			}
-			if (mode == MODE_FRIGHTENED) {
-				updateNextTileRandom(b);
-			} else {
-				updateNextTile(b);
-			}
+			checkPortals();
+			updateNextTile(currenttarget);
 		}
 		moveDirection(direction);
-		decreaseTimer();
+	}
+	private void checkPortals() {
+		if (position.x < 0) {
+			position.setLocation(position.x + Board.WIDTH, position.y);
+		} else if (position.x >= Board.WIDTH){
+			position.setLocation(position.x - Board.WIDTH, position.y);
+		}
+	}
+
+	private void updateNextTile(Point target) {
+		nexttile = board.getNextTile(position, direction);
+		if (board.isCorner(nexttile)) {
+			nextdirection = board.getCornerDir(nexttile, direction);
+		}
+		if (board.isCrossing(nexttile)) {
+			if (mode == MODE_FRIGHTENED) {
+				byte randomdir = board.getRandomDir();
+				while (!board.directionFreeExclude(nexttile, randomdir, direction)) {
+					randomdir = board.getRandomDir();
+				}
+				nextdirection = randomdir;				
+			} else {
+				nextdirection = board.getCrossingDir(nexttile, direction, target);
+			}
+		}
 	}
 	
-	public void updateNextTile(Board b) {
-		nexttile = b.getNextTile(position, direction);
-		if (b.isCorner(nexttile)) {
-			nextdirection = b.getCornerDir(nexttile, direction);
-		}
-		if (b.isCrossing(nexttile)) {
-			nextdirection = b.getCrossingDir(nexttile, direction, currenttarget);
-		}
-	}
-	public void updateNextTileRandom(Board b) {
-		nexttile = b.getNextTile(position, direction);
-		if (b.isCorner(nexttile)) {
-			nextdirection = b.getCornerDir(nexttile, direction);
-		}
-		if (b.isCrossing(nexttile)) {
-			byte randomdir = b.getRandomDir();
-			while (!b.directionFreeExclude(nexttile, randomdir, direction)) {
-				randomdir = b.getRandomDir();
-			}
-			nextdirection = randomdir;
-		}
-	}
-	protected Point tilesAheadOfPacman(int tiles) {
-		Point targetPos = Board.pointToGrid(pacman.getPosition());
-		if (tiles == 0) {
-			return targetPos;
-		}
-		byte dir = pacman.getDirection();
-		switch(dir) {
-			case PacmanGame.DIR_UP:    return new Point(targetPos.x - tiles, targetPos.y - tiles);
-			case PacmanGame.DIR_RIGHT: return new Point(targetPos.x + tiles, targetPos.y - 0	);
-			case PacmanGame.DIR_DOWN:  return new Point(targetPos.x - 0, 	 targetPos.y + tiles);
-			case PacmanGame.DIR_LEFT:  return new Point(targetPos.x - tiles, targetPos.y - 0	);
-		}
-		return currenttarget;
-	}
-	protected Point chaseTarget(Board b){//Blinky method OVERRIDE IN OTHER GHOST CLASSES PLEASE
-		return tilesAheadOfPacman(0);
+	protected Point chaseTarget() {
+		return board.tilesAheadOfPacman(0);
 	}
 	
 	private void moveDirection(int direction){
 		double dx = 0, dy = 0;
-		double curSpeed = (mode == MODE_FRIGHTENED) ? FRIGHT_SPEED : GHOST_SPEED;
-		//double curSpeed = GHOST_SPEED;
+		double curSpeed = (mode == MODE_FRIGHTENED) ? SPEED_FRIGHTENED : (mode == MODE_DEAD) ? SPEED_DEAD : SPEED_NORMAL;
 		switch (direction) {
 			case PacmanGame.DIR_UP:    dy = -curSpeed; break;
 			case PacmanGame.DIR_RIGHT: dx =  curSpeed; break;
@@ -133,33 +136,17 @@ public class Ghost implements Cloneable {
 		position.setLocation(position.getX() + dx, position.getY() + dy);
 	}
 	
-	public void setActive(boolean b){
-		active = b;
-	}
-	private void decreaseTimer(){
-		if(mode == MODE_FRIGHTENED){
-			frightTimer--;
-			if(frightTimer == 0){
-				setMode(prevMode);
-			}
-			return;
-		}
-		chaseScatterTimer--;
-		if(chaseScatterTimer == 0){
-			chaseScatterTimer = (mode == MODE_SCATTER) ?  200 :  70;
-			setMode(prevMode);
-		}
-	}
-	public void roundPosition(){
-		position = new Point2D.Double(Math.round(position.getX()),Math.round(position.getY()));
-	}
-
 	public Object clone(){
 		try{
 			Ghost cloned = (Ghost) super.clone();
-			cloned.pacman    = (Pacman) pacman.clone();
-			cloned.direction = direction;
-			cloned.position  = (Point2D.Double) position.clone();
+			cloned.position      = (Point2D.Double) position.clone();
+			cloned.direction     = direction;
+			cloned.scattertarget = (Point) scattertarget.clone();
+			cloned.board         = board;
+			cloned.nexttile      = nexttile;
+			cloned.nextdirection = nextdirection;
+			cloned.mode          = mode;
+			cloned.prevMode      = prevMode;
 			return cloned;
 		}
 		catch(CloneNotSupportedException e){
