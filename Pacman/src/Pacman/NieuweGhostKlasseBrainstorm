@@ -1,0 +1,97 @@
+Nieuwe ghost klasse
+
+---------------------------------------------------------------
+NOTITIES
+---------------------------------------------------------------
+
+- Misschien geen pacman meegeven, maar de bordklasse. 
+	De bordklasse wordt namelijk vaker gebruikt en daar kan dan de 
+	functie in 'tilesaheadofpacman' enzo
+- Moet de timer nog uitdenken :(
+
+---------------------------------------------------------------
+CONSTANTEN
+---------------------------------------------------------------
+
+constanten voor blinky/pinky/inky/clyde
+modus constanten:
+	- MODE_CHASE
+	- MODE_SCATTER
+	- MODE_FRIGHT (of MODE_FRIGHTENED, FRIGHT typt net ff makkelijker :'))
+	- MODE_DEAD
+speed constanten:
+	- SPEED_NORMAL (chase + scatter)
+	- SPEED_FRIGHT (fright)
+	- SPEED_DEAD (dead, voor het retourneren naar targettile voor ghosthouse)
+
+---------------------------------------------------------------
+VARIABELEN
+---------------------------------------------------------------
+
+pacman variabele
+
+direction/nextdirection variabelen
+position/nexttile variabele
+
+mode/prevmode ** variabelen, voor het terugkeren naar de juiste staat na het moeten 
+	switchen van modus
+
+currenttarget (kan weg :/*), scattertarget, deathtarget variabelen
+
+* Want de currenttarget wordt geset aan het begin van continueMove (welke hernoemd gaat 
+	worden naar move :P)
+
+timer variabele
+	** BLUUURGH, nog uitzoeken hoe de modewissels en timers in elkaar steken in 
+		pacman, want wordt die standaard afwisseling tussen chase/scatter gepauzeerd 
+		wanneer hij fright is, of loopt het door maar heeft het geen effect bla bla
+
+---------------------------------------------------------------
+METHODEN
+---------------------------------------------------------------
+
+constructor(pacman):
+	pacman onthouden
+
+setMode(mode, time): ** (Hier nog even nadenken van hoe het dus zit met timers in werkelijke pacman
+	Oude modus opslaan
+	Nieuwe modus onthouden
+	Positie afronden --> private function
+	Direction reversen indien nodig --> private function
+	Timer instellen
+getMode:
+	Modus retourneren
+
+getPosition:
+	Position (kloon) retourneren
+
+move(bord):
+	Berekenen waar naartoe te gaan adhv huidige modus
+	Default pathfinding
+	Timer verlagen --> private function (?)
+
+updateNextTile(bord):
+	Volgende tile berekenen adhv target, direction, etc
+	Als je in frightmodus zit, wordt de volgende tile random gekozen op de intersecties
+
+tilesAheadOfPacman(x):
+	Berekent (met de overflowbug) x tiles voor pacman om als target te gebruiken
+chaseTarget(bord):
+	Berekent wat de chasetarget is van de ghost, welke wordt gedefinieerd door de klassen 
+	die deze class extenden
+
+moveDirection(dir):
+	Beweegt in de richting met de juiste snelheid adhv huidige modus
+moveRelative(dx, dy):
+	Werkelijke beweging in pixels
+
+clone
+	
+	
+	
+	
+	
+	
+	
+	
+	
