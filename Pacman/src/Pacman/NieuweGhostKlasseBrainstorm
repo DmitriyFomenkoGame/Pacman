@@ -7,7 +7,50 @@ NOTITIES
 - Misschien geen pacman meegeven, maar de bordklasse. 
 	De bordklasse wordt namelijk vaker gebruikt en daar kan dan de 
 	functie in 'tilesaheadofpacman' enzo
-- Moet de timer nog uitdenken :(
+- In fright mode mogen de ghosts eigenlijk wel omhoog in de rode
+	secties (http://home.comcast.net/~jpittman2/pacman/exploit.png)
+	dus dat moet eigenlijk nog wel geïmplementeerd worden :/
+- Er is niet gedefinieerd wat er met de timer gebeurt wanneer een
+	ghost wordt opgegeten tijdens fright mode. Daarom denk ik dat
+	het het gemakkelijkste is als ze terug gaan naar hun vorige
+	mode en zodra fright mode afgelopen is of alle ghosts gegeten
+	zijn, de timer verder gaat. Zo lang duurt frightmode namelijk
+	niet enzo. En dan hoeft er maar één timer in de pacmangame
+	class.
+
+---------------------------------------------------------------
+TIMER UITDENKSEL
+---------------------------------------------------------------
+
+Momenteel stelt de Bord klasse in wanneer de ghosts van mode moeten
+veranderen, maar dit is niet zijn taak. Dit is de taak van de
+PacmanGame klasse (via de Bord klasse).
+
+NOOT: Uitgezocht, de chase/scatter timer pauzeert inderdaad 
+	  wanneer de frightmode ontstaat
+
+De PacmanGame stelt het bord in en stelt daarna in dat de ghosts 
+naar scattermode gaan voor 7 seconden*** De PacmanGame houdt deze
+chasescattertimer bij.
+
+Vervolgens voert PacmanGame een aantal gameticks uit. Wanneer
+PacmanGame merkt dat er een energizer is gegeten, pauzeert hij
+de chasescattertimer en stelt voor alle ghosts in dat ze FRIGHT als
+mode krijgen. PacmanGame start een frighttimer om bij te houden
+wanneer de frightmode over is. 
+
+Wanneer een ghost wordt opgegeten, stelt hij zijn modus in op 
+MODE_DEAD en zodra hij op z'n targettile aangekomen is, gaat 
+hij naar prevmode.
+
+Als PacmanGame merkt dat de frightmode over is, stelt hij in dat
+alle ghosts weer naar de juiste modus moeten (af te leiden uit
+de stand van chasescattertimer + extravar misschien). Wanneer
+de ghost al opgegeten was en dus al in die modus zat, gebeurt
+er niets.
+
+*** Seconden naar gameticks moet nog bepaald worden :)
+ 
 
 ---------------------------------------------------------------
 CONSTANTEN
@@ -54,11 +97,12 @@ constructor(pacman):
 	pacman onthouden
 
 setMode(mode, time): ** (Hier nog even nadenken van hoe het dus zit met timers in werkelijke pacman
+	Wanneer je al in deze modus zit, doe je niks :)
 	Oude modus opslaan
 	Nieuwe modus onthouden
 	Positie afronden --> private function
 	Direction reversen indien nodig --> private function
-	Timer instellen
+	Timer instellen indien het om frightmode gaat
 getMode:
 	Modus retourneren
 
@@ -68,7 +112,7 @@ getPosition:
 move(bord):
 	Berekenen waar naartoe te gaan adhv huidige modus
 	Default pathfinding
-	Timer verlagen --> private function (?)
+	Timer verlagen --> private function (?) --> Als timer >0, dan --, als ==0, dan naar chasemode
 
 updateNextTile(bord):
 	Volgende tile berekenen adhv target, direction, etc
