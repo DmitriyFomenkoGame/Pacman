@@ -6,6 +6,8 @@ Ghosts:
 Ghost notities:
 - Ghosts móéten switchen van direction als ze van modus wisselen, hier opletten bij om hoeken gaan, misschien prevdir onthouden of ietssss
 - Ghosts moeten niet weer het ghosthouse in kunnen, dus dat moet in de normale pathfinding nog even toegevoegd worden, in fright mode zit het omdat die directionFree gebruikt
+- Mogen in fright mode wel omhoog in de 'rode gebieden'
+- ReverseDirection implementeren
 - ...
 
 Pacman:
@@ -15,6 +17,7 @@ Board:
 - ...
 
 PacmanGame:
+- timers bij laten houden en zorgen dat geesten opgegeten kunnen worden
 - Speed van pacman 0.0625, ghost een speed van 0.05 en fright speed van 0.04
   Want dan geldt:
   80% = 0.0625 = 0.0625 --> 
@@ -24,4 +27,3 @@ PacmanGame:
   Alternatief: pacman 0.25, ghost 0.20 en ghost fright 0.125
   waarbij de afwijkingen wat groter zijn.
 
-Traaalala
