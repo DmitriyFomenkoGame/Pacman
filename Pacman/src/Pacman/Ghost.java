@@ -144,7 +144,7 @@ public class Ghost implements Cloneable {
 				}
 				nextdirection = randomdir;				
 			} else {
-				nextdirection = board.getCrossingDir(nexttile, direction, currenttarget);
+				nextdirection = board.getCrossingDir(nexttile, direction, currenttarget, mode);
 			}
 		}
 	}

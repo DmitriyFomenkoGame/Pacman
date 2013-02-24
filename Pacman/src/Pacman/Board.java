@@ -260,7 +260,7 @@ public class Board implements Cloneable {
 	public byte getCornerDir(Point2D.Double p, byte direction) {
 		return getCornerDir(pointToGrid(p), direction);
 	}
-	public byte getCrossingDir(Point p, byte direction, Point t) {
+	public byte getCrossingDir(Point p, byte direction, Point t, byte mode) {
 		//Assumes valid current direction was given...
 		if (!isCrossing(p)) {
 			throw new Error("getCrossingDir called on non-crossing");
@@ -268,8 +268,10 @@ public class Board implements Cloneable {
 		int dirs  = getDirections(p);
 		int blockdir = (direction == PacmanGame.DIR_UP) ? DIRS_D : (direction == PacmanGame.DIR_RIGHT) ? DIRS_L : (direction == PacmanGame.DIR_DOWN) ? DIRS_U : DIRS_R; 
 		if ((dirs & blockdir) != 0) {dirs -= blockdir;}
-		if (p.y == 11 || (p.y == 23 && p.x > 9 && p.x < 19)) { //Moving up restriction
-			if ((dirs & DIRS_U) != 0) {dirs -= DIRS_U;}
+		if (mode != Ghost.MODE_FRIGHTENED && mode != Ghost.MODE_DEAD) {
+			if (p.y == 11 || (p.y == 23 && p.x > 9 && p.x < 19)) { //Moving up restriction
+				if ((dirs & DIRS_U) != 0) {dirs -= DIRS_U;}
+			}			
 		}
 		double bestdist = Double.MAX_VALUE;
 		byte bestdir = direction;
@@ -285,8 +287,8 @@ public class Board implements Cloneable {
 		}
 		return bestdir;
 	}
-	public byte getCrossingDir(Point2D.Double p, byte direction, Point target) {
-		return getCrossingDir(pointToGrid(p), direction, target);
+	public byte getCrossingDir(Point2D.Double p, byte direction, Point target, byte mode) {
+		return getCrossingDir(pointToGrid(p), direction, target, mode);
 	}
 
 	public boolean directionFree(Point2D.Double p, byte direction) {
