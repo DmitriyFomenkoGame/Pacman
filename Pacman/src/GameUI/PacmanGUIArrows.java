@@ -25,6 +25,9 @@ public class PacmanGUIArrows extends PacmanGUI {
     			if(e.getKeyCode() == (KeyEvent.VK_ESCAPE)){
     				close();
     			}
+    			if(e.getKeyCode() == (KeyEvent.VK_SPACE)) {
+    				special = true;
+    			}
     		}
 		});
 	}
@@ -37,4 +40,14 @@ public class PacmanGUIArrows extends PacmanGUI {
 		return this.direction;
 	}
 	
+	private boolean special = false;
+	public boolean getSpecial() {
+		if (special) {
+			special = false;
+			return true;
+		}
+		return false;
+	}
+	
 }
+

@@ -36,6 +36,12 @@ public class PacmanGame {
 		board.setModes(ghostMode);
 	}
 	
+	public void special() {
+		ghostMode = (ghostMode == Ghost.MODE_CHASE) ? Ghost.MODE_SCATTER : Ghost.MODE_CHASE;
+		board.setModes(ghostMode);
+		chaseScatterTimer = (ghostMode == Ghost.MODE_CHASE) ? TIME_CHASE : TIME_SCATTER;
+	}
+	
 	public void doMove(byte direction) {
 		if (gameStatus != GAME_BUSY) {return;}
 		board.doMove(direction);

@@ -59,23 +59,21 @@ public class Ghost implements Cloneable {
 		
 		if (prevMode == MODE_CHASE || prevMode == MODE_SCATTER) {
 			//When in chase or scatter mode, they also need to reverse their direction when modes change
-			if (!inGhosthouse()) { //Not in ghosthouse, because changing direction there would be fatal TAMTAMTAMMMM
+			if (!inGhosthouse() && !justLeftGhosthouse()) { //Not in ghosthouse, because changing direction there would be fatal TAMTAMTAMMMM
 				reverseDirection(); //Reverses direction and nextdirection				
 				boolean corner = board.isCorner(position), crossing = board.isCrossing(position);
 				if ((corner || crossing) && !atGhosthouse(Board.pointToGrid(position))) {
 					if (corner) {
-						System.out.println("IN CORNER");
 						direction = board.getCornerDir(position, direction);
 						nexttile = board.getNextTile(position, direction);
 					} else { //Crossing
 						direction = board.getCrossingDir(position, direction, calcTarget(), this.mode, inRedArea());
 						nexttile  = board.getNextTile(position, direction);
 					}
-				} else {
-					updateNextTile();
 				}
+				nextdirection = direction;
+				updateNextTile();
 			}
-			nextdirection = direction;
 		}
 	}
 	public byte getMode() {
@@ -147,8 +145,15 @@ public class Ghost implements Cloneable {
 		return (position.x == 13 && position.y > 11 && position.y <= 14);
 	}
 	private boolean atGhosthouse(Point p) {
-		if (direction != PacmanGame.DIR_UP) { 
+		if (direction != PacmanGame.DIR_UP && direction != PacmanGame.DIR_DOWN) { 
 			return p.equals(new Point(13, 11));
+		} else {
+			return false;
+		}
+	}
+	private boolean justLeftGhosthouse() {
+		if (direction == PacmanGame.DIR_UP || direction == PacmanGame.DIR_DOWN) {
+			return position.equals(new Point(13, 11));
 		} else {
 			return false;
 		}
