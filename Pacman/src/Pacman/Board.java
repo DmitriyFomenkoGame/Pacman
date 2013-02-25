@@ -120,6 +120,12 @@ public class Board implements Cloneable {
 		}
 		ghosts[g].activate();
 	}
+	public boolean ghostIsActive(int g) {
+		if (g < Ghost.GHOST_BLINKY || g > Ghost.GHOST_CLYDE) {
+			throw new Error("Unknown ghost to activate (" + String.valueOf(g) + ")");
+		}
+		return ghosts[g].isActive();
+	}
 	public PacmanScore getScore() {
 		Point newpos = pointToGrid(pacman.getPosition());
 		PacmanScore s = new PacmanScore();

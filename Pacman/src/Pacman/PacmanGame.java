@@ -14,14 +14,16 @@ public class PacmanGame {
 	public static final int GTPS = 10; //GameTicksPerSecond
 	public static final int TIME_SCATTER     =  7 * GTPS,
 							TIME_CHASE       = 20 * GTPS,
-							TIME_FRIGHTENED  =  5 * GTPS;
+							TIME_FRIGHTENED  =  5 * GTPS,
+							TIME_DOTEATING   =  4 * GTPS;
 	
 	private Board board;
 	private PacmanScore score;
 	private byte gameStatus;
 	private int maxGameticks;
-	private int chaseScatterTimer;
-	private int frightenedTimer;
+	private int chaseScatterTimer,
+				frightenedTimer,
+				dotTimer;
 	private byte ghostMode;
 	
 	public PacmanGame(int maxGameticks) { //Value <0 enables infinit gameticks
@@ -34,21 +36,33 @@ public class PacmanGame {
 		chaseScatterTimer = TIME_SCATTER;
 		ghostMode = Ghost.MODE_SCATTER;
 		board.setModes(ghostMode);
+		dotTimer = TIME_DOTEATING;
 	}
 	
 	public void doMove(byte direction) {
 		if (gameStatus != GAME_BUSY) {return;}
 		board.doMove(direction);
 		board.updateGhosts();
-		if (score.getDots() >= 30) { board.activateGhost(Ghost.GHOST_INKY); }
-		if (score.getDots() >= 90) { board.activateGhost(Ghost.GHOST_CLYDE); }
 		PacmanScore stepscore = board.getScore();
+		score.addScore(stepscore);
+		
 		if (stepscore.getEnergizers() > 0) {
 			frightenedTimer = TIME_FRIGHTENED;
 			board.setModes(Ghost.MODE_FRIGHTENED);
 		}
 		
-		score.addScore(stepscore);
+		if (score.getDots() >= 30) {
+			board.activateGhost(Ghost.GHOST_INKY);
+		}
+		if (score.getDots() >= 90) {
+			board.activateGhost(Ghost.GHOST_CLYDE);
+			dotTimer = 0;
+		}
+		
+		if (stepscore.getDots() > 0 && dotTimer != 0) {
+			dotTimer = TIME_DOTEATING;
+		}
+		
 		if (maxGameticks > 0 && score.getGameticks() > maxGameticks) {
 			gameStatus = GAME_TIMEOUT;
 		}
@@ -56,9 +70,21 @@ public class PacmanGame {
 		if (score.getDeaths() > 0) 		   { gameStatus = GAME_OVER; }
 		if (board.getDotsRemaining() <= 0) { gameStatus = GAME_END;  }
 		
-		updateTimer();
+		updateTimers();
 	}
-	public void updateTimer() {
+	public void updateTimers() {
+		if (dotTimer != 0) {
+			dotTimer--;
+			if (dotTimer == 0) {
+				if (!board.ghostIsActive(Ghost.GHOST_INKY)) {
+					board.activateGhost(Ghost.GHOST_INKY);
+					dotTimer = TIME_DOTEATING;
+				} else if (!board.ghostIsActive(Ghost.GHOST_CLYDE)) {
+					board.activateGhost(Ghost.GHOST_CLYDE);
+					dotTimer = TIME_DOTEATING;
+				}
+			}
+		}
 		if (frightenedTimer != 0) {
 			frightenedTimer--;
 			if (frightenedTimer == 0) {

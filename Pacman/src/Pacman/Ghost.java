@@ -134,6 +134,9 @@ public class Ghost implements Cloneable {
 	public void activate() {
 		this.active = true;
 	}
+	public boolean isActive() {
+		return active;
+	}
 	private void checkPortals() {
 		if (position.x < 0) {
 			position.setLocation(position.x + Board.WIDTH, position.y);
@@ -221,4 +224,5 @@ public class Ghost implements Cloneable {
 			return null;
 		}
 	}
+
 }
