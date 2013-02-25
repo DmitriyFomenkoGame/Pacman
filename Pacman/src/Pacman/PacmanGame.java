@@ -12,10 +12,12 @@ public class PacmanGame {
 							 GAME_TIMEOUT = 3;
 	
 	public static final int GTPS = 10; //GameTicksPerSecond
-	public static final int TIME_SCATTER     =  7 * GTPS,
-							TIME_CHASE       = 20 * GTPS,
-							TIME_FRIGHTENED  =  5 * GTPS,
-							TIME_DOTEATING   =  4 * GTPS;
+	public static final int TIME_SCATTER       =  7 * GTPS,
+							TIME_SCATTER_SMALL = 5 * GTPS,
+							TIME_CHASE         = 20 * GTPS,
+							TIME_FRIGHTENED    =  5 * GTPS,
+							TIME_DOTEATING     =  4 * GTPS;
+	public static final int CHASE_SCATTER_SWITCHES = 7;
 	
 	private Board board;
 	private PacmanScore score;
@@ -24,6 +26,7 @@ public class PacmanGame {
 	private int chaseScatterTimer,
 				frightenedTimer,
 				dotTimer;
+	private int chaseScatterCounter;
 	private byte ghostMode;
 	
 	public PacmanGame(int maxGameticks) { //Value <0 enables infinit gameticks
@@ -37,6 +40,7 @@ public class PacmanGame {
 		ghostMode = Ghost.MODE_SCATTER;
 		board.setModes(ghostMode);
 		dotTimer = TIME_DOTEATING;
+		chaseScatterCounter = 0;
 	}
 	
 	public void doMove(byte direction) {
@@ -95,7 +99,10 @@ public class PacmanGame {
 			if (chaseScatterTimer == 0) {
 				ghostMode = (ghostMode == Ghost.MODE_CHASE) ? Ghost.MODE_SCATTER : Ghost.MODE_CHASE;
 				board.setModes(ghostMode);
-				chaseScatterTimer = (ghostMode == Ghost.MODE_CHASE) ? TIME_CHASE : TIME_SCATTER;
+				chaseScatterCounter++;
+				if (chaseScatterCounter < CHASE_SCATTER_SWITCHES) {
+					chaseScatterTimer = (ghostMode == Ghost.MODE_CHASE) ? TIME_CHASE : (chaseScatterCounter < CHASE_SCATTER_SWITCHES/2) ? TIME_SCATTER : TIME_SCATTER_SMALL;
+				}
 			}
 		}
 	}
