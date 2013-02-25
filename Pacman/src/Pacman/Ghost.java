@@ -144,6 +144,10 @@ public class Ghost implements Cloneable {
 	public boolean isEdible() {
 		return (mode == MODE_FRIGHTENED);
 	}
+	public boolean isDead() {
+		return (mode == MODE_DEAD);
+	}
+
 	private void checkPortals() {
 		if (position.x < 0) {
 			position.setLocation(position.x + Board.WIDTH, position.y);

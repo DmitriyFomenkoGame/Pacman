@@ -132,6 +132,12 @@ public class Board implements Cloneable {
 		}
 		return ghosts[g].isEdible();
 	}
+	public boolean ghostIsDead(int g) {
+		if (g < Ghost.GHOST_BLINKY || g > Ghost.GHOST_CLYDE) {
+			throw new Error("Unknown ghost to activate (" + String.valueOf(g) + ")");
+		}
+		return ghosts[g].isDead();	
+	}
 	public PacmanScore getScore() {
 		Point newpos = pointToGrid(pacman.getPosition());
 		PacmanScore s = new PacmanScore();
@@ -192,6 +198,9 @@ public class Board implements Cloneable {
 	}
 	public Point2D.Double getPacmanPosition() {
 		return pacman.getPosition();
+	}
+	public byte getPacmanDirection() {
+		return pacman.getDirection();
 	}
 	public Point tilesAheadOfPacman(int tiles) {
 		Point targetPos = Board.pointToGrid(pacman.getPosition());
@@ -361,4 +370,6 @@ public class Board implements Cloneable {
 			return null;
 		}
 	}
+
+
 }

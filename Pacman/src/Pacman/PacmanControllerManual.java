@@ -11,7 +11,7 @@ public class PacmanControllerManual {
 		gui.show();
 		while(game.getStatus() == PacmanGame.GAME_BUSY && gui.isVisible()) {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(35);
 				PacmanScore s = game.getScore();
 				String title = "Dots: " + String.valueOf(s.getDots()) + " | " + game.getModeString();
 				gui.setTitle(title);
@@ -28,7 +28,7 @@ public class PacmanControllerManual {
 			case PacmanGame.GAME_TIMEOUT: System.out.println("GAME_TIMEOUT"); break;
 		}
 		try {
-			Thread.sleep(23);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
