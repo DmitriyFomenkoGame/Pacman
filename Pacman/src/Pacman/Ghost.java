@@ -64,6 +64,7 @@ public class Ghost implements Cloneable {
 				boolean corner = board.isCorner(position), crossing = board.isCrossing(position);
 				if ((corner || crossing) && !atGhosthouse(Board.pointToGrid(position))) {
 					if (corner) {
+						System.out.println("IN CORNER");
 						direction = board.getCornerDir(position, direction);
 						nexttile = board.getNextTile(position, direction);
 					} else { //Crossing
