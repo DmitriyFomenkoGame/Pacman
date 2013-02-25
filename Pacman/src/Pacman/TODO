@@ -24,5 +24,6 @@ PacmanGame:
   Alternatief: pacman 0.25, ghost 0.20 en ghost fright 0.125
   waarbij de afwijkingen wat groter zijn.
 - 11 tiles/sec
+- Scatter/chase wisselingen eindig
 - ...
 
