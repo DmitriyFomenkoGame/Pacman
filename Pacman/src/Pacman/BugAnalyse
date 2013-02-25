@@ -1,3 +1,44 @@
 Hierin wil ik voor alle Pacman classes analyseren wat de kans is dat er bugs optreden in bepaalde functies
 en hoe dit te reduceren valt naar probleemgevallen op één plek mieteren of iets.
 
+Board	
+	getScore
+		in principe geen probleem
+	isCorner
+		steunt op getDirections
+	isCrossing
+		steunt op getDirections
+	getDirections
+		controleert muren, maar geen move restricties
+	getNextTile
+		houdt geen rekening met mogelijke obstakels
+	getCornerDir
+		steunt op getDirections
+	getCrossingDir
+		steunt op getDirections en is gevoelig voor move restricties
+	directionFree
+		is gevoelig voor move restrictie
+	directionFreeExclude
+		steunt op directionFree
+
+Ghost
+	setMode
+		HOORRRORORRRR
+	reverseDirection
+		doet updateNextTile (???)
+	move
+		steunt op updateNextTile en probeert rekening te houden met alle modi
+	updateNextTile
+		steunt op functies van bord (getNextTile / isCorner / getCornerDir / isCrossing / getCrossingDir / directionFreeExclude / getRandomDir)
+
+Pacman
+	doMove
+		Zal wel goed zijn, maar kan misschien prettier
+
+PacmanGame
+	updateTimer
+		ghostMode is een lelijke variabelenaam en kan daarmee fouten geven als je het verkeerd interpreteert
+
+
+
+
