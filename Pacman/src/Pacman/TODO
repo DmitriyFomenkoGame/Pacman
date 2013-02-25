@@ -2,7 +2,7 @@ Ghosts:
 - ...
 
 Ghost notities:
-- Ghosts móéten switchen van direction als ze van modus wisselen, hier opletten bij om hoeken gaan, misschien prevdir onthouden of ietssss
+- Ghosts mï¿½ï¿½ten switchen van direction als ze van modus wisselen, hier opletten bij om hoeken gaan, misschien prevdir onthouden of ietssss
 - Ghosts moeten niet weer het ghosthouse in kunnen, dus dat moet in de normale pathfinding nog even toegevoegd worden, in fright mode zit het omdat die directionFree gebruikt
 - GLITCH met dat ghosts na dood ghosthouse in lopen
 - GLITCH bij het reversen van de direction op kruisingen en misschien ook in hoeken
@@ -23,5 +23,6 @@ PacmanGame:
   Nadeel is dat er meer gameticks nodig zijn per stap, maar de verdeling is dan wel passender.
   Alternatief: pacman 0.25, ghost 0.20 en ghost fright 0.125
   waarbij de afwijkingen wat groter zijn.
+- 11 tiles/sec
 - ...
 
