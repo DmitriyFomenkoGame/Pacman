@@ -16,7 +16,7 @@ public class Ghost implements Cloneable {
 							 MODE_DEAD       = 3;
 
 	public static final double SPEED_NORMAL     = 0.20,
-							   SPEED_FRIGHTENED = 0.10,
+							   SPEED_FRIGHTENED = 0.125,
 							   SPEED_DEAD       = 0.50;
 
 	protected Point2D.Double position;

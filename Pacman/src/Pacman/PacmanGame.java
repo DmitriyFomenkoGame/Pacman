@@ -11,9 +11,9 @@ public class PacmanGame {
 							 GAME_END     = 2,
 							 GAME_TIMEOUT = 3;
 	
-	public static final int GTPS = 10; //GameTicksPerSecond
+	public static final int GTPS = 44; //GameTicksPerSecond
 	public static final int TIME_SCATTER       =  7 * GTPS,
-							TIME_SCATTER_SMALL = 5 * GTPS,
+							TIME_SCATTER_SMALL =  5 * GTPS,
 							TIME_CHASE         = 20 * GTPS,
 							TIME_FRIGHTENED    =  5 * GTPS,
 							TIME_DOTEATING     =  4 * GTPS;

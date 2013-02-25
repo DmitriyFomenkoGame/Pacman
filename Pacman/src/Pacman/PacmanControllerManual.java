@@ -28,7 +28,7 @@ public class PacmanControllerManual {
 			case PacmanGame.GAME_TIMEOUT: System.out.println("GAME_TIMEOUT"); break;
 		}
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(23);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
