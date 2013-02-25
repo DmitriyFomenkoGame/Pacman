@@ -12,7 +12,6 @@ public class PacmanControllerManual {
 		while(game.getStatus() == PacmanGame.GAME_BUSY && gui.isVisible()) {
 			try {
 				Thread.sleep(100);
-				//game.bypassMove();
 				PacmanScore s = game.getScore();
 				String title = "Dots: " + String.valueOf(s.getDots()) + " | " + game.getModeString();
 				gui.setTitle(title);

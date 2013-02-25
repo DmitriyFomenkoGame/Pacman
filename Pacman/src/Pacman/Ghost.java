@@ -44,39 +44,37 @@ public class Ghost implements Cloneable {
 		}
 		
 		if (!active) {return;}
-		
 		if (this.mode == mode) {return;}
 
-		//TODO: GLITCHES FIXEN
-		if (this.mode == MODE_DEAD) {
-			prevMode = mode;
-			roundPosition();
-//			updateNextTile();
+		prevMode = this.mode;
+		if (this.mode != MODE_DEAD) {
+			this.mode = mode;
 			return;
 		}
 		
-		if (mode == MODE_FRIGHTENED) {
-			prevMode = this.mode;
+		currenttarget = scattertarget;
+		if (this.mode == MODE_DEAD) {
+			currenttarget = deathtarget;
+		} else if (this.mode == MODE_CHASE) {
+			currenttarget = new Point(chaseTarget());
 		}
-		this.mode = mode;
 		
 		roundPosition();
-		if (mode != MODE_DEAD) {
-			reverseDirection();
-		} else {
-			currenttarget = deathtarget;
-			updateNextTile();
+		if (this.mode == MODE_CHASE || this.mode == MODE_SCATTER) {
+			if (!(position.x == 13.0 && position.y > 11 && position.y <= 14)) { //Not in ghosthouse
+				reverseDirection();
+				/*
+				 * INSERT MAGIC CODE
+				 * 
+				 */
+			}
 		}
+		nextdirection = direction;
 	}
 	public byte getMode() {
 		return mode;
 	}
-	public void die() {
-		if (mode != MODE_FRIGHTENED) {
-			throw new Error("Ghost killed when not in fright mode?");
-		}
-		setMode(MODE_DEAD);
-	}
+	
 	private void roundPosition() {   
 		Point p = Board.pointToGrid(position);
 		position = new Point2D.Double(p.x, p.y);
@@ -90,10 +88,6 @@ public class Ghost implements Cloneable {
 		}
 		nextdirection = direction;
 		updateNextTile();
-	}
-	
-	public void activate() {
-		this.active = true;
 	}
 	
 	public Point2D.Double getPosition() {
@@ -123,6 +117,15 @@ public class Ghost implements Cloneable {
 		
 		moveDirection(direction);
 	}
+	public void die() {
+		if (mode != MODE_FRIGHTENED) {
+			throw new Error("Ghost killed when not in fright mode?");
+		}
+		setMode(MODE_DEAD);
+	}
+	public void activate() {
+		this.active = true;
+	}
 	private void checkPortals() {
 		if (position.x < 0) {
 			position.setLocation(position.x + Board.WIDTH, position.y);
@@ -148,7 +151,6 @@ public class Ghost implements Cloneable {
 			}
 		}
 	}
-	
 	protected Point chaseTarget() {
 		return board.tilesAheadOfPacman(0);
 	}
