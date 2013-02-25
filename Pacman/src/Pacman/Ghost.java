@@ -49,9 +49,13 @@ public class Ghost implements Cloneable {
 		roundPosition(); //Round the position to make sure it will stay on the grid with the new speed
 		//It can happen that this will shift the instance to the nexttile on the grid, or to the previous tile
 		
-		prevMode = this.mode;
+		if (this.mode != MODE_FRIGHTENED && this.mode != MODE_DEAD) {
+			prevMode = this.mode;
+		}
 		if (this.mode == MODE_DEAD) {
-			prevMode = mode;
+			if (mode != MODE_FRIGHTENED) {
+				prevMode = mode;
+			}
 			return; //If in dead mode, ignore everything but update the prevmode to change to that at revival
 		} else {
 			this.mode = mode; //If in other mode, change modes
@@ -112,7 +116,7 @@ public class Ghost implements Cloneable {
 	}
 	
 	public void move() {
-		if (!active) {return;}		
+		if (!active) {return;}	
 		currenttarget = calcTarget();
 		if (nexttile == null) {
 			updateNextTile();
@@ -136,6 +140,9 @@ public class Ghost implements Cloneable {
 	}
 	public boolean isActive() {
 		return active;
+	}
+	public boolean isEdible() {
+		return (mode == MODE_FRIGHTENED);
 	}
 	private void checkPortals() {
 		if (position.x < 0) {

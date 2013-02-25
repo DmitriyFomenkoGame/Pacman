@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 import Pacman.Board;
+import Pacman.Ghost;
 
 public class PacmanGUI {
 	protected JFrame frame;
@@ -49,10 +50,11 @@ public class PacmanGUI {
 				inky   = b.getInkyPosition(),
 				clyde  = b.getClydePosition(),
 				pacman = b.getPacmanPosition();
-		imageTrySet(image, blinky.getX(), blinky.getY(), Color.red);
-		imageTrySet(image, pinky.getX(),  pinky.getY(),  Color.pink);
-		imageTrySet(image, inky.getX(),   inky.getY(),   Color.cyan);
-		imageTrySet(image, clyde.getX(),  clyde.getY(),  Color.orange);
+
+		imageTrySet(image, blinky.getX(), blinky.getY(), (!b.ghostIsEdible(Ghost.GHOST_BLINKY)) ? Color.red    : Color.magenta);
+		imageTrySet(image, pinky.getX(),  pinky.getY(),  (!b.ghostIsEdible(Ghost.GHOST_PINKY))  ? Color.pink   : Color.magenta);
+		imageTrySet(image, inky.getX(),   inky.getY(),   (!b.ghostIsEdible(Ghost.GHOST_INKY))   ? Color.cyan   : Color.magenta);
+		imageTrySet(image, clyde.getX(),  clyde.getY(),  (!b.ghostIsEdible(Ghost.GHOST_CLYDE))  ? Color.orange : Color.magenta);
 		imageTrySet(image, pacman.getX(), pacman.getY(), Color.yellow);
 		
 		panel.setImage(image);
