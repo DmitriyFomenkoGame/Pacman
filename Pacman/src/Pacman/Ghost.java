@@ -46,51 +46,36 @@ public class Ghost implements Cloneable {
 		if (!active) {return;}
 		if (this.mode == mode) {return;}
 
-		prevMode = this.mode;		
+		roundPosition(); //Round the position to make sure it will stay on the grid with the new speed
+		//It can happen that this will shift the instance to the nexttile on the grid, or to the previous tile
+		
+		prevMode = this.mode;
 		if (this.mode == MODE_DEAD) {
+			prevMode = mode;
 			return; //If in dead mode, ignore everything but update the prevmode to change to that at revival
 		} else {
 			this.mode = mode; //If in other mode, change modes
 		}
 		
-		roundPosition(); //Round the position to make sure it will stay on the grid with the new speed
-		//It can happen that this will shift the instance to the nexttile on the grid, or to the previous tile
-		if (this.mode == MODE_CHASE || this.mode == MODE_SCATTER) {
+		if (prevMode == MODE_CHASE || prevMode == MODE_SCATTER) {
 			//When in chase or scatter mode, they also need to reverse their direction when modes change
-			if (!(position.x == 13.0 && position.y > 11 && position.y <= 14)) { //Not in ghosthouse, because changing direction there would be fatal TAMTAMTAMMMM
-				reverseDirection(); //Reverses direction and nextdirection
-				/*
-				 * TODO
-				 * - If you're in a corner or on a crossing, 
-				 * 		change direction the best option (DO NOT REVERSE AGAIN)
-				 * 		update the nexttile and
-				 * 		set the nextdirection appropriately
-				 * - If you're not in a corner and not on a crossing, 
-				 * 		update the nexttile and 
-				 * 		set the nextdirection appropriately
-				 */
-				
-				/*
-				 * INSERT MAGIC CODE
-				 */
-				
-				boolean corner   = board.isCorner(position),
-						crossing = board.isCrossing(position);
-				
-				if (corner || crossing) {
+			if (!inGhosthouse()) { //Not in ghosthouse, because changing direction there would be fatal TAMTAMTAMMMM
+				reverseDirection(); //Reverses direction and nextdirection				
+				boolean corner = board.isCorner(position), crossing = board.isCrossing(position);
+				if ((corner || crossing) && !atGhosthouse(Board.pointToGrid(position))) {
 					if (corner) {
-						//Only one way to goooooo
-						
+						direction = board.getCornerDir(position, direction);
+						nexttile = board.getNextTile(position, direction);
 					} else { //Crossing
-						//Multiple options, choose the one at which your target gets the closest (so, set currenttarget first)
-						
+						direction = board.getCrossingDir(position, direction, calcTarget(), this.mode, inRedArea());
+						nexttile  = board.getNextTile(position, direction);
 					}
 				} else {
-					updateNextTile(); //Sufficient, right?
+					updateNextTile();
 				}
 			}
+			nextdirection = direction;
 		}
-		nextdirection = direction;
 	}
 	public byte getMode() {
 		return mode;
@@ -107,26 +92,29 @@ public class Ghost implements Cloneable {
 			case PacmanGame.DIR_DOWN:  direction = PacmanGame.DIR_UP;    break;
 			case PacmanGame.DIR_LEFT:  direction = PacmanGame.DIR_RIGHT; break;
 		}
-		nextdirection = direction;
-		updateNextTile();
 	}
 	
 	public Point2D.Double getPosition() {
 		return (Point2D.Double) position.clone();
 	}
 
-	public void move() {
-		if (!active) {return;}		
-		currenttarget = scattertarget;
+	private Point calcTarget() {
+		Point target = scattertarget;
 		if (mode == MODE_DEAD) {
-			currenttarget = deathtarget;
+			target = deathtarget;
 			if (position.distance(deathtarget) < 0.01) {
 				mode = prevMode;
 			}
 		}
 		if (mode == MODE_CHASE) {
-			currenttarget = new Point(chaseTarget());
+			target = new Point(chaseTarget());
 		}
+		return target;
+	}
+	
+	public void move() {
+		if (!active) {return;}		
+		currenttarget = calcTarget();
 		if (nexttile == null) {
 			updateNextTile();
 		} else if (position.distance(nexttile) < 0.01) {
@@ -154,13 +142,30 @@ public class Ghost implements Cloneable {
 			position.setLocation(position.x - Board.WIDTH, position.y);
 		}
 	}
-
+	private boolean inGhosthouse() {
+		return (position.x == 13 && position.y > 11 && position.y <= 14);
+	}
+	private boolean atGhosthouse(Point p) {
+		if (direction != PacmanGame.DIR_UP) { 
+			return p.equals(new Point(13, 11));
+		} else {
+			return false;
+		}
+	}
+	private boolean inRedArea() {
+		if (mode != Ghost.MODE_FRIGHTENED && mode != Ghost.MODE_DEAD) {
+			Point p = Board.pointToGrid(position);
+			return (p.y == 11 || (p.y == 23 && p.x > 9 && p.x < 19));
+		}
+		return false;
+	}
+	
 	private void updateNextTile() {
 		nexttile = board.getNextTile(position, direction);
 		if (board.isCorner(nexttile)) {
 			nextdirection = board.getCornerDir(nexttile, direction);
 		}
-		if (board.isCrossing(nexttile)) {
+		if (board.isCrossing(nexttile) && !atGhosthouse(nexttile)) {
 			if (mode == MODE_FRIGHTENED) {
 				byte randomdir = board.getRandomDir();
 				while (!board.directionFreeExclude(nexttile, randomdir, direction)) {
@@ -168,7 +173,7 @@ public class Ghost implements Cloneable {
 				}
 				nextdirection = randomdir;				
 			} else {
-				nextdirection = board.getCrossingDir(nexttile, direction, currenttarget, mode);
+				nextdirection = board.getCrossingDir(nexttile, direction, currenttarget, mode, inRedArea());
 			}
 		}
 	}
