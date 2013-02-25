@@ -16,9 +16,6 @@ public class PacmanControllerManual {
 				String title = "Dots: " + String.valueOf(s.getDots()) + " | " + game.getModeString();
 				gui.setTitle(title);
 				game.doMove(gui.getDirection());
-				if (gui.getSpecial()) {
-					game.special();
-				}
 				gui.setBoard(game.getBoard());
 				gui.redraw();
 			} catch (Exception e) {
