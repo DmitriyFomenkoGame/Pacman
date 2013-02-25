@@ -46,27 +46,48 @@ public class Ghost implements Cloneable {
 		if (!active) {return;}
 		if (this.mode == mode) {return;}
 
-		prevMode = this.mode;
-		if (this.mode != MODE_DEAD) {
-			this.mode = mode;
-			return;
-		}
-		
-		currenttarget = scattertarget;
+		prevMode = this.mode;		
 		if (this.mode == MODE_DEAD) {
-			currenttarget = deathtarget;
-		} else if (this.mode == MODE_CHASE) {
-			currenttarget = new Point(chaseTarget());
+			return; //If in dead mode, ignore everything but update the prevmode to change to that at revival
+		} else {
+			this.mode = mode; //If in other mode, change modes
 		}
 		
-		roundPosition();
+		roundPosition(); //Round the position to make sure it will stay on the grid with the new speed
+		//It can happen that this will shift the instance to the nexttile on the grid, or to the previous tile
 		if (this.mode == MODE_CHASE || this.mode == MODE_SCATTER) {
-			if (!(position.x == 13.0 && position.y > 11 && position.y <= 14)) { //Not in ghosthouse
-				reverseDirection();
+			//When in chase or scatter mode, they also need to reverse their direction when modes change
+			if (!(position.x == 13.0 && position.y > 11 && position.y <= 14)) { //Not in ghosthouse, because changing direction there would be fatal TAMTAMTAMMMM
+				reverseDirection(); //Reverses direction and nextdirection
+				/*
+				 * TODO
+				 * - If you're in a corner or on a crossing, 
+				 * 		change direction the best option (DO NOT REVERSE AGAIN)
+				 * 		update the nexttile and
+				 * 		set the nextdirection appropriately
+				 * - If you're not in a corner and not on a crossing, 
+				 * 		update the nexttile and 
+				 * 		set the nextdirection appropriately
+				 */
+				
 				/*
 				 * INSERT MAGIC CODE
-				 * 
 				 */
+				
+				boolean corner   = board.isCorner(position),
+						crossing = board.isCrossing(position);
+				
+				if (corner || crossing) {
+					if (corner) {
+						//Only one way to goooooo
+						
+					} else { //Crossing
+						//Multiple options, choose the one at which your target gets the closest (so, set currenttarget first)
+						
+					}
+				} else {
+					updateNextTile(); //Sufficient, right?
+				}
 			}
 		}
 		nextdirection = direction;
