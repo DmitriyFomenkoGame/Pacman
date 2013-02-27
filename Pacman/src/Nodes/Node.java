@@ -12,7 +12,7 @@ public class Node {
 	private ArrayList<Link> incommingLinks;
 	private ArrayList<Link> outgoingLinks;
 	
-	Node(boolean isInput, boolean isHidden, boolean isOutput){
+	public Node(boolean isInput, boolean isHidden, boolean isOutput){
 		value = 0;
 		incommingLinks = new ArrayList<Link>();
 		outgoingLinks = new ArrayList<Link>();
