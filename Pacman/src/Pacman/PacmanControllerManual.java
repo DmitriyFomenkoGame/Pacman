@@ -22,6 +22,7 @@ public class PacmanControllerManual {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(game.getScore().getGameticks());
 		switch (game.getStatus()) {
 			case PacmanGame.GAME_OVER:    System.out.println("GAME_OVER");    break;
 			case PacmanGame.GAME_END:     System.out.println("GAME_END");     break;
