@@ -29,8 +29,8 @@ public class PacmanGame {
 	private int chaseScatterCounter;
 	private byte ghostMode;
 	
-	public PacmanGame(int maxGameticks) { //Value <0 enables infinit gameticks
-		board 			  = new Board();
+	public PacmanGame(int maxGameticks,int mazeNumber) { //Value <0 enables infinit gameticks
+		board 			  = new Board(mazeNumber);
 		score 			  = new PacmanScore();
 		
 		gameStatus		  = GAME_BUSY;

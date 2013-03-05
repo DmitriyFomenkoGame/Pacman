@@ -4,9 +4,9 @@ import GameUI.PacmanGUIArrows;
 
 public class PacmanControllerManual {
 
-	public void start() {
+	public void start(String mazeNumber) {
 		PacmanGUIArrows gui = new PacmanGUIArrows();
-		PacmanGame game = new PacmanGame(-1);
+		PacmanGame game = new PacmanGame(-1,Integer.parseInt(mazeNumber));
 		gui.setBoard(game.getBoard());
 		gui.show();
 		while(game.getStatus() == PacmanGame.GAME_BUSY && gui.isVisible()) {
@@ -36,7 +36,12 @@ public class PacmanControllerManual {
 	}
 	
 	public static void main(String[] args) {
-		new PacmanControllerManual().start();
+		if (args.length > 0){
+			new PacmanControllerManual().start(args[0]);
+		}
+		else{
+			new PacmanControllerManual().start("0");
+		}
 	}
 
 }

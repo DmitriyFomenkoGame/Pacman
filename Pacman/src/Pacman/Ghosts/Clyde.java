@@ -9,9 +9,9 @@ import Pacman.PacmanGame;
 
 public class Clyde extends Ghost {
 
-	public Clyde(Board board) {
+	public Clyde(Board board, Point2D.Double pos) {
 		super(board);
-		position 	  = new Point2D.Double(13, 14);
+		position 	  = pos;
 		scattertarget = new Point(0, 31);
 		this.direction = PacmanGame.DIR_UP;
 	}

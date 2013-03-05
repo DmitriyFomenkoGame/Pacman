@@ -9,9 +9,9 @@ import Pacman.PacmanGame;
 
 public class Blinky extends Ghost {
 
-	public Blinky(Board board) {
+	public Blinky(Board board, Point2D.Double pos) {
 		super(board);
-		position      = new Point2D.Double(13, 11);
+		position      = pos;
 		scattertarget = new Point(25, -4);
 		direction	  = PacmanGame.DIR_LEFT;
 		active 		  = true;

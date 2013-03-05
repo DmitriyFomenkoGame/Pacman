@@ -9,9 +9,9 @@ import Pacman.PacmanGame;
 
 public class Inky extends Ghost {
 
-	public Inky(Board board) {
+	public Inky(Board board, Point2D.Double pos) {
 		super(board);
-		position 	  = new Point2D.Double(13, 14);
+		position 	  = pos;
 		scattertarget = new Point(27, 31);
 		this.direction = PacmanGame.DIR_UP;
 	}
