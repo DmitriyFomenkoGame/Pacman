@@ -28,7 +28,7 @@ public class PacmanGUI {
 	}
 	
 	public void setBoard(Board b) {
-		panel.setImage(renderer.renderFull(b));
+		panel.setImage(renderer.renderSimple(b));
 	}
 	
 	//TODO: Check redraw...
