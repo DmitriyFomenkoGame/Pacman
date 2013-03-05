@@ -21,13 +21,13 @@ public class Board implements Cloneable {
 							 HEIGHT        = 31;
 	
 	private Pacman pacman;
-	private Ghost[] ghosts;
+	protected TestGhost[] ghosts;
 	private Random generator;
 	private boolean locked;
 	private boolean[][] wallgrid;
 	private byte[][] dotgrid;
 	private int dotsremaining;
-	private String boarddata = "WWWWWWWWWWWWWWWWWWWWWWWWWWWW" +
+	protected String boarddata = "WWWWWWWWWWWWWWWWWWWWWWWWWWWW" +
 							   "WDDDDDDDDDDDDWWDDDDDDDDDDDDW" +
 							   "WDWWWWDWWWWWDWWDWWWWWDWWWWDW" +
 							   "WEWWWWDWWWWWDWWDWWWWWDWWWWEW" +
@@ -66,7 +66,7 @@ public class Board implements Cloneable {
 	
 	public Board() {
 		pacman = new Pacman();
-		ghosts = new Ghost[4];
+		ghosts = new TestGhost[4];
 		ghosts[Ghost.GHOST_BLINKY] = new Blinky(this);
 		ghosts[Ghost.GHOST_PINKY]  = new Pinky(this);
 		ghosts[Ghost.GHOST_INKY]   = new Inky(this);
@@ -78,7 +78,7 @@ public class Board implements Cloneable {
 		initGrids();
 	}
 	
-	private void initGrids() {
+	protected void initGrids() {
 		initWalls();
 		initDots();
 	}
@@ -357,11 +357,11 @@ public class Board implements Cloneable {
 		try{
 			Board cloned = (Board) super.clone();
 			cloned.pacman = (Pacman) pacman.clone();
-			cloned.ghosts = new Ghost[4];
-			cloned.ghosts[Ghost.GHOST_BLINKY] = (Ghost) ghosts[Ghost.GHOST_BLINKY].clone();
-			cloned.ghosts[Ghost.GHOST_PINKY]  = (Ghost) ghosts[Ghost.GHOST_PINKY].clone();
-			cloned.ghosts[Ghost.GHOST_INKY]   = (Ghost) ghosts[Ghost.GHOST_INKY].clone();
-			cloned.ghosts[Ghost.GHOST_CLYDE]  = (Ghost) ghosts[Ghost.GHOST_CLYDE].clone();
+			cloned.ghosts = new TestGhost[4];
+			cloned.ghosts[Ghost.GHOST_BLINKY] = (TestGhost) ghosts[Ghost.GHOST_BLINKY].clone();
+			cloned.ghosts[Ghost.GHOST_PINKY]  = (TestGhost) ghosts[Ghost.GHOST_PINKY].clone();
+			cloned.ghosts[Ghost.GHOST_INKY]   = (TestGhost) ghosts[Ghost.GHOST_INKY].clone();
+			cloned.ghosts[Ghost.GHOST_CLYDE]  = (TestGhost) ghosts[Ghost.GHOST_CLYDE].clone();
 			cloned.locked = true;
 			return cloned;
 		}

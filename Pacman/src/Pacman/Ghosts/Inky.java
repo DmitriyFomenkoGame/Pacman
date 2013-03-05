@@ -6,8 +6,9 @@ import java.awt.geom.Point2D;
 import Pacman.Board;
 import Pacman.Ghost;
 import Pacman.PacmanGame;
+import Pacman.TestGhost;
 
-public class Inky extends Ghost {
+public class Inky extends TestGhost {
 
 	public Inky(Board board) {
 		super(board);
