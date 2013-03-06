@@ -4,11 +4,18 @@ import org.jgap.Chromosome;
 
 public class PacmanWorkerThread extends Thread {
 
-	Chromosome[] chromosomesToTest;
+	Chromosome chromosome;
 	
-	public PacmanWorkerThread(Chromosome[] items){
-		chromosomesToTest = items;
-		System.out.println("Thread: " + chromosomesToTest.length);
+	public PacmanWorkerThread(Chromosome c){
+		chromosome = c;
+	}
+
+	public void giveWork(Chromosome c) {
+		chromosome = c;	
+	}
+	
+	public void run(){
+		
 	}
 	
 }

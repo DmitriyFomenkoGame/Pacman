@@ -1,13 +1,12 @@
 package Anji;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import org.jgap.Chromosome;
 
 public class PacmanFitnessFunction implements BulkFitnessFunction {
 
 	private int numberOfThreads;
+	private List Chromosomes;
 	
 	public PacmanFitnessFunction(){
 		setNumberOfThreads(4);
@@ -19,8 +18,32 @@ public class PacmanFitnessFunction implements BulkFitnessFunction {
 		}
 		numberOfThreads = i;
 	}
-	
+
 	public void evaluate(List subjects) {
+		int i = 0;
+		Chromosomes = subjects;
+		PacmanWorkerThread[] threads = new PacmanWorkerThread[numberOfThreads];
+		if (subjects.size() < numberOfThreads){
+			numberOfThreads = subjects.size();
+		}
+		for (int j = 0; j < numberOfThreads; j++){
+			threads[j] = new PacmanWorkerThread((Chromosome)subjects.get(j)); // weet niet of de cast nodig is
+			threads[j].run(); // moet dit .start() zijn ?
+		}
+		i = numberOfThreads;
+		while (i < subjects.size()){
+			for (int j = 0; j < numberOfThreads; j++){
+				if (!(threads[i].isAlive())){
+					threads[i].giveWork((Chromosome)subjects.get(i));
+					threads[i].run();
+					i++;
+				}
+			}
+		}
+	}
+	
+	/* oude versie
+	 public void evaluate(List subjects) {
 		Chromosome[] chromosomes = (Chromosome[]) subjects.toArray();
 		int alreadyDivided = 0;
 		Thread[] threads = new Thread[numberOfThreads];
@@ -38,11 +61,20 @@ public class PacmanFitnessFunction implements BulkFitnessFunction {
 			threads[i] = new PacmanWorkerThread((Chromosome[]) division.toArray());
 		}
 		//todo: Thread.join for loop
-	}
+	}*/
 
 	
 	public int getMaxFitnessValue() {
-		return 0;
+		double maxFitness = 0;
+		for (int i = 0; i < Chromosomes.size(); i++){
+			Chromosome c = (Chromosome) Chromosomes.get(i);
+			if (c.getFitnessValue() < maxFitness){
+				maxFitness = c.getFitnessValue();
+			}
+		}
+		return (int)Math.floor(maxFitness + 0.5);
 	}
+
+
 	
 }
