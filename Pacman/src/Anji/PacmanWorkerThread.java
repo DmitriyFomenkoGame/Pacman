@@ -4,6 +4,7 @@ import org.jgap.Chromosome;
 
 import com.anji.integration.Activator;
 import com.anji.integration.ActivatorTranscriber;
+import com.anji.integration.TranscriberException;
 import com.anji.util.Properties;
 
 import Pacman.PacmanGame;
@@ -47,9 +48,8 @@ public class PacmanWorkerThread extends Thread {
 			} else {
 				chromosome.setFitnessValue((int) fitness);
 			}
-		} catch (Throwable e) {
-			// Wat throw ik hierrrrr?
-			chromosome.setFitnessValue(0);
+		} catch (TranscriberException e) {
+			e.printStackTrace();
 		}
 	}
 
