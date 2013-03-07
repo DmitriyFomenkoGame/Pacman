@@ -4,13 +4,12 @@ import org.jgap.Chromosome;
 
 import com.anji.integration.Activator;
 import com.anji.integration.ActivatorTranscriber;
-import com.anji.util.Configurable;
 import com.anji.util.Properties;
 
 import Pacman.PacmanGame;
 import Pacman.PacmanScore;
 
-public class PacmanWorkerThread extends Thread implements Configurable {
+public class PacmanWorkerThread extends Thread {
 
 	private Chromosome chromosome;
 	private int maxFitness;
@@ -23,7 +22,7 @@ public class PacmanWorkerThread extends Thread implements Configurable {
 		chromosome = c;
 	}
 
-	public void init(Properties properties) throws Exception {
+	public void init(Properties properties) {
 		factory = (ActivatorTranscriber) properties
 				.singletonObjectProperty(ActivatorTranscriber.class);
 		maxFitness = properties.getIntProperty("MaxFitness");
@@ -46,7 +45,7 @@ public class PacmanWorkerThread extends Thread implements Configurable {
 			if (fitness > maxFitness) {
 				chromosome.setFitnessValue(maxFitness);
 			} else {
-				chromosome.setFitnessValue(fitness);
+				chromosome.setFitnessValue((int) fitness);
 			}
 		} catch (Throwable e) {
 			// Wat throw ik hierrrrr?

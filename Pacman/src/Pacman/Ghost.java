@@ -37,6 +37,10 @@ public class Ghost implements Cloneable {
 		this.currenttarget = this.deathtarget;
 		this.active        = false;
 	}
+	
+	public void setPosition(Point2D.Double pos){
+		position = pos;
+	}
 
 	public void setMode(byte mode) {
 		if (mode < MODE_CHASE || mode > MODE_DEAD) {

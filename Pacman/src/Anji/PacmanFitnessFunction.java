@@ -1,11 +1,14 @@
 package Anji;
 
 import java.util.List;
+
+import org.jgap.BulkFitnessFunction;
 import org.jgap.Chromosome;
 
 import com.anji.util.Configurable;
 import com.anji.util.Properties;
 
+@SuppressWarnings("serial")
 public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable {
 
 	private int numberOfThreads;
@@ -28,27 +31,22 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 		}
 	}
 
-	@Override
-	public void evaluate(List<Chromosome> subjects) {
+	public void evaluate(@SuppressWarnings("rawtypes") List subjects) {
 		int i = 0;
 		if (subjects.size() < numberOfThreads) {
 			numberOfThreads = subjects.size();
 		}
 		PacmanWorkerThread[] threads = new PacmanWorkerThread[numberOfThreads];
 		for (int j = 0; j < numberOfThreads; j++) {
-			threads[j] = new PacmanWorkerThread(subjects.get(j));
-			// Hier moet nog de init van the PacmanWorkerThread. 
-			// Maar krijg het er niet mooi in zonder een try/catch.
-			// Omdat je evaluate niet een exception mag laten throwen.
-			// Kan iemand even kijken?
-			// threads[j].init(properties);
+			threads[j] = new PacmanWorkerThread((Chromosome) subjects.get(j));
+			threads[j].init(properties);
 			threads[j].start();
 		}
 		i = numberOfThreads;
 		while (i < subjects.size()) {
 			for (int j = 0; j < numberOfThreads; j++) {
 				if (!(threads[i].isAlive())) {
-					threads[i].giveWork(subjects.get(i));
+					threads[i].giveWork((Chromosome) subjects.get(i));
 					threads[i].start();
 					i++;
 				}
@@ -62,21 +60,6 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 			}
 		}
 	}
-
-	/*
-	 * oude versie public void evaluate(List subjects) { Chromosome[]
-	 * chromosomes = (Chromosome[]) subjects.toArray(); int alreadyDivided = 0;
-	 * Thread[] threads = new Thread[numberOfThreads]; for (int i = 0; i <
-	 * threads.length; i++){ ArrayList<Chromosome> division = new
-	 * ArrayList<Chromosome>(); for (int k = alreadyDivided; k <
-	 * ((chromosomes.length/numberOfThreads) + alreadyDivided) ; k++){
-	 * division.add(chromosomes[k]); } alreadyDivided += division.size(); if (i
-	 * == (numberOfThreads -1) && alreadyDivided < chromosomes.length){ for (int
-	 * j = alreadyDivided; j < chromosomes.length; j++){
-	 * division.add(chromosomes[j]); } } threads[i] = new
-	 * PacmanWorkerThread((Chromosome[]) division.toArray()); } //todo:
-	 * Thread.join for loop }
-	 */
 
 	public int getMaxFitnessValue() {
 		return maxFitness;

@@ -30,7 +30,7 @@ public class PacmanGame {
 	private byte ghostMode;
 	
 	public PacmanGame(int maxGameticks) { //Value <0 enables infinit gameticks
-		board 			  = new Board();
+		board 			  = new SimpleMazeBoard();
 		score 			  = new PacmanScore();
 		
 		gameStatus		  = GAME_BUSY;
