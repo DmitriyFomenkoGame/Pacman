@@ -6,6 +6,7 @@ import org.jgap.Chromosome;
 import com.anji.integration.Activator;
 
 import Pacman.PacmanGame;
+import Pacman.PacmanScore;
 
 public class PacmanWorkerThread extends Thread {
 
@@ -35,9 +36,27 @@ public class PacmanWorkerThread extends Thread {
 	}
 
 	private double playGame(PacmanGame game, Activator activator) {
-		double[] networkInput = new double[100]; //dit is een random tijdelijk nummer 
-		double[] networkOutput = activator.next(networkInput);
-		return 0;
+		while (game.getStatus() == PacmanGame.GAME_BUSY){
+			double[] networkInput = new double[100]; //dit is een random tijdelijk nummer 
+			getNetworkInput(networkInput);
+			double[] networkOutput = activator.next(networkInput);
+			byte direction = getDirection(networkOutput);
+			game.doMove(direction);
+		}
+		return generateFitness(game.getScore());
+	}
+
+	private void getNetworkInput(double[] networkInput) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private double generateFitness(PacmanScore score) {
+		return 0;		
+	}
+
+	private byte getDirection(double[] networkOutput) {
+		return 0;	
 	}
 
 	private Activator getActivator() {
