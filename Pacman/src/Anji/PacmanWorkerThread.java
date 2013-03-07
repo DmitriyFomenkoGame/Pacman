@@ -1,9 +1,9 @@
 package Anji;
 
-
 import org.jgap.Chromosome;
 
 import com.anji.integration.Activator;
+import com.anji.integration.ActivatorTranscriber;
 import com.anji.util.Configurable;
 import com.anji.util.Properties;
 
@@ -16,13 +16,16 @@ public class PacmanWorkerThread extends Thread implements Configurable {
 	private int maxFitness;
 	private int maxGameTicks;
 	private int DotScore, EnergizerScore, GhostScore, TimePenalty;
-	
-	public PacmanWorkerThread(Chromosome c){
+	private ActivatorTranscriber factory;
+
+	public PacmanWorkerThread(Chromosome c) {
 		super();
 		chromosome = c;
 	}
-	
-	public void init(Properties properties) throws Exception{
+
+	public void init(Properties properties) throws Exception {
+		factory = (ActivatorTranscriber) properties
+				.singletonObjectProperty(ActivatorTranscriber.class);
 		maxFitness = properties.getIntProperty("MaxFitness");
 		maxGameTicks = properties.getIntProperty("MaxGameTicks", -1);
 		DotScore = properties.getIntProperty("DotScore", 10);
@@ -32,24 +35,29 @@ public class PacmanWorkerThread extends Thread implements Configurable {
 	}
 
 	public void giveWork(Chromosome c) {
-		chromosome = c;	
+		chromosome = c;
 	}
-	
-	public void run(){
-		Activator activator = getActivator();
-		PacmanGame game = new PacmanGame(maxGameTicks);
-		double fitness = playGame(game,activator);
-		if (fitness > maxFitness){
-			chromosome.setFitnessValue(maxFitness);
-		}
-		else{
-			chromosome.setFitnessValue(fitness);
+
+	public void run() {
+		try {
+			Activator activator = factory.newActivator(chromosome);
+			PacmanGame game = new PacmanGame(maxGameTicks);
+			double fitness = playGame(game, activator);
+			if (fitness > maxFitness) {
+				chromosome.setFitnessValue(maxFitness);
+			} else {
+				chromosome.setFitnessValue(fitness);
+			}
+		} catch (Throwable e) {
+			// Wat throw ik hierrrrr?
+			chromosome.setFitnessValue(0);
 		}
 	}
 
 	private double playGame(PacmanGame game, Activator activator) {
-		while (game.getStatus() == PacmanGame.GAME_BUSY){
-			double[] networkInput = new double[100]; //dit is een random tijdelijk nummer 
+		while (game.getStatus() == PacmanGame.GAME_BUSY) {
+			double[] networkInput = new double[100]; // dit is een random
+														// tijdelijk nummer
 			getNetworkInput(networkInput);
 			double[] networkOutput = activator.next(networkInput);
 			byte direction = getDirection(networkOutput);
@@ -60,7 +68,7 @@ public class PacmanWorkerThread extends Thread implements Configurable {
 
 	private void getNetworkInput(double[] networkInput) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private double generateFitness(PacmanScore score) {
@@ -73,12 +81,7 @@ public class PacmanWorkerThread extends Thread implements Configurable {
 	}
 
 	private byte getDirection(double[] networkOutput) {
-		return 0;	
+		return 0;
 	}
 
-	private Activator getActivator() {
-		// hier moet factory stuff komen en dat komt weer uit de properties.
-		return null;
-	}
-	
 }

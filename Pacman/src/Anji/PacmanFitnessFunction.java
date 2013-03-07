@@ -38,8 +38,10 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 		for (int j = 0; j < numberOfThreads; j++) {
 			threads[j] = new PacmanWorkerThread(subjects.get(j));
 			// Hier moet nog de init van the PacmanWorkerThread. 
-			// Maar krijg het er niet mooi in zonder een try/catch. 
+			// Maar krijg het er niet mooi in zonder een try/catch.
+			// Omdat je evaluate niet een exception mag laten throwen.
 			// Kan iemand even kijken?
+			// threads[j].init(properties);
 			threads[j].start();
 		}
 		i = numberOfThreads;
