@@ -6,10 +6,11 @@ import org.jgap.Chromosome;
 public class PacmanFitnessFunction implements BulkFitnessFunction {
 
 	private int numberOfThreads;
-	private List Chromosomes;
+	private int maxFitness;
 	
-	public PacmanFitnessFunction(){
+	public PacmanFitnessFunction(int maxFitnessValue){
 		setNumberOfThreads(4);
+		maxFitness = maxFitnessValue;
 	}
 	
 	public void setNumberOfThreads(int i){
@@ -21,23 +22,29 @@ public class PacmanFitnessFunction implements BulkFitnessFunction {
 
 	public void evaluate(List subjects) {
 		int i = 0;
-		Chromosomes = subjects;
 		PacmanWorkerThread[] threads = new PacmanWorkerThread[numberOfThreads];
 		if (subjects.size() < numberOfThreads){
 			numberOfThreads = subjects.size();
 		}
 		for (int j = 0; j < numberOfThreads; j++){
 			threads[j] = new PacmanWorkerThread((Chromosome)subjects.get(j)); // weet niet of de cast nodig is
-			threads[j].run(); // moet dit .start() zijn ?
+			threads[j].start();
 		}
 		i = numberOfThreads;
 		while (i < subjects.size()){
 			for (int j = 0; j < numberOfThreads; j++){
 				if (!(threads[i].isAlive())){
 					threads[i].giveWork((Chromosome)subjects.get(i));
-					threads[i].run();
+					threads[i].start();
 					i++;
 				}
+			}
+		}
+		for (int j = 0; j < numberOfThreads; j++){
+			try {
+				threads[j].join();
+			} catch (InterruptedException e) {
+				throw new Error("A thread got interrupted");
 			}
 		}
 	}
@@ -65,14 +72,7 @@ public class PacmanFitnessFunction implements BulkFitnessFunction {
 
 	
 	public int getMaxFitnessValue() {
-		double maxFitness = 0;
-		for (int i = 0; i < Chromosomes.size(); i++){
-			Chromosome c = (Chromosome) Chromosomes.get(i);
-			if (c.getFitnessValue() < maxFitness){
-				maxFitness = c.getFitnessValue();
-			}
-		}
-		return (int)Math.floor(maxFitness + 0.5);
+		return maxFitness;
 	}
 
 
