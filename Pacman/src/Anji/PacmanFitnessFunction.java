@@ -3,38 +3,40 @@ package Anji;
 import java.util.List;
 import org.jgap.Chromosome;
 
-public class PacmanFitnessFunction implements BulkFitnessFunction {
+import com.anji.util.Configurable;
+import com.anji.util.Properties;
+
+public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable {
 
 	private int numberOfThreads;
 	private int maxFitness;
 	
-	public PacmanFitnessFunction(int maxFitnessValue){
-		setNumberOfThreads(4);
-		maxFitness = maxFitnessValue;
+	public PacmanFitnessFunction(){
+		
 	}
 	
-	public void setNumberOfThreads(int i){
-		if (i < 1){
-			throw new Error("The minimum number of threads is 1");
-		}
-		numberOfThreads = i;
+	@Override
+	public void init(Properties properties) throws Exception {
+		numberOfThreads = properties.getIntProperty("NumberOfThreads", 4);
+		maxFitness = properties.getIntProperty("MaxFitness");
 	}
 
-	public void evaluate(List subjects) {
+	@Override
+	public void evaluate(List<Chromosome> subjects) {
 		int i = 0;
-		PacmanWorkerThread[] threads = new PacmanWorkerThread[numberOfThreads];
 		if (subjects.size() < numberOfThreads){
 			numberOfThreads = subjects.size();
 		}
+		PacmanWorkerThread[] threads = new PacmanWorkerThread[numberOfThreads];
 		for (int j = 0; j < numberOfThreads; j++){
-			threads[j] = new PacmanWorkerThread((Chromosome)subjects.get(j),maxFitness); // weet niet of de cast nodig is
+			threads[j] = new PacmanWorkerThread(subjects.get(j));
 			threads[j].start();
 		}
 		i = numberOfThreads;
 		while (i < subjects.size()){
 			for (int j = 0; j < numberOfThreads; j++){
 				if (!(threads[i].isAlive())){
-					threads[i].giveWork((Chromosome)subjects.get(i));
+					threads[i].giveWork(subjects.get(i));
 					threads[i].start();
 					i++;
 				}
@@ -75,6 +77,4 @@ public class PacmanFitnessFunction implements BulkFitnessFunction {
 		return maxFitness;
 	}
 
-
-	
 }

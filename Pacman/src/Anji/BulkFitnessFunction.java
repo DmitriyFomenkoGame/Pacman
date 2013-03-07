@@ -22,6 +22,8 @@ package Anji;
 import java.io.Serializable;
 import java.util.List;
 
+import org.jgap.Chromosome;
+
 /**
  * Bulk fitness functions are used to determine how optimal a group of solutions are relative to
  * each other. Bulk fitness functions can be useful (vs. normal fitness functions) when fitness
@@ -39,7 +41,7 @@ public interface BulkFitnessFunction extends Serializable {
 	 * @param subjects <code>List</code> contains <code>Chromosome</code> objects for which
 	 * the fitness values must be computed and set.
 	 */
-	public abstract void evaluate( List subjects );
+	public abstract void evaluate( List<Chromosome> subjects );
 
 	/**
 	 * @return int maximum possible fitness value this function will return

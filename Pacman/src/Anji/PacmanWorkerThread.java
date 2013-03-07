@@ -4,19 +4,31 @@ package Anji;
 import org.jgap.Chromosome;
 
 import com.anji.integration.Activator;
+import com.anji.util.Configurable;
+import com.anji.util.Properties;
 
 import Pacman.PacmanGame;
 import Pacman.PacmanScore;
 
-public class PacmanWorkerThread extends Thread {
+public class PacmanWorkerThread extends Thread implements Configurable {
 
 	private Chromosome chromosome;
 	private int maxFitness;
+	private int maxGameTicks;
+	private int DotScore, EnergizerScore, GhostScore, TimePenalty;
 	
-	public PacmanWorkerThread(Chromosome c, int maxFitnessValue){
+	public PacmanWorkerThread(Chromosome c){
 		super();
 		chromosome = c;
-		maxFitness = maxFitnessValue;
+	}
+	
+	public void init(Properties properties) throws Exception{
+		maxFitness = properties.getIntProperty("MaxFitness");
+		maxGameTicks = properties.getIntProperty("MaxGameTicks", -1);
+		DotScore = properties.getIntProperty("DotScore", 10);
+		EnergizerScore = properties.getIntProperty("EnergizerScore", 50);
+		GhostScore = properties.getIntProperty("GhostScore", 100);
+		TimePenalty = properties.getIntProperty("TimePenalty", 1);
 	}
 
 	public void giveWork(Chromosome c) {
@@ -25,7 +37,7 @@ public class PacmanWorkerThread extends Thread {
 	
 	public void run(){
 		Activator activator = getActivator();
-		PacmanGame game = new PacmanGame(-1); //de max gametick horen NIET -1 te zijn, maar die komen via de properties binnen
+		PacmanGame game = new PacmanGame(maxGameTicks);
 		double fitness = playGame(game,activator);
 		if (fitness > maxFitness){
 			chromosome.setFitnessValue(maxFitness);
@@ -52,7 +64,12 @@ public class PacmanWorkerThread extends Thread {
 	}
 
 	private double generateFitness(PacmanScore score) {
-		return 0;		
+		double fitness = 0;
+		fitness += DotScore * score.getDots();
+		fitness += EnergizerScore * score.getEnergizers();
+		fitness += GhostScore * score.getGhosts();
+		fitness -= TimePenalty * score.getGameticks();
+		return fitness;
 	}
 
 	private byte getDirection(double[] networkOutput) {
