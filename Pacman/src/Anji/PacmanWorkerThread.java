@@ -1,8 +1,9 @@
 package Anji;
 
-import java.rmi.activation.Activator;
 
 import org.jgap.Chromosome;
+
+import com.anji.integration.Activator;
 
 import Pacman.PacmanGame;
 
@@ -22,9 +23,9 @@ public class PacmanWorkerThread extends Thread {
 	}
 	
 	public void run(){
-		Activator a = getActivator();
+		Activator activator = getActivator();
 		PacmanGame game = new PacmanGame(-1); //de max gametick horen NIET -1 te zijn, maar die komen via de properties binnen
-		double fitness = playGame(game,a);
+		double fitness = playGame(game,activator);
 		if (fitness > maxFitness){
 			chromosome.setFitnessValue(maxFitness);
 		}
@@ -33,12 +34,14 @@ public class PacmanWorkerThread extends Thread {
 		}
 	}
 
-	private double playGame(PacmanGame game, Activator a) {
-		// TODO Auto-generated method stub
+	private double playGame(PacmanGame game, Activator activator) {
+		double[] networkInput = new double[100]; //dit is een random tijdelijk nummer 
+		double[] networkOutput = activator.next(networkInput);
 		return 0;
 	}
 
 	private Activator getActivator() {
+		// hier moet factory stuff komen en dat komt weer uit de properties.
 		return null;
 	}
 	
