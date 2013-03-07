@@ -5,7 +5,7 @@ import java.awt.geom.Point2D;
 
 import Pacman.Board;
 import Pacman.Ghost;
-import Pacman.PacmanGame;
+import Pacman.PacmanGame.Dir;
 
 public class Inky extends Ghost {
 
@@ -13,7 +13,7 @@ public class Inky extends Ghost {
 		super(board);
 		position 	  = new Point2D.Double(13, 14);
 		scattertarget = new Point(27, 31);
-		this.direction = PacmanGame.DIR_UP;
+		direction     = nextdirection = Dir.UP;
 	}
 	
 	protected Point chaseTarget() {

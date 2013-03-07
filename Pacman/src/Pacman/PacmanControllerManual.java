@@ -1,6 +1,7 @@
 package Pacman;
 
 import GameUI.PacmanGUIArrows;
+import Pacman.PacmanGame.Status;
 
 public class PacmanControllerManual {
 
@@ -9,7 +10,7 @@ public class PacmanControllerManual {
 		PacmanGame game = new PacmanGame(-1);
 		gui.setBoard(game.getBoard());
 		gui.show();
-		while(game.getStatus() == PacmanGame.GAME_BUSY && gui.isVisible()) {
+		while(game.getStatus() == Status.BUSY && gui.isVisible()) {
 			try {
 				Thread.sleep(35);
 				PacmanScore s = game.getScore();
@@ -23,9 +24,9 @@ public class PacmanControllerManual {
 			}
 		}
 		switch (game.getStatus()) {
-			case PacmanGame.GAME_OVER:    System.out.println("GAME_OVER");    break;
-			case PacmanGame.GAME_END:     System.out.println("GAME_END");     break;
-			case PacmanGame.GAME_TIMEOUT: System.out.println("GAME_TIMEOUT"); break;
+			case GAME_OVER: System.out.println("GAME_OVER");    break;
+			case GAME_END:  System.out.println("GAME_END");     break;
+			case TIMEOUT: 	System.out.println("GAME_TIMEOUT"); break;
 		}
 		try {
 			Thread.sleep(2000);

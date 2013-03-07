@@ -5,6 +5,7 @@ import com.anji.util.Properties;
 public class ActivatorData {
 
 	public void init(Properties properties) {
+		
 		/* Mogelijke properties:
 		 * 
 		 * Booleans voor dingen wel/niet meegeven aan het neurale netwerk:

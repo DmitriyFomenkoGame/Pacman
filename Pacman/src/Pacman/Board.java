@@ -4,19 +4,17 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
-import Pacman.Ghosts.Blinky;
-import Pacman.Ghosts.Clyde;
-import Pacman.Ghosts.Inky;
-import Pacman.Ghosts.Pinky;
+import Pacman.Ghosts.*;
+
+import Pacman.PacmanGame.Dir;
 
 public class Board implements Cloneable {
-
-	public static final byte DOT_NONE 	   = 0,
+	public enum Dot {
+		NONE, DOT, ENERGIZER
+	}
+/*	public static final byte DOT_NONE 	   = 0,
 							 DOT_DOT 	   = 1,
-							 DOT_ENERGIZER = 2;
-	public static final byte GHOST_NONE	   = 0,
-							 GHOST_NORMAL  = 1,
-							 GHOST_EDIBLE  = 2;
+							 DOT_ENERGIZER = 2;*/
 	public static final int  WIDTH         = 28,
 							 HEIGHT        = 31;
 	
@@ -25,7 +23,7 @@ public class Board implements Cloneable {
 	private Random generator;
 	private boolean locked;
 	private boolean[][] wallgrid;
-	private byte[][] dotgrid;
+	private Dot[][] dotgrid;
 	private int dotsremaining;
 	protected String boarddata = "WWWWWWWWWWWWWWWWWWWWWWWWWWWW" +
 							   "WDDDDDDDDDDDDWWDDDDDDDDDDDDW" +
@@ -67,12 +65,12 @@ public class Board implements Cloneable {
 	public Board() {
 		pacman = new Pacman();
 		ghosts = new Ghost[4];
-		ghosts[Ghost.GHOST_BLINKY] = new Blinky(this);
-		ghosts[Ghost.GHOST_PINKY]  = new Pinky(this);
-		ghosts[Ghost.GHOST_INKY]   = new Inky(this);
-		ghosts[Ghost.GHOST_CLYDE]  = new Clyde(this);
+		ghosts[Ghost.BLINKY] = new Blinky(this);
+		ghosts[Ghost.PINKY]  = new Pinky(this);
+		ghosts[Ghost.INKY]   = new Inky(this);
+		ghosts[Ghost.CLYDE]  = new Clyde(this);
 		locked = false;
-		
+				
 		generator = new Random(0);
 		
 		initGrids();
@@ -91,49 +89,46 @@ public class Board implements Cloneable {
 		}
 	}
 	private void initDots() {
-		dotgrid = new byte[WIDTH][HEIGHT];
+		dotgrid = new Dot[WIDTH][HEIGHT];
 		dotsremaining = 0;
 		for(int j = 0; j < HEIGHT; j++) {
 			for(int i = 0; i < WIDTH; i++) {
 				char c = boarddata.charAt(j * WIDTH + i);
-				dotgrid[i][j] = (c == 'D') ? DOT_DOT : ((c == 'E') ? DOT_ENERGIZER : DOT_NONE);
+				dotgrid[i][j] = (c == 'D') ? Dot.DOT : ((c == 'E') ? Dot.ENERGIZER : Dot.NONE);
 				dotsremaining += (c == 'D' || c == 'E') ? 1 : 0;
 			}
 		}		
 	}
 
-	public void doMove(byte direction) {
+	public void doMove(Dir direction) {
 		if (locked) {throw new Error("Board clones are readonly");}
-		if (direction < PacmanGame.DIR_UP || direction > PacmanGame.DIR_LEFT) {
-			throw new Error("Unknown direction for pacman. (" + String.valueOf(direction) + ")");
-		}
 		pacman.doMove(this, direction);
 	}
 	public void updateGhosts() {
-		for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
+		for(int g = Ghost.BLINKY; g <= Ghost.CLYDE; g++) {
 			ghosts[g].move();
 		}
 	}
 	public void activateGhost(int g) {
-		if (g < Ghost.GHOST_BLINKY || g > Ghost.GHOST_CLYDE) {
+		if (g < Ghost.BLINKY || g > Ghost.CLYDE) {
 			throw new Error("Unknown ghost to activate (" + String.valueOf(g) + ")");
 		}
 		ghosts[g].activate();
 	}
 	public boolean ghostIsActive(int g) {
-		if (g < Ghost.GHOST_BLINKY || g > Ghost.GHOST_CLYDE) {
+		if (g < Ghost.BLINKY || g > Ghost.CLYDE) {
 			throw new Error("Unknown ghost to activate (" + String.valueOf(g) + ")");
 		}
 		return ghosts[g].isActive();
 	}
 	public boolean ghostIsEdible(int g) {
-		if (g < Ghost.GHOST_BLINKY || g > Ghost.GHOST_CLYDE) {
+		if (g < Ghost.BLINKY || g > Ghost.CLYDE) {
 			throw new Error("Unknown ghost to activate (" + String.valueOf(g) + ")");
 		}
 		return ghosts[g].isEdible();
 	}
 	public boolean ghostIsDead(int g) {
-		if (g < Ghost.GHOST_BLINKY || g > Ghost.GHOST_CLYDE) {
+		if (g < Ghost.BLINKY || g > Ghost.CLYDE) {
 			throw new Error("Unknown ghost to activate (" + String.valueOf(g) + ")");
 		}
 		return ghosts[g].isDead();	
@@ -142,22 +137,22 @@ public class Board implements Cloneable {
 		Point newpos = pointToGrid(pacman.getPosition());
 		PacmanScore s = new PacmanScore();
 		if (newpos.x >= 0 && newpos.x < WIDTH) {
-			if (dotgrid[newpos.x][newpos.y] == DOT_DOT) {
+			if (dotgrid[newpos.x][newpos.y] == Dot.DOT) {
 				s.addDot();
 				dotsremaining -= 1;
-			} else if (dotgrid[newpos.x][newpos.y] == DOT_ENERGIZER) {
+			} else if (dotgrid[newpos.x][newpos.y] == Dot.ENERGIZER) {
 				s.addEnergizer();
 				dotsremaining -= 1;
 			}
-			dotgrid[newpos.x][newpos.y] = DOT_NONE;
-			for(int g = Ghost.GHOST_BLINKY; g <= Ghost.GHOST_CLYDE; g++) {
+			dotgrid[newpos.x][newpos.y] = Dot.NONE;
+			for(int g = Ghost.BLINKY; g <= Ghost.CLYDE; g++) {
 				Ghost ghost = ghosts[g];
 				Point gpos = pointToGrid(ghosts[g].getPosition());
 				if (newpos.x == gpos.x && newpos.y == gpos.y) {
-					byte gmode = ghost.getMode();
-					if (gmode == Ghost.MODE_CHASE || gmode == Ghost.MODE_SCATTER) {
+					Ghost.Mode gmode = ghost.getMode();
+					if (gmode == Ghost.Mode.CHASE || gmode == Ghost.Mode.SCATTER) {
 						s.addDeath();						
-					} else if (gmode == Ghost.MODE_FRIGHTENED) {
+					} else if (gmode == Ghost.Mode.FRIGHTENED) {
 						ghost.die();
 					}
 				}
@@ -166,40 +161,40 @@ public class Board implements Cloneable {
 		return s;
 	}
 
-	public void setMode(byte modeScatter, int ghost) {
-		if (ghost < Ghost.GHOST_BLINKY || ghost > Ghost.GHOST_CLYDE) {
+	public void setMode(Ghost.Mode modeScatter, int ghost) {
+		if (ghost < Ghost.BLINKY || ghost > Ghost.CLYDE) {
 			throw new Error("Unknown ghost type (" + String.valueOf(ghost) + ")");
 		}
 		ghosts[ghost].setMode(modeScatter);
 	}
-	public void setModes(byte modeScatter) {
-		for (int ghost = Ghost.GHOST_BLINKY; ghost <= Ghost.GHOST_CLYDE; ghost++) {
+	public void setModes(Ghost.Mode modeScatter) {
+		for (int ghost = Ghost.BLINKY; ghost <= Ghost.CLYDE; ghost++) {
 			ghosts[ghost].setMode(modeScatter);					
 		}
 	}
 		
 	public Point2D.Double getGhostPosition(int ghost) { //Positions are real numbers, not integers
-		if (ghost < Ghost.GHOST_BLINKY || ghost > Ghost.GHOST_CLYDE) {
+		if (ghost < Ghost.BLINKY || ghost > Ghost.CLYDE) {
 			throw new Error("Ghost identifier is unknown! (" + String.valueOf(ghost) + ")");
 		}
 		return ghosts[ghost].getPosition();
 	}
 	public Point2D.Double getBlinkyPosition() {
-		return getGhostPosition(Ghost.GHOST_BLINKY);
+		return getGhostPosition(Ghost.BLINKY);
 	}
 	public Point2D.Double getPinkyPosition() {
-		return getGhostPosition(Ghost.GHOST_PINKY);
+		return getGhostPosition(Ghost.PINKY);
 	}
 	public Point2D.Double getInkyPosition() {
-		return getGhostPosition(Ghost.GHOST_INKY);
+		return getGhostPosition(Ghost.INKY);
 	}
 	public Point2D.Double getClydePosition() {
-		return getGhostPosition(Ghost.GHOST_CLYDE);
+		return getGhostPosition(Ghost.CLYDE);
 	}
 	public Point2D.Double getPacmanPosition() {
 		return pacman.getPosition();
 	}
-	public byte getPacmanDirection() {
+	public Dir getPacmanDirection() {
 		return pacman.getDirection();
 	}
 	public Point tilesAheadOfPacman(int tiles) {
@@ -207,12 +202,12 @@ public class Board implements Cloneable {
 		if (tiles == 0) {
 			return targetPos;
 		}
-		byte dir = pacman.getDirection();
-		switch(dir) {
-			case PacmanGame.DIR_UP:    return new Point(targetPos.x - tiles, targetPos.y - tiles);
-			case PacmanGame.DIR_RIGHT: return new Point(targetPos.x + tiles, targetPos.y - 0	);
-			case PacmanGame.DIR_DOWN:  return new Point(targetPos.x - 0, 	 targetPos.y + tiles);
-			default:  				   return new Point(targetPos.x - tiles, targetPos.y - 0	);
+		Dir dir = pacman.getDirection();
+		switch (dir) {
+			case UP:    return new Point(targetPos.x - tiles, targetPos.y - tiles);
+			case RIGHT: return new Point(targetPos.x + tiles, targetPos.y - 0	);
+			case DOWN:  return new Point(targetPos.x - 0, 	 targetPos.y + tiles);
+			default:  	return new Point(targetPos.x - tiles, targetPos.y - 0	);
 		}
 	}
 	
@@ -249,50 +244,47 @@ public class Board implements Cloneable {
 		directions += (!isWall(new Point(p.x - 1, p.y))) ? DIRS_L : 0;
 		return directions;
 	}
-	public Point getNextTile(Point p, int direction) {
-		if (direction < PacmanGame.DIR_UP || direction > PacmanGame.DIR_LEFT) {
-			throw new Error("Unknown direction. (" + String.valueOf(direction) + ")");
-		}
+	public Point getNextTile(Point p, Dir direction) {
 		switch (direction) {
-			case PacmanGame.DIR_UP:    return new Point(p.x, p.y - 1);
-			case PacmanGame.DIR_RIGHT: return new Point(p.x + 1, p.y);
-			case PacmanGame.DIR_DOWN:  return new Point(p.x, p.y + 1);
-			case PacmanGame.DIR_LEFT:  return new Point(p.x - 1, p.y);		
+			case UP:    return new Point(p.x, p.y - 1);
+			case RIGHT: return new Point(p.x + 1, p.y);
+			case DOWN:  return new Point(p.x, p.y + 1);
+			case LEFT:  return new Point(p.x - 1, p.y);		
 		}
 		return null;
 	}
-	public Point getNextTile(Point2D.Double p, int direction) {
+	public Point getNextTile(Point2D.Double p, Dir direction) {
 		return getNextTile(pointToGrid(p), direction);
 	}
 	
-	public byte getCornerDir(Point p, byte direction) {
+	public Dir getCornerDir(Point p, Dir direction) {
 		//Assumes valid current direction was given...
 		if (!isCorner(p)) {
 			throw new Error("getCornerDir called on a non-corner");
 		}
 		switch (getDirections(p)) {
-			case DIRS_UR: return (direction == PacmanGame.DIR_LEFT)  ? PacmanGame.DIR_UP   : PacmanGame.DIR_RIGHT;
-			case DIRS_RD: return (direction == PacmanGame.DIR_LEFT)  ? PacmanGame.DIR_DOWN : PacmanGame.DIR_RIGHT;
-			case DIRS_DL: return (direction == PacmanGame.DIR_RIGHT) ? PacmanGame.DIR_DOWN : PacmanGame.DIR_LEFT;
-			case DIRS_LU: return (direction == PacmanGame.DIR_RIGHT) ? PacmanGame.DIR_UP   : PacmanGame.DIR_LEFT;
+			case DIRS_UR: return (direction == Dir.LEFT)  ? Dir.UP   : Dir.RIGHT;
+			case DIRS_RD: return (direction == Dir.LEFT)  ? Dir.DOWN : Dir.RIGHT;
+			case DIRS_DL: return (direction == Dir.RIGHT) ? Dir.DOWN : Dir.LEFT;
+			case DIRS_LU: return (direction == Dir.RIGHT) ? Dir.UP   : Dir.LEFT;
 		}
 		return direction;
 	}
-	public byte getCornerDir(Point2D.Double p, byte direction) {
+	public Dir getCornerDir(Point2D.Double p, Dir direction) {
 		return getCornerDir(pointToGrid(p), direction);
 	}
-	public byte getCrossingDir(Point p, byte direction, Point t, byte mode, boolean noup) {
+	public Dir getCrossingDir(Point p, Dir direction, Point t, Ghost.Mode mode, boolean noup) {
 		//Assumes valid current direction was given...
 		if (!isCrossing(p)) {
 			throw new Error("getCrossingDir called on non-crossing");
 		}
 		int dirs  = getDirections(p);
-		int blockdir = (direction == PacmanGame.DIR_UP) ? DIRS_D : (direction == PacmanGame.DIR_RIGHT) ? DIRS_L : (direction == PacmanGame.DIR_DOWN) ? DIRS_U : DIRS_R; 
+		int blockdir = (direction == Dir.UP) ? DIRS_D : (direction == Dir.RIGHT) ? DIRS_L : (direction == Dir.DOWN) ? DIRS_U : DIRS_R; 
 		if ((dirs & blockdir) != 0) {dirs -= blockdir;}
 		if (noup && (dirs & DIRS_U) != 0) { dirs -= DIRS_U; }
 		double bestdist = Double.MAX_VALUE;
-		byte bestdir = direction;
-		for (byte d = PacmanGame.DIR_UP; d <= PacmanGame.DIR_LEFT; d++) {
+		Dir bestdir = direction;
+		for (Dir d : Dir.values()) {
 			if ((dirs & 1) != 0) {
 				double dist = getNextTile(p, d).distance(t);
 				if (dist < bestdist) {
@@ -304,38 +296,38 @@ public class Board implements Cloneable {
 		}
 		return bestdir;
 	}
-	public byte getCrossingDir(Point2D.Double p, byte direction, Point target, byte mode, boolean noup) {
+	public Dir getCrossingDir(Point2D.Double p, Dir direction, Point target, Ghost.Mode mode, boolean noup) {
 		return getCrossingDir(pointToGrid(p), direction, target, mode, noup);
 	}
 
-	public boolean directionFree(Point2D.Double p, byte direction) {
+	public boolean directionFree(Point2D.Double p, Dir direction) {
 		Point q = pointToGrid(p);
 		if (q.x == 0 || q.x == WIDTH - 1) {
-			if (direction == PacmanGame.DIR_LEFT || direction == PacmanGame.DIR_RIGHT) {
+			if (direction == Dir.LEFT || direction == Dir.RIGHT) {
 				return true;
 			}else {
 				return false;
 			}
 		}
 		switch (direction) {
-			case PacmanGame.DIR_UP:	   return !wallgrid[q.x][q.y - 1];
-			case PacmanGame.DIR_RIGHT: return !wallgrid[q.x + 1][q.y];
-			case PacmanGame.DIR_DOWN:  return !wallgrid[q.x][q.y + 1];
-			case PacmanGame.DIR_LEFT:  return !wallgrid[q.x - 1][q.y];
+			case UP:	return !wallgrid[q.x][q.y - 1];
+			case RIGHT: return !wallgrid[q.x + 1][q.y];
+			case DOWN:  return !wallgrid[q.x][q.y + 1];
+			case LEFT:  return !wallgrid[q.x - 1][q.y];
 		}
 		return false;
 	}
-	public boolean directionFreeExclude(Point p, byte direction, byte excludeddirection) {
-		if ((direction == PacmanGame.DIR_UP    && excludeddirection == PacmanGame.DIR_DOWN) ||
-			(direction == PacmanGame.DIR_DOWN  && excludeddirection == PacmanGame.DIR_UP) ||
-			(direction == PacmanGame.DIR_LEFT  && excludeddirection == PacmanGame.DIR_RIGHT) ||
-			(direction == PacmanGame.DIR_RIGHT && excludeddirection == PacmanGame.DIR_LEFT)) {
+	public boolean directionFreeExclude(Point p, Dir direction, Dir excludeddirection) {
+		if ((direction == Dir.UP    && excludeddirection == Dir.DOWN) ||
+			(direction == Dir.DOWN  && excludeddirection == Dir.UP) ||
+			(direction == Dir.LEFT  && excludeddirection == Dir.RIGHT) ||
+			(direction == Dir.RIGHT && excludeddirection == Dir.LEFT)) {
 			return false;
 		}
 		return directionFree(new Point2D.Double(p.x, p.y), direction);
 	}
-	public byte getRandomDir() {
-		return (byte) generator.nextInt(4);
+	public Dir getRandomDir() {
+		return Dir.values()[generator.nextInt(4)];
 	}
 	
 	public static Point pointToGrid(Point2D.Double p) {
@@ -345,7 +337,7 @@ public class Board implements Cloneable {
 	public boolean[][] getWalls() {
 		return wallgrid.clone();
 	}
-	public byte[][] getDots() {
+	public Dot[][] getDots() {
 		return dotgrid.clone();
 	}
 	
@@ -358,10 +350,10 @@ public class Board implements Cloneable {
 			Board cloned = (Board) super.clone();
 			cloned.pacman = (Pacman) pacman.clone();
 			cloned.ghosts = new Ghost[4];
-			cloned.ghosts[Ghost.GHOST_BLINKY] = (Ghost) ghosts[Ghost.GHOST_BLINKY].clone();
-			cloned.ghosts[Ghost.GHOST_PINKY]  = (Ghost) ghosts[Ghost.GHOST_PINKY].clone();
-			cloned.ghosts[Ghost.GHOST_INKY]   = (Ghost) ghosts[Ghost.GHOST_INKY].clone();
-			cloned.ghosts[Ghost.GHOST_CLYDE]  = (Ghost) ghosts[Ghost.GHOST_CLYDE].clone();
+			cloned.ghosts[Ghost.BLINKY] = (Ghost) ghosts[Ghost.BLINKY].clone();
+			cloned.ghosts[Ghost.PINKY]  = (Ghost) ghosts[Ghost.PINKY].clone();
+			cloned.ghosts[Ghost.INKY]   = (Ghost) ghosts[Ghost.INKY].clone();
+			cloned.ghosts[Ghost.CLYDE]  = (Ghost) ghosts[Ghost.CLYDE].clone();
 			cloned.locked = true;
 			return cloned;
 		}

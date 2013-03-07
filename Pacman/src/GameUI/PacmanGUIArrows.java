@@ -1,26 +1,27 @@
 package GameUI;
 
 import java.awt.event.*;
+import Pacman.PacmanGame.Dir;
 
 public class PacmanGUIArrows extends PacmanGUI {
 	
-	private byte direction = Pacman.PacmanGame.DIR_LEFT;
+	private Dir direction = Dir.LEFT;
 	
 	public PacmanGUIArrows(){
 		super();
 		this.frame.addKeyListener(new KeyAdapter() {
     		public void keyPressed(KeyEvent e) {
     			if(e.getKeyCode() == (KeyEvent.VK_LEFT)){
-    				setDirection(Pacman.PacmanGame.DIR_LEFT);
+    				setDirection(Dir.LEFT);
     			}
     			if(e.getKeyCode() == (KeyEvent.VK_RIGHT)){
-    				setDirection(Pacman.PacmanGame.DIR_RIGHT);
+    				setDirection(Dir.RIGHT);
     			}
     			if(e.getKeyCode() == (KeyEvent.VK_UP)){
-    				setDirection(Pacman.PacmanGame.DIR_UP);
+    				setDirection(Dir.UP);
     			}
     			if(e.getKeyCode() == (KeyEvent.VK_DOWN)){
-    				setDirection(Pacman.PacmanGame.DIR_DOWN);
+    				setDirection(Dir.DOWN);
     			}
     			if(e.getKeyCode() == (KeyEvent.VK_ESCAPE)){
     				close();
@@ -29,11 +30,11 @@ public class PacmanGUIArrows extends PacmanGUI {
 		});
 	}
 	
-	public void setDirection(byte direction){
+	public void setDirection(Dir direction){
 		this.direction = direction;
 	}
 	
-	public byte getDirection(){
+	public Dir getDirection(){
 		return this.direction;
 	}
 }

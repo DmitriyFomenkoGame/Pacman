@@ -3,21 +3,23 @@ package Pacman;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
+import Pacman.PacmanGame.Dir;
+
 public class Pacman implements Cloneable {
 	
 	private Point2D.Double position;
-	private byte direction;
+	private Dir direction;
 	public static final double PACMAN_SPEED = 0.25;
 	
 	public Pacman() {
 		position = new Point2D.Double(13, 23);
-		direction = PacmanGame.DIR_LEFT;
+		direction = Dir.LEFT;
 	}
 
-	public Point2D.Double doMove(Board b, byte direction) {
+	public Point2D.Double doMove(Board b, Dir direction) {
 		boolean stop = false;
 		if (position.x == Math.floor(position.x) && position.y == Math.floor(position.y)) {
-			if (!position.equals(new Point(13,11)) || direction != PacmanGame.DIR_DOWN) {
+			if (!position.equals(new Point(13,11)) || direction != Dir.DOWN) {
 				if (b.directionFree(position, direction)) {
 					this.direction = direction;
 				}
@@ -28,10 +30,10 @@ public class Pacman implements Cloneable {
 		}
 		if (!stop) {
 			switch (this.direction) {
-				case PacmanGame.DIR_UP:    moveRelative(0, -PACMAN_SPEED); break;
-				case PacmanGame.DIR_RIGHT: moveRelative( PACMAN_SPEED, 0); break;
-				case PacmanGame.DIR_DOWN:  moveRelative(0,  PACMAN_SPEED); break;
-				case PacmanGame.DIR_LEFT:  moveRelative(-PACMAN_SPEED, 0); break;
+				case UP:    moveRelative(0, -PACMAN_SPEED); break;
+				case RIGHT: moveRelative( PACMAN_SPEED, 0); break;
+				case DOWN:  moveRelative(0,  PACMAN_SPEED); break;
+				case LEFT:  moveRelative(-PACMAN_SPEED, 0); break;
 			}
 			if (position.x < 0) {
 				position.x += Board.WIDTH;
@@ -50,7 +52,7 @@ public class Pacman implements Cloneable {
 		position.setLocation(position.getX() + dx, position.getY() + dy);
 	}
 	
-	public byte getDirection(){
+	public Dir getDirection(){
 		return this.direction;
 	}
 	

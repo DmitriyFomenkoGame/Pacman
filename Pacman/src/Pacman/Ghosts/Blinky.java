@@ -5,7 +5,7 @@ import java.awt.geom.Point2D;
 
 import Pacman.Board;
 import Pacman.Ghost;
-import Pacman.PacmanGame;
+import Pacman.PacmanGame.Dir;
 
 public class Blinky extends Ghost {
 
@@ -13,7 +13,7 @@ public class Blinky extends Ghost {
 		super(board);
 		position      = new Point2D.Double(13, 11);
 		scattertarget = new Point(25, -4);
-		direction	  = PacmanGame.DIR_LEFT;
+		direction	  = nextdirection = Dir.LEFT;
 		active 		  = true;
 	}
 	

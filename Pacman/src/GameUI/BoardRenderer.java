@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import Pacman.Board;
 import Pacman.Ghost;
+import Pacman.PacmanGame.Dir;
 
 public class BoardRenderer {
 	
@@ -50,15 +51,15 @@ public class BoardRenderer {
 	public BufferedImage renderSimple(Board b) {
 		BufferedImage image = new BufferedImage(BOARD_WIDTH, BOARD_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		boolean[][] walls = b.getWalls();
-		byte[][] dots = b.getDots();
+		Board.Dot[][] dots = b.getDots();
 		for(int j = 0; j < BOARD_HEIGHT; j++) {
 			for(int i = 0; i < BOARD_WIDTH; i++) {
 				if (walls[i][j]) {
 					imageTrySet(image, i, j, Color.blue);
 				}
-				if (dots[i][j] == Board.DOT_DOT) {
+				if (dots[i][j] == Board.Dot.DOT) {
 					imageTrySet(image, i, j, Color.darkGray);					
-				} else if (dots[i][j] == Board.DOT_ENERGIZER) {
+				} else if (dots[i][j] == Board.Dot.ENERGIZER) {
 					imageTrySet(image, i, j, Color.gray);					
 				}
 			}
@@ -69,10 +70,10 @@ public class BoardRenderer {
 				clyde  = b.getClydePosition(),
 				pacman = b.getPacmanPosition();
 
-		imageTrySet(image, blinky.getX(), blinky.getY(), (!b.ghostIsEdible(Ghost.GHOST_BLINKY)) ? Color.red    : Color.magenta);
-		imageTrySet(image, pinky.getX(),  pinky.getY(),  (!b.ghostIsEdible(Ghost.GHOST_PINKY))  ? Color.pink   : Color.magenta);
-		imageTrySet(image, inky.getX(),   inky.getY(),   (!b.ghostIsEdible(Ghost.GHOST_INKY))   ? Color.cyan   : Color.magenta);
-		imageTrySet(image, clyde.getX(),  clyde.getY(),  (!b.ghostIsEdible(Ghost.GHOST_CLYDE))  ? Color.orange : Color.magenta);
+		imageTrySet(image, blinky.getX(), blinky.getY(), (!b.ghostIsEdible(Ghost.BLINKY)) ? Color.red    : Color.magenta);
+		imageTrySet(image, pinky.getX(),  pinky.getY(),  (!b.ghostIsEdible(Ghost.PINKY))  ? Color.pink   : Color.magenta);
+		imageTrySet(image, inky.getX(),   inky.getY(),   (!b.ghostIsEdible(Ghost.INKY))   ? Color.cyan   : Color.magenta);
+		imageTrySet(image, clyde.getX(),  clyde.getY(),  (!b.ghostIsEdible(Ghost.CLYDE))  ? Color.orange : Color.magenta);
 		imageTrySet(image, pacman.getX(), pacman.getY(), Color.yellow);
 		
 		return image;
@@ -97,12 +98,12 @@ public class BoardRenderer {
 	    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	    graphicsTrySet(g, imageBack, 0, 0);
 	    
-		byte[][] dots = b.getDots();
+		Board.Dot[][] dots = b.getDots();
 		for(int j = 0; j < BOARD_HEIGHT; j++) {
 			for(int i = 0; i < BOARD_WIDTH; i++) {
-				if (dots[i][j] == Board.DOT_DOT) {
+				if (dots[i][j] == Board.Dot.DOT) {
 					graphicsTrySet(g, imageDot, i, j);		
-				} else if (dots[i][j] == Board.DOT_ENERGIZER) {
+				} else if (dots[i][j] == Board.Dot.ENERGIZER) {
 					graphicsTrySet(g, imageEnergizer, i, j);		
 				}
 			}
@@ -112,17 +113,25 @@ public class BoardRenderer {
 				inky   = b.getInkyPosition(),
 				clyde  = b.getClydePosition(),
 				pacman = b.getPacmanPosition();
-		byte pacmandir = b.getPacmanDirection();
+		Dir pacmandir = b.getPacmanDirection();
 
-		graphicsTrySet(g, (b.ghostIsEdible(Ghost.GHOST_BLINKY)) ? imageFright : (b.ghostIsDead(Ghost.GHOST_BLINKY) ? imageDead : imageBlinky), blinky.getX(), blinky.getY());
-		graphicsTrySet(g, (b.ghostIsEdible(Ghost.GHOST_PINKY))  ? imageFright : (b.ghostIsDead(Ghost.GHOST_PINKY)  ? imageDead : imagePinky),  pinky.getX(),  pinky.getY());
-		graphicsTrySet(g, (b.ghostIsEdible(Ghost.GHOST_INKY))   ? imageFright : (b.ghostIsDead(Ghost.GHOST_INKY)   ? imageDead : imageInky),   inky.getX(),   inky.getY());
-		graphicsTrySet(g, (b.ghostIsEdible(Ghost.GHOST_CLYDE))  ? imageFright : (b.ghostIsDead(Ghost.GHOST_CLYDE)  ? imageDead : imageClyde),  clyde.getX(),  clyde.getY());
-		graphicsTrySetAngle(g, imagePacman, pacman.getX(), pacman.getY(), pacmandir * 90 - 90);
+		graphicsTrySet(g, (b.ghostIsEdible(Ghost.BLINKY)) ? imageFright : (b.ghostIsDead(Ghost.BLINKY) ? imageDead : imageBlinky), blinky.getX(), blinky.getY());
+		graphicsTrySet(g, (b.ghostIsEdible(Ghost.PINKY))  ? imageFright : (b.ghostIsDead(Ghost.PINKY)  ? imageDead : imagePinky),  pinky.getX(),  pinky.getY());
+		graphicsTrySet(g, (b.ghostIsEdible(Ghost.INKY))   ? imageFright : (b.ghostIsDead(Ghost.INKY)   ? imageDead : imageInky),   inky.getX(),   inky.getY());
+		graphicsTrySet(g, (b.ghostIsEdible(Ghost.CLYDE))  ? imageFright : (b.ghostIsDead(Ghost.CLYDE)  ? imageDead : imageClyde),  clyde.getX(),  clyde.getY());
+		graphicsTrySetAngle(g, imagePacman, pacman.getX(), pacman.getY(), dirToAngle(pacmandir));
 		
 		return image;
 	}
 	
+	private int dirToAngle(Dir d) {
+		switch (d) {
+			case UP: 	return -90;
+			case RIGHT: return 0;
+			case DOWN:  return 90;
+			default:    return 180;
+		}
+	}
 
 	private void graphicsTrySet(Graphics2D g, Image img, double x, double y) {
 		int xx = (int) Math.round(x * SPRITE_WIDTH),
