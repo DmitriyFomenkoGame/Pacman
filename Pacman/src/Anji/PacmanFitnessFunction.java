@@ -45,9 +45,10 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 		i = numberOfThreads;
 		while (i < subjects.size()) {
 			for (int j = 0; j < numberOfThreads; j++) {
-				if (!(threads[i].isAlive())) {
-					threads[i].giveWork((Chromosome) subjects.get(i));
-					threads[i].start();
+				if (!(threads[j].isAlive())) {
+					threads[j] = new PacmanWorkerThread((Chromosome) subjects.get(i));
+					threads[j].init(properties);
+					threads[j].start();
 					i++;
 				}
 			}
