@@ -125,7 +125,12 @@ public class PacmanGame {
 	public Status getStatus() {
 		return this.gameStatus;
 	}
-
+	public int getMaxGameticks() {
+		return maxGameticks;
+	}
+	public Mode getMode() {
+		return ghostMode;
+	}
 	public String getModeString() {
 		if (frightenedTimer > 0) {
 			return "FRIGHT";

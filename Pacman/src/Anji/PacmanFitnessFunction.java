@@ -22,8 +22,8 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 	@Override
 	public void init(Properties properties) throws Exception {
 		try{
-			numberOfThreads = properties.getIntProperty("NumberOfThreads", 4);
-			maxFitness = properties.getIntProperty("MaxFitness");
+			numberOfThreads = properties.getIntProperty("threads.count", 4);
+			maxFitness = properties.getIntProperty("fitness.max");
 			this.properties = properties;
 		}catch(Exception e){
 			throw new IllegalArgumentException( "invalid properties: " + e.getClass().toString() + ": "

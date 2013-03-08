@@ -8,6 +8,7 @@ import com.anji.integration.TranscriberException;
 import com.anji.util.Properties;
 
 import Pacman.PacmanGame;
+import Pacman.PacmanGame.Type;
 import Pacman.PacmanScore;
 import Pacman.PacmanGame.Dir;
 import Pacman.PacmanGame.Status;
@@ -19,6 +20,9 @@ public class PacmanWorkerThread extends Thread {
 	private int maxGameTicks;
 	private int dotScore, energizerScore, ghostScore, timePenalty;
 	private ActivatorTranscriber factory;
+	private ActivatorData activatorData;
+	private Type gameType;
+
 
 	public PacmanWorkerThread(Chromosome c) {
 		super();
@@ -34,6 +38,18 @@ public class PacmanWorkerThread extends Thread {
 		energizerScore = properties.getIntProperty("game.score.energizer", 50);
 		ghostScore 	   = properties.getIntProperty("game.score.ghost", 100);
 		timePenalty    = properties.getIntProperty("game.score.time.penalty", 1);
+		
+		String gameTypeString = properties.getProperty("game.type", "default").toLowerCase();
+		if (gameTypeString.equals("square")) {
+			gameType = Type.SQUARE;
+		} else if (gameTypeString.equals("simple")) {
+			gameType = Type.SIMPLE;
+		} else {
+			gameType = Type.DEFAULT;
+		}
+		
+		activatorData  = new ActivatorData();
+		activatorData.init(properties);
 	}
 
 	public void giveWork(Chromosome c) {
@@ -43,7 +59,7 @@ public class PacmanWorkerThread extends Thread {
 	public void run() {
 		try {
 			Activator activator = factory.newActivator(chromosome);
-			PacmanGame game = new PacmanGame(maxGameTicks);
+			PacmanGame game = new PacmanGame(maxGameTicks, gameType);
 			double fitness = playGame(game, activator);
 			if (fitness > maxFitness) {
 				chromosome.setFitnessValue(maxFitness);
@@ -57,19 +73,12 @@ public class PacmanWorkerThread extends Thread {
 
 	private double playGame(PacmanGame game, Activator activator) {
 		while (game.getStatus() == Status.BUSY) {
-			double[] networkInput = new double[100]; // dit is een random
-														// tijdelijk nummer
-			getNetworkInput(networkInput);
+			double[] networkInput = activatorData.getData(game.getBoard(), game.getScore(), game.getMode(), game.getMaxGameticks());
 			double[] networkOutput = activator.next(networkInput);
 			Dir direction = getDirection(networkOutput);
 			game.doMove(direction);
 		}
 		return generateFitness(game.getScore());
-	}
-
-	private void getNetworkInput(double[] networkInput) {
-		// TODO Auto-generated method stub
-
 	}
 
 	private double generateFitness(PacmanScore score) {
