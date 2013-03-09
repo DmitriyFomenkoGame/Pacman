@@ -65,7 +65,8 @@ public class PacmanWorkerThread extends Thread {
 
 	public void run() {
 		//System.out.println("[THREAD] Thread started");
-		PacmanGUI gui = new PacmanGUI();
+		//PacmanGUI gui = new PacmanGUI();
+		PacmanGUI gui = null;
 		try {
 			Activator activator = factory.newActivator(chromosome);
 			PacmanGame game = new PacmanGame(maxGameTicks, gameType);
@@ -79,14 +80,14 @@ public class PacmanWorkerThread extends Thread {
 		} catch (TranscriberException e) {
 			e.printStackTrace();
 		} finally {
-			gui.close();
+			//gui.close();
 		}
 		//System.out.println("[THREAD] Thread done");
 	}
 
 	private double playGame(PacmanGame game, Activator activator, PacmanGUI gui) {
-		gui.setBoard(game.getBoard());
-		gui.show();
+		//gui.setBoard(game.getBoard());
+		//gui.show();
 		while (game.getStatus() == Status.BUSY) {
 			double[] networkInput = activatorData.getData(game.getBoard(), game.getScore(), game.getMode(), game.getMaxGameticks());
 			if (networkInput.length != expectedStimuli) {
@@ -96,9 +97,9 @@ public class PacmanWorkerThread extends Thread {
 			double[] networkOutput = activator.next(networkInput);
 			Dir direction = getDirection(networkOutput, game.getBoard());
 			game.doMove(direction);
-			gui.setBoard(game.getBoard());
-			gui.setTitle(String.valueOf(game.getScore().getGameticks()) + "/" + String.valueOf(game.getMaxGameticks()));
-			gui.redraw();
+			//gui.setBoard(game.getBoard());
+			//gui.setTitle(String.valueOf(game.getScore().getGameticks()) + "/" + String.valueOf(game.getMaxGameticks()));
+			//gui.redraw();
 			try {
 				//Thread.sleep(20);
 			} catch (Exception e) {
@@ -119,7 +120,7 @@ public class PacmanWorkerThread extends Thread {
 
 	private Dir getDirection(double[] networkOutput, Board b) {
 		//System.out.printf("%.2f %.2f %.2f %.2f\n", networkOutput[0], networkOutput[1], networkOutput[2], networkOutput[3]);
-		Dir d = null;
+		Dir d = b.getPacmanDirection();
 		double dirval = 0.0;
 		if (b.directionFree(b.getPacmanPosition(), Dir.UP) && networkOutput[0] > dirval) {
 			d = Dir.UP;
