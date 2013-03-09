@@ -59,7 +59,53 @@ public class ActivatorData {
 	public double[] getData(Board board, PacmanScore score, Ghost.Mode mode, int maxgameticks) {
 		ArrayList<Double> result = new ArrayList<Double>();
 		
-		if (showGameticks) {
+		//LETOP er wordt geen rekening gehouden met de properties :3
+		//TODO rekening houden met de properties :')
+		
+		Dot[][] dots 	  = board.getDots();
+		boolean[][] walls = board.getWalls();
+		Point pacmanPos   = Board.pointToGrid(board.getPacmanPosition());
+		Point blinkyPos = Board.pointToGrid(board.getBlinkyPosition());
+		
+		/*
+		//Helebord
+		for(int y = 5; y < 25; y++) {
+			for(int x = 5; x < 23; x++) {
+				if (dots[x][y] != Dot.NONE) {
+					result.add(2.0);
+				} else if (walls[x][y] == true) {
+					result.add(1.0);
+				} else if (pacmanPos.equals(new Point(x, y))) {
+					result.add(3.0);
+				} else {
+					result.add(0.0);
+				}
+			}			
+		}*/
+		
+		
+		//Deelbord
+		for(int y = pacmanPos.y - viewSize; y <= pacmanPos.y + viewSize; y++) {
+			for(int x = pacmanPos.x - viewSize; x <= pacmanPos.x + viewSize; x++) {
+				if (x < 0 || x >= Board.WIDTH || y < 0 || y >= Board.HEIGHT){
+					result.add(0.0);
+				} else if (blinkyPos.equals(new Point(x, y))) {
+					result.add(-1.0);
+				} else if (dots[x][y] != Dot.NONE) {
+					result.add(2.0);
+				} else if (walls[x][y] == true) {
+					result.add(1.0);
+				} else if (pacmanPos.equals(new Point(x, y))) {
+					result.add(0.5);
+				} else {
+					result.add(0.0);
+				}
+			}			
+		}
+		
+		
+		
+		/*if (showGameticks) {
 			result.add((double) (maxgameticks - score.getGameticks()));
 		}
 		if (showScore) {
@@ -166,7 +212,7 @@ public class ActivatorData {
 					}
 				}
 			}
-		}
+		}*/
 		
 		return toArray(result);
 	}

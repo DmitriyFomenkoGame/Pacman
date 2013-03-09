@@ -32,7 +32,7 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 	}
 
 	public void evaluate(@SuppressWarnings("rawtypes") List subjects) {
-		int i = 0;
+/*		int i = 0;
 		if (subjects.size() < numberOfThreads) {
 			numberOfThreads = subjects.size();
 		}
@@ -50,12 +50,28 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 					threads[j].init(properties);
 					threads[j].start();
 					i++;
+					break;
+				}
+			}
+		}*/
+		int current = 0;
+		PacmanWorkerThread[] threads = new PacmanWorkerThread[numberOfThreads];
+		while (current < subjects.size()) {
+			for (int i = 0; i < numberOfThreads; i++) {
+				if (threads[i] == null || !threads[i].isAlive()) {
+					threads[i] = new PacmanWorkerThread((Chromosome) subjects.get(current));
+					threads[i].init(properties);
+					threads[i].start();
+					current++;
+					break;
 				}
 			}
 		}
 		for (int j = 0; j < numberOfThreads; j++) {
 			try {
-				threads[j].join();
+				if (threads[j] != null) {
+					threads[j].join();
+				}
 			} catch (InterruptedException e) {
 				throw new Error("A thread got interrupted");
 			}
