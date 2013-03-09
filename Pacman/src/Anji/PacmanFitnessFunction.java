@@ -1,5 +1,6 @@
 package Anji;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jgap.BulkFitnessFunction;
@@ -14,11 +15,16 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 	private int numberOfThreads;
 	private int maxFitness;
 	private Properties properties;
+	private boolean showGUI;
 
 	public PacmanFitnessFunction() {
-
+		showGUI = false;
 	}
 
+	public void enableDisplay() {
+		showGUI = true;
+	}
+	
 	@Override
 	public void init(Properties properties) throws Exception {
 		try{
@@ -31,35 +37,19 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 		}
 	}
 
+	public void evaluate(Chromosome c) {
+		List<Chromosome> l = new ArrayList<Chromosome>();
+		l.add(c);
+		evaluate(l); //Lekker lelijk, maarja..
+	}
+	
 	public void evaluate(@SuppressWarnings("rawtypes") List subjects) {
-/*		int i = 0;
-		if (subjects.size() < numberOfThreads) {
-			numberOfThreads = subjects.size();
-		}
-		PacmanWorkerThread[] threads = new PacmanWorkerThread[numberOfThreads];
-		for (int j = 0; j < numberOfThreads; j++) {
-			threads[j] = new PacmanWorkerThread((Chromosome) subjects.get(j));
-			threads[j].init(properties);
-			threads[j].start();
-		}
-		i = numberOfThreads;
-		while (i < subjects.size()) {
-			for (int j = 0; j < numberOfThreads; j++) {
-				if (!(threads[j].isAlive())) {
-					threads[j] = new PacmanWorkerThread((Chromosome) subjects.get(i));
-					threads[j].init(properties);
-					threads[j].start();
-					i++;
-					break;
-				}
-			}
-		}*/
 		int current = 0;
 		PacmanWorkerThread[] threads = new PacmanWorkerThread[numberOfThreads];
 		while (current < subjects.size()) {
 			for (int i = 0; i < numberOfThreads; i++) {
 				if (threads[i] == null || !threads[i].isAlive()) {
-					threads[i] = new PacmanWorkerThread((Chromosome) subjects.get(current));
+					threads[i] = new PacmanWorkerThread((Chromosome) subjects.get(current), showGUI);
 					threads[i].init(properties);
 					threads[i].start();
 					current++;

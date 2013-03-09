@@ -1,0 +1,14 @@
+ALLEN
+Het idee is te exporteren als een jar, naar de /lib/ folder van de anji source.
+
+WINDOWS
+Vervolgens vervang je de evolve.bat door degenen in deze folder
+Verder voeg je de pacman_evaluate.bat toe waar je de vorige bat ook neer had gezet
+
+OSX / LINUX
+Voeg de pacman_evaluate.sh toe aan de folder waar de evolve.sh ook staat
+
+ALLEN
+Voeg de pacman.properties toe aan de /properties/ folder
+Runnen maar zoals uitgelegd staat voor de doublepole example:
+http://anji.sourceforge.net/polebalance.htm

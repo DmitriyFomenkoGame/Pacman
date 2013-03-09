@@ -8,7 +8,6 @@ import com.anji.integration.TranscriberException;
 import com.anji.util.Properties;
 
 import GameUI.PacmanGUI;
-import GameUI.PacmanGUIArrows;
 import Pacman.Board;
 import Pacman.PacmanGame;
 import Pacman.PacmanGame.Type;
@@ -26,11 +25,13 @@ public class PacmanWorkerThread extends Thread {
 	private ActivatorData activatorData;
 	private Type gameType;
 	private int expectedStimuli;
+	private boolean showGUI;
+	private int guiTimeout;
 
-	public PacmanWorkerThread(Chromosome c) {
+	public PacmanWorkerThread(Chromosome c, boolean showGUI) {
 		super();
 		chromosome = c;
-		//System.out.println("[THREAD] Thread created");
+		this.showGUI = showGUI;
 	}
 
 	public void init(Properties properties) {
@@ -45,6 +46,9 @@ public class PacmanWorkerThread extends Thread {
 		
 		expectedStimuli= properties.getIntProperty("stimulus.size");
 		
+		showGUI    = properties.getBooleanProperty("game.gui.show", false) || showGUI;
+		guiTimeout = properties.getIntProperty("game.gui.timeout", 50);
+		
 		String gameTypeString = properties.getProperty("game.type", "default").toLowerCase();
 		if (gameTypeString.equals("square")) {
 			gameType = Type.SQUARE;
@@ -56,7 +60,6 @@ public class PacmanWorkerThread extends Thread {
 		
 		activatorData  = new ActivatorData();
 		activatorData.init(properties);
-		//System.out.println("[THREAD] Thread init");
 	}
 
 	public void giveWork(Chromosome c) {
@@ -64,14 +67,11 @@ public class PacmanWorkerThread extends Thread {
 	}
 
 	public void run() {
-		//System.out.println("[THREAD] Thread started");
-		//PacmanGui gui = new PacmanGUI();
-		PacmanGUI gui = null;
+		PacmanGUI gui = showGUI ? (new PacmanGUI()) : null;
 		try {
 			Activator activator = factory.newActivator(chromosome);
 			PacmanGame game = new PacmanGame(maxGameTicks, gameType);
 			double fitness = playGame(game, activator, gui);
-			System.out.printf("[THREAD] Fitness %.2f\n", fitness);
 			if (fitness > maxFitness) {
 				chromosome.setFitnessValue(maxFitness);
 			} else {
@@ -80,14 +80,17 @@ public class PacmanWorkerThread extends Thread {
 		} catch (TranscriberException e) {
 			e.printStackTrace();
 		} finally {
-			//gui.close();
+			if (gui != null) {
+				gui.close();
+			}
 		}
-		//System.out.println("[THREAD] Thread done");
 	}
 
 	private double playGame(PacmanGame game, Activator activator, PacmanGUI gui) {
-		//gui.setBoard(game.getBoard());
-		//gui.show();
+		if (gui != null) {
+			gui.setBoard(game.getBoard());
+			gui.show();
+		}
 		while (game.getStatus() == Status.BUSY) {
 			double[] networkInput = activatorData.getData(game.getBoard(), game.getScore(), game.getMode(), game.getMaxGameticks());
 			if (networkInput.length != expectedStimuli) {
@@ -97,11 +100,15 @@ public class PacmanWorkerThread extends Thread {
 			double[] networkOutput = activator.next(networkInput);
 			Dir direction = getDirection(networkOutput, game.getBoard());
 			game.doMove(direction);
-			//gui.setBoard(game.getBoard());
-			//gui.setTitle(String.valueOf(game.getScore().getGameticks()) + "/" + String.valueOf(game.getMaxGameticks()));
-			//gui.redraw();
+			if (gui != null) {
+				gui.setBoard(game.getBoard());
+				gui.setTitle(String.valueOf(game.getScore().getGameticks()) + "/" + String.valueOf(game.getMaxGameticks()));
+				gui.redraw();
+			}
 			try {
-				//Thread.sleep(20);
+				if (gui != null) {
+					Thread.sleep(guiTimeout);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
