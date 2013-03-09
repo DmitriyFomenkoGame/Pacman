@@ -26,7 +26,6 @@ public class PacmanWorkerThread extends Thread {
 	private ActivatorData activatorData;
 	private Type gameType;
 	private int expectedStimuli;
-	private boolean showGui;
 
 	public PacmanWorkerThread(Chromosome c) {
 		super();
@@ -45,8 +44,6 @@ public class PacmanWorkerThread extends Thread {
 		timePenalty    = properties.getIntProperty("game.score.time.penalty", 1);
 		
 		expectedStimuli= properties.getIntProperty("stimulus.size");
-		
-		showGui = properties.getBooleanProperty("game.showGui",false);
 		
 		String gameTypeString = properties.getProperty("game.type", "default").toLowerCase();
 		if (gameTypeString.equals("square")) {
@@ -68,10 +65,8 @@ public class PacmanWorkerThread extends Thread {
 
 	public void run() {
 		//System.out.println("[THREAD] Thread started");
+		//PacmanGui gui = new PacmanGUI();
 		PacmanGUI gui = null;
-		if (showGui){
-			gui = new PacmanGUI();
-		}
 		try {
 			Activator activator = factory.newActivator(chromosome);
 			PacmanGame game = new PacmanGame(maxGameTicks, gameType);
@@ -85,18 +80,14 @@ public class PacmanWorkerThread extends Thread {
 		} catch (TranscriberException e) {
 			e.printStackTrace();
 		} finally {
-			if (showGui){
-				gui.close();
-			}
+			//gui.close();
 		}
 		//System.out.println("[THREAD] Thread done");
 	}
 
 	private double playGame(PacmanGame game, Activator activator, PacmanGUI gui) {
-		if (showGui){
-			gui.setBoard(game.getBoard());
-			gui.show();
-		}
+		//gui.setBoard(game.getBoard());
+		//gui.show();
 		while (game.getStatus() == Status.BUSY) {
 			double[] networkInput = activatorData.getData(game.getBoard(), game.getScore(), game.getMode(), game.getMaxGameticks());
 			if (networkInput.length != expectedStimuli) {
@@ -106,11 +97,9 @@ public class PacmanWorkerThread extends Thread {
 			double[] networkOutput = activator.next(networkInput);
 			Dir direction = getDirection(networkOutput, game.getBoard());
 			game.doMove(direction);
-			if(showGui){
-				gui.setBoard(game.getBoard());
-				gui.setTitle(String.valueOf(game.getScore().getGameticks()) + "/" + String.valueOf(game.getMaxGameticks()));
-				gui.redraw();
-			}
+			//gui.setBoard(game.getBoard());
+			//gui.setTitle(String.valueOf(game.getScore().getGameticks()) + "/" + String.valueOf(game.getMaxGameticks()));
+			//gui.redraw();
 			try {
 				//Thread.sleep(20);
 			} catch (Exception e) {
