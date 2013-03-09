@@ -9,6 +9,7 @@ import com.anji.util.Properties;
 
 import GameUI.PacmanGUI;
 import GameUI.PacmanGUIArrows;
+import Pacman.Board;
 import Pacman.PacmanGame;
 import Pacman.PacmanGame.Type;
 import Pacman.PacmanScore;
@@ -29,7 +30,7 @@ public class PacmanWorkerThread extends Thread {
 	public PacmanWorkerThread(Chromosome c) {
 		super();
 		chromosome = c;
-		System.out.println("[THREAD] Thread created");
+		//System.out.println("[THREAD] Thread created");
 	}
 
 	public void init(Properties properties) {
@@ -55,7 +56,7 @@ public class PacmanWorkerThread extends Thread {
 		
 		activatorData  = new ActivatorData();
 		activatorData.init(properties);
-		System.out.println("[THREAD] Thread init");
+		//System.out.println("[THREAD] Thread init");
 	}
 
 	public void giveWork(Chromosome c) {
@@ -63,12 +64,12 @@ public class PacmanWorkerThread extends Thread {
 	}
 
 	public void run() {
-		System.out.println("[THREAD] Thread started");
-		//PacmanGUI gui = new PacmanGUI();
+		//System.out.println("[THREAD] Thread started");
+		PacmanGUI gui = new PacmanGUI();
 		try {
 			Activator activator = factory.newActivator(chromosome);
 			PacmanGame game = new PacmanGame(maxGameTicks, gameType);
-			double fitness = playGame(game, activator, null);
+			double fitness = playGame(game, activator, gui);
 			System.out.printf("[THREAD] Fitness %.2f\n", fitness);
 			if (fitness > maxFitness) {
 				chromosome.setFitnessValue(maxFitness);
@@ -78,14 +79,14 @@ public class PacmanWorkerThread extends Thread {
 		} catch (TranscriberException e) {
 			e.printStackTrace();
 		} finally {
-			//gui.close();
+			gui.close();
 		}
-		System.out.println("[THREAD] Thread done");
+		//System.out.println("[THREAD] Thread done");
 	}
 
 	private double playGame(PacmanGame game, Activator activator, PacmanGUI gui) {
-		//gui.setBoard(game.getBoard());
-		//gui.show();
+		gui.setBoard(game.getBoard());
+		gui.show();
 		while (game.getStatus() == Status.BUSY) {
 			double[] networkInput = activatorData.getData(game.getBoard(), game.getScore(), game.getMode(), game.getMaxGameticks());
 			if (networkInput.length != expectedStimuli) {
@@ -93,11 +94,11 @@ public class PacmanWorkerThread extends Thread {
 				System.exit(1);
 			}
 			double[] networkOutput = activator.next(networkInput);
-			Dir direction = getDirection(networkOutput);
+			Dir direction = getDirection(networkOutput, game.getBoard());
 			game.doMove(direction);
-			//gui.setBoard(game.getBoard());
-			//gui.setTitle(String.valueOf(game.getScore().getGameticks()) + "/" + String.valueOf(game.getMaxGameticks()));
-			//gui.redraw();
+			gui.setBoard(game.getBoard());
+			gui.setTitle(String.valueOf(game.getScore().getGameticks()) + "/" + String.valueOf(game.getMaxGameticks()));
+			gui.redraw();
 			try {
 				//Thread.sleep(20);
 			} catch (Exception e) {
@@ -116,20 +117,25 @@ public class PacmanWorkerThread extends Thread {
 		return fitness;
 	}
 
-	private Dir getDirection(double[] networkOutput) {
+	private Dir getDirection(double[] networkOutput, Board b) {
 		//System.out.printf("%.2f %.2f %.2f %.2f\n", networkOutput[0], networkOutput[1], networkOutput[2], networkOutput[3]);
-		Dir d = Dir.UP;
-		double dirval = networkOutput[0];
-		if (networkOutput[1] > dirval) {
+		Dir d = null;
+		double dirval = 0.0;
+		if (b.directionFree(b.getPacmanPosition(), Dir.UP) && networkOutput[0] > dirval) {
+			d = Dir.UP;
+			dirval = networkOutput[0];
+		}
+		if (b.directionFree(b.getPacmanPosition(), Dir.RIGHT) && networkOutput[1] > dirval) {
 			d = Dir.RIGHT;
 			dirval = networkOutput[1];
 		}
-		if (networkOutput[2] > dirval) {
+		if (b.directionFree(b.getPacmanPosition(), Dir.DOWN) && networkOutput[2] > dirval) {
 			d = Dir.DOWN;
 			dirval = networkOutput[2];
 		}
-		if (networkOutput[3] > dirval) {
+		if (b.directionFree(b.getPacmanPosition(), Dir.LEFT) && networkOutput[3] > dirval) {
 			d = Dir.LEFT;
+			dirval = networkOutput[3];
 		}
 		return d;
 	}
