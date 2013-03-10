@@ -3,8 +3,10 @@ package Anji;
 import org.jgap.Chromosome;
 
 import com.anji.integration.Activator;
-import com.anji.integration.ActivatorTranscriber;
+import com.anji.integration.AnjiActivator;
+import com.anji.integration.AnjiNetTranscriber;
 import com.anji.integration.TranscriberException;
+import com.anji.nn.AnjiNet;
 import com.anji.util.Properties;
 
 import GameUI.PacmanGUI;
@@ -21,12 +23,13 @@ public class PacmanWorkerThread extends Thread {
 	private int maxFitness;
 	private int maxGameTicks;
 	private int dotScore, energizerScore, ghostScore, timePenalty;
-	private ActivatorTranscriber factory;
+	//private ActivatorTranscriber factory;
 	private ActivatorData activatorData;
 	private Type gameType;
 	private int expectedStimuli;
 	private boolean showGUI;
 	private int guiTimeout;
+	private int recurrentCycles;
 
 	public PacmanWorkerThread(Chromosome c, boolean showGUI) {
 		super();
@@ -35,7 +38,9 @@ public class PacmanWorkerThread extends Thread {
 	}
 
 	public void init(Properties properties) {
-		factory = (ActivatorTranscriber) properties.singletonObjectProperty(ActivatorTranscriber.class);
+		//factory = (ActivatorTranscriber) properties.singletonObjectProperty(ActivatorTranscriber.class);
+		recurrentCycles = properties.getIntProperty("recurrent.cycles", 1);
+		
 		maxFitness 	   = properties.getIntProperty("fitness.max");
 		maxGameTicks   = properties.getIntProperty("game.gameticks", -1);
 		
@@ -68,8 +73,14 @@ public class PacmanWorkerThread extends Thread {
 
 	public void run() {
 		PacmanGUI gui = showGUI ? (new PacmanGUI()) : null;
+
 		try {
-			Activator activator = factory.newActivator(chromosome);
+			//long start = System.currentTimeMillis();
+			AnjiNetTranscriber transcriber = new AnjiNetTranscriber();
+			AnjiNet net = transcriber.newAnjiNet(chromosome);
+			Activator activator = new AnjiActivator(net, recurrentCycles);
+			//long end = System.currentTimeMillis();
+			//System.out.printf("Created activator in %dms\n", end - start);
 			PacmanGame game = new PacmanGame(maxGameTicks, gameType);
 			double fitness = playGame(game, activator, gui);
 			if (fitness > maxFitness) {

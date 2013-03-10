@@ -2,12 +2,13 @@ package Pacman;
 
 import GameUI.PacmanGUIArrows;
 import Pacman.PacmanGame.Status;
+import Pacman.PacmanGame.Type;
 
 public class PacmanControllerManual {
 
 	public void start() {
 		PacmanGUIArrows gui = new PacmanGUIArrows();
-		PacmanGame game = new PacmanGame(-1);
+		PacmanGame game = new PacmanGame(-1, Type.SIMPLE);
 		gui.setBoard(game.getBoard());
 		gui.show();
 		while(game.getStatus() == Status.BUSY && gui.isVisible()) {
@@ -34,6 +35,7 @@ public class PacmanControllerManual {
 			e.printStackTrace();
 		}
 		gui.close();
+		System.out.println(game.getScore().getGameticks());
 	}
 	
 	public static void main(String[] args) {

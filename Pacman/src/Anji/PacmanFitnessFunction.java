@@ -44,6 +44,7 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 	}
 	
 	public void evaluate(@SuppressWarnings("rawtypes") List subjects) {
+		long start = System.currentTimeMillis();
 		int current = 0;
 		PacmanWorkerThread[] threads = new PacmanWorkerThread[numberOfThreads];
 		while (current < subjects.size()) {
@@ -66,6 +67,8 @@ public class PacmanFitnessFunction implements BulkFitnessFunction, Configurable 
 				throw new Error("A thread got interrupted");
 			}
 		}
+		long end = System.currentTimeMillis();
+		System.out.printf("PacmanFitnessFunction.evaluate on %d chromosomes took %dms\n", subjects.size(), end - start);
 	}
 
 	public int getMaxFitnessValue() {
