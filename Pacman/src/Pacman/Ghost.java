@@ -40,9 +40,16 @@ public class Ghost implements Cloneable {
 		this.active        = false;
 	}
 	
+	public Point2D.Double getPosition() {
+		return (Point2D.Double) position.clone();
+	}
 	public void setPosition(Point2D.Double pos){
 		position = pos;
 	}
+	public Dir getDirection() {
+		return direction;
+	}
+
 
 	public void setMode(Mode mode) {
 		if (!active) {return;}
@@ -97,10 +104,6 @@ public class Ghost implements Cloneable {
 			case DOWN:  direction = Dir.UP;    break;
 			case LEFT:  direction = Dir.RIGHT; break;
 		}
-	}
-	
-	public Point2D.Double getPosition() {
-		return (Point2D.Double) position.clone();
 	}
 
 	private Point calcTarget() {
@@ -175,6 +178,9 @@ public class Ghost implements Cloneable {
 		}
 	}
 	private boolean inRedArea() {
+		if (board instanceof SquareBoard || board instanceof SimpleMazeBoard) { //TODO
+			return false;
+		}
 		if (mode != Mode.FRIGHTENED && mode != Mode.DEAD) {
 			Point p = Board.pointToGrid(position);
 			return (p.y == 11 || (p.y == 23 && p.x > 9 && p.x < 19));
@@ -240,5 +246,4 @@ public class Ghost implements Cloneable {
 			return null;
 		}
 	}
-
 }

@@ -35,6 +35,15 @@ public class PacmanScore implements Cloneable {
 		this.gameticks 	+= p.gameticks;
 		this.deaths     += p.deaths;
 	}
+	public PacmanScore scoreDifference(PacmanScore previousScore) {
+		PacmanScore result = new PacmanScore();
+		result.dots 	  = this.dots 		- previousScore.dots;
+		result.energizers = this.energizers - previousScore.energizers;
+		result.ghosts 	  = this.ghosts 	- previousScore.ghosts;
+		result.gameticks  = this.gameticks  - previousScore.gameticks;
+		result.deaths     = this.deaths 	- previousScore.deaths;
+		return result;
+	}
 	
 	public int getDots() {
 		return dots;
@@ -67,4 +76,5 @@ public class PacmanScore implements Cloneable {
 			return null;
 		}
 	}
+
 }

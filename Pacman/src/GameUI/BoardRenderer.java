@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
+import Anji.ActivatorDataMinimal;
 import Pacman.Board;
 import Pacman.Ghost;
 import Pacman.PacmanGame.Dir;
@@ -67,8 +68,8 @@ public class BoardRenderer {
 		Point2D blinky = b.getBlinkyPosition(),
 				pinky  = b.getPinkyPosition(),
 				inky   = b.getInkyPosition(),
-				clyde  = b.getClydePosition(),
-				pacman = b.getPacmanPosition();
+				clyde  = b.getClydePosition();
+		Point2D.Double pacman = b.getPacmanPosition();
 
 		imageTrySet(image, blinky.getX(), blinky.getY(), (!b.ghostIsEdible(Ghost.BLINKY)) ? Color.red    : Color.magenta);
 		imageTrySet(image, pinky.getX(),  pinky.getY(),  (!b.ghostIsEdible(Ghost.PINKY))  ? Color.pink   : Color.magenta);
@@ -76,9 +77,13 @@ public class BoardRenderer {
 		imageTrySet(image, clyde.getX(),  clyde.getY(),  (!b.ghostIsEdible(Ghost.CLYDE))  ? Color.orange : Color.magenta);
 		imageTrySet(image, pacman.getX(), pacman.getY(), Color.yellow);
 		
+		Point2D.Double p = pacman;
+		int distance = ActivatorDataMinimal.distanceNearestDotFF(b, pacman, p);
+		imageTrySet(image, p.x, p.y, Color.orange);
+		
 		return image;
 	}
-
+	
 	private void imageTrySet(BufferedImage image, double x, double y, Color c) {
 		int xx = (int) Math.round(x),
 			yy = (int) Math.round(y);

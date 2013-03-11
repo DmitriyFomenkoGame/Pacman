@@ -24,12 +24,14 @@ public class PacmanWorkerThread extends Thread {
 	private int maxGameTicks;
 	private int dotScore, energizerScore, ghostScore, timePenalty;
 	//private ActivatorTranscriber factory;
-	private ActivatorData activatorData;
+	private ActivatorDataMinimal activatorData;
 	private Type gameType;
 	private int expectedStimuli;
 	private boolean showGUI;
 	private int guiTimeout;
 	private int recurrentCycles;
+	private int gameOverScore, gameEndScore, gameTimeoutScore;
+	private PacmanFitnessScore fitness;
 
 	public PacmanWorkerThread(Chromosome c, boolean showGUI) {
 		super();
@@ -49,6 +51,10 @@ public class PacmanWorkerThread extends Thread {
 		ghostScore 	   = properties.getIntProperty("game.score.ghost", 100);
 		timePenalty    = properties.getIntProperty("game.score.time.penalty", 1);
 		
+		gameOverScore    = properties.getIntProperty("game.score.game.over", -100);
+		gameEndScore     = properties.getIntProperty("game.score.game.end", 1000);
+		gameTimeoutScore = properties.getIntProperty("game.score.game.timeout", 500);
+		
 		expectedStimuli= properties.getIntProperty("stimulus.size");
 		
 		showGUI    = properties.getBooleanProperty("game.gui.show", false) || showGUI;
@@ -63,8 +69,11 @@ public class PacmanWorkerThread extends Thread {
 			gameType = Type.DEFAULT;
 		}
 		
-		activatorData  = new ActivatorData();
+		activatorData  = new ActivatorDataMinimal();
 		activatorData.init(properties);
+		
+		fitness = new PacmanFitnessScore();
+		fitness.init(properties);
 	}
 
 	public void giveWork(Chromosome c) {
@@ -82,7 +91,7 @@ public class PacmanWorkerThread extends Thread {
 			//long end = System.currentTimeMillis();
 			//System.out.printf("Created activator in %dms\n", end - start);
 			PacmanGame game = new PacmanGame(maxGameTicks, gameType);
-			double fitness = playGame(game, activator, gui);
+			int fitness = playGame(game, activator, gui);
 			if (fitness > maxFitness) {
 				chromosome.setFitnessValue(maxFitness);
 			} else {
@@ -97,7 +106,7 @@ public class PacmanWorkerThread extends Thread {
 		}
 	}
 
-	private double playGame(PacmanGame game, Activator activator, PacmanGUI gui) {
+	private int playGame(PacmanGame game, Activator activator, PacmanGUI gui) {
 		if (gui != null) {
 			gui.setBoard(game.getBoard());
 			gui.show();
@@ -111,6 +120,7 @@ public class PacmanWorkerThread extends Thread {
 			double[] networkOutput = activator.next(networkInput);
 			Dir direction = getDirection(networkOutput, game.getBoard());
 			game.doMove(direction);
+			fitness.addGameState(game.getScore(), game.getBoard().getPacmanDirection());
 			if (gui != null) {
 				gui.setBoard(game.getBoard());
 				gui.setTitle(String.valueOf(game.getScore().getGameticks()) + "/" + String.valueOf(game.getMaxGameticks()));
@@ -124,15 +134,21 @@ public class PacmanWorkerThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-		return generateFitness(game.getScore());
+//		return generateFitness(game.getScore(), game.getStatus());
+		return fitness.getFitness();
 	}
 
-	private double generateFitness(PacmanScore score) {
-		double fitness = 0;
+	private int generateFitness(PacmanScore score, Status gamestatus) {
+		int fitness = 0;
 		fitness += dotScore * score.getDots();
 		fitness += energizerScore * score.getEnergizers();
 		fitness += ghostScore * score.getGhosts();
 		fitness -= timePenalty * score.getGameticks();
+		switch (gamestatus) {
+			case GAME_OVER: fitness += gameOverScore;    break;
+			case GAME_END:  fitness += gameEndScore;     break;
+			case TIMEOUT:   fitness += gameTimeoutScore; break;
+		}
 		return fitness;
 	}
 

@@ -1,5 +1,7 @@
 package Pacman;
 
+import Anji.ActivatorDataMinimal;
+import Anji.PacmanFitnessScore;
 import GameUI.PacmanGUIArrows;
 import Pacman.PacmanGame.Status;
 import Pacman.PacmanGame.Type;
@@ -11,13 +13,15 @@ public class PacmanControllerManual {
 		PacmanGame game = new PacmanGame(-1, Type.SIMPLE);
 		gui.setBoard(game.getBoard());
 		gui.show();
+		PacmanFitnessScore fitness = new PacmanFitnessScore();
 		while(game.getStatus() == Status.BUSY && gui.isVisible()) {
 			try {
 				Thread.sleep(35);
 				PacmanScore s = game.getScore();
-				String title = "Dots: " + String.valueOf(s.getDots()) + " | " + game.getModeString();
-				gui.setTitle(title);
 				game.doMove(gui.getDirection());
+				fitness.addGameState(game.getScore(), game.getBoard().getPacmanDirection());
+				String title = "Dots: " + String.valueOf(s.getDots()) + " | " + game.getModeString() + " | " + String.valueOf(ActivatorDataMinimal.distanceToBlinkyFF(game.getBoard(), game.getBoard().getPacmanPosition()) + " | " + String.valueOf(fitness.getFitness()));
+				gui.setTitle(title);
 				gui.setBoard(game.getBoard());
 				gui.redraw();
 			} catch (Exception e) {

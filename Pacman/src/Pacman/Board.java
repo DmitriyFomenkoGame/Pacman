@@ -194,6 +194,9 @@ public class Board implements Cloneable {
 	public Point2D.Double getPacmanPosition() {
 		return pacman.getPosition();
 	}
+	public Dir getBlinkyDirection() {
+		return ghosts[Ghost.BLINKY].getDirection();
+	}
 	public Dir getPacmanDirection() {
 		return pacman.getDirection();
 	}
@@ -235,6 +238,11 @@ public class Board implements Cloneable {
 		int xx = Math.max(0, Math.min(p.x, WIDTH - 1)),
 			yy = Math.max(0, Math.min(p.y, HEIGHT - 1));
 		return wallgrid[xx][yy];
+	}
+	public boolean isDot(Point p) {
+		int xx = Math.max(0, Math.min(p.x, WIDTH - 1)),
+			yy = Math.max(0, Math.min(p.y, HEIGHT - 1));
+		return dotgrid[xx][yy] != Dot.NONE;		
 	}
 	public int getDirections(Point p) {
 		int directions = 0;
