@@ -1,5 +1,7 @@
 package Anji;
 
+import java.awt.geom.Point2D.Double;
+
 import org.jgap.Chromosome;
 
 import com.anji.integration.Activator;
@@ -30,7 +32,8 @@ public class PacmanWorkerThread extends Thread {
 	private boolean showGUI;
 	private int guiTimeout;
 	private int recurrentCycles;
-	private int gameOverScore, gameEndScore, gameTimeoutScore;
+	private int currentDots = 0;
+	private int timeSinceLastDot;
 	private PacmanFitnessScore fitness;
 
 	public PacmanWorkerThread(Chromosome c, boolean showGUI) {
@@ -42,24 +45,15 @@ public class PacmanWorkerThread extends Thread {
 	public void init(Properties properties) {
 		//factory = (ActivatorTranscriber) properties.singletonObjectProperty(ActivatorTranscriber.class);
 		recurrentCycles = properties.getIntProperty("recurrent.cycles", 1);
-		
 		maxFitness 	   = properties.getIntProperty("fitness.max");
 		maxGameTicks   = properties.getIntProperty("game.gameticks", -1);
-		
 		dotScore 	   = properties.getIntProperty("game.score.dot", 10);
 		energizerScore = properties.getIntProperty("game.score.energizer", 50);
 		ghostScore 	   = properties.getIntProperty("game.score.ghost", 100);
 		timePenalty    = properties.getIntProperty("game.score.time.penalty", 1);
-		
-		gameOverScore    = properties.getIntProperty("game.score.game.over", -100);
-		gameEndScore     = properties.getIntProperty("game.score.game.end", 1000);
-		gameTimeoutScore = properties.getIntProperty("game.score.game.timeout", 500);
-		
 		expectedStimuli= properties.getIntProperty("stimulus.size");
-		
 		showGUI    = properties.getBooleanProperty("game.gui.show", false) || showGUI;
 		guiTimeout = properties.getIntProperty("game.gui.timeout", 50);
-		
 		String gameTypeString = properties.getProperty("game.type", "default").toLowerCase();
 		if (gameTypeString.equals("square")) {
 			gameType = Type.SQUARE;
@@ -68,28 +62,18 @@ public class PacmanWorkerThread extends Thread {
 		} else {
 			gameType = Type.DEFAULT;
 		}
-		
 		activatorData  = new ActivatorDataMinimal();
-		activatorData.init(properties);
-		
 		fitness = new PacmanFitnessScore();
 		fitness.init(properties);
-	}
-
-	public void giveWork(Chromosome c) {
-		chromosome = c;
+		timeSinceLastDot = 0;
 	}
 
 	public void run() {
 		PacmanGUI gui = showGUI ? (new PacmanGUI()) : null;
-
 		try {
-			//long start = System.currentTimeMillis();
 			AnjiNetTranscriber transcriber = new AnjiNetTranscriber();
 			AnjiNet net = transcriber.newAnjiNet(chromosome);
 			Activator activator = new AnjiActivator(net, recurrentCycles);
-			//long end = System.currentTimeMillis();
-			//System.out.printf("Created activator in %dms\n", end - start);
 			PacmanGame game = new PacmanGame(maxGameTicks, gameType);
 			int fitness = playGame(game, activator, gui);
 			if (fitness > maxFitness) {
@@ -111,16 +95,16 @@ public class PacmanWorkerThread extends Thread {
 			gui.setBoard(game.getBoard());
 			gui.show();
 		}
+		int fitness = 0;
 		while (game.getStatus() == Status.BUSY) {
-			double[] networkInput = activatorData.getData(game.getBoard(), game.getScore(), game.getMode(), game.getMaxGameticks());
+			double[] networkInput = activatorData.getNetworkInput(game,timeSinceLastDot);
 			if (networkInput.length != expectedStimuli) {
 				System.out.printf("Andere lengte van de array :/ %d (expected: %d)\n", networkInput.length, expectedStimuli);
 				System.exit(1);
 			}
 			double[] networkOutput = activator.next(networkInput);
-			Dir direction = getDirection(networkOutput, game.getBoard());
+			Dir direction = getDirection(networkOutput);
 			game.doMove(direction);
-			fitness.addGameState(game.getScore(), game.getBoard().getPacmanDirection());
 			if (gui != null) {
 				gui.setBoard(game.getBoard());
 				gui.setTitle(String.valueOf(game.getScore().getGameticks()) + "/" + String.valueOf(game.getMaxGameticks()));
@@ -133,46 +117,46 @@ public class PacmanWorkerThread extends Thread {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		fitness = updateFitness(game.getScore(),game, fitness);
 		}
-//		return generateFitness(game.getScore(), game.getStatus());
-		return fitness.getFitness();
+		if (game.getStatus() == Status.GAME_OVER){
+			fitness -= 10*game.getScore().getGameticks();
+		}
+		if (fitness < 0){
+			fitness = 0;
+		}
+		return fitness;
 	}
-
-	private int generateFitness(PacmanScore score, Status gamestatus) {
-		int fitness = 0;
-		fitness += dotScore * score.getDots();
-		fitness += energizerScore * score.getEnergizers();
-		fitness += ghostScore * score.getGhosts();
-		fitness -= timePenalty * score.getGameticks();
-		switch (gamestatus) {
-			case GAME_OVER: fitness += gameOverScore;    break;
-			case GAME_END:  fitness += gameEndScore;     break;
-			case TIMEOUT:   fitness += gameTimeoutScore; break;
+	
+	private int updateFitness(PacmanScore score, PacmanGame game, int fitness){
+		if (currentDots == score.getDots()){
+			timeSinceLastDot += 1;
+			if (timeSinceLastDot > 15){
+				fitness -= 1;
+			}
+		}
+		else{
+			timeSinceLastDot = 0;
+			currentDots += 1;
+			fitness += dotScore;
 		}
 		return fitness;
 	}
 
-	private Dir getDirection(double[] networkOutput, Board b) {
-		//System.out.printf("%.2f %.2f %.2f %.2f\n", networkOutput[0], networkOutput[1], networkOutput[2], networkOutput[3]);
-		Dir d = b.getPacmanDirection();
-		double dirval = 0.0;
-		if (b.directionFree(b.getPacmanPosition(), Dir.UP) && networkOutput[0] > dirval) {
-			d = Dir.UP;
-			dirval = networkOutput[0];
+	private Dir getDirection(double[] networkOutput) {
+		double d = networkOutput[0];
+		if (d <= 0.25){
+			return PacmanGame.Dir.UP;
 		}
-		if (b.directionFree(b.getPacmanPosition(), Dir.RIGHT) && networkOutput[1] > dirval) {
-			d = Dir.RIGHT;
-			dirval = networkOutput[1];
+		else if (d <= 0.5){
+			return PacmanGame.Dir.RIGHT;
 		}
-		if (b.directionFree(b.getPacmanPosition(), Dir.DOWN) && networkOutput[2] > dirval) {
-			d = Dir.DOWN;
-			dirval = networkOutput[2];
+		else if (d <= 0.75){
+			return PacmanGame.Dir.DOWN;
 		}
-		if (b.directionFree(b.getPacmanPosition(), Dir.LEFT) && networkOutput[3] > dirval) {
-			d = Dir.LEFT;
-			dirval = networkOutput[3];
+		else{
+			return PacmanGame.Dir.LEFT;
 		}
-		return d;
 	}
 
 }

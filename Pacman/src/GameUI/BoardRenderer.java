@@ -75,12 +75,7 @@ public class BoardRenderer {
 		imageTrySet(image, pinky.getX(),  pinky.getY(),  (!b.ghostIsEdible(Ghost.PINKY))  ? Color.pink   : Color.magenta);
 		imageTrySet(image, inky.getX(),   inky.getY(),   (!b.ghostIsEdible(Ghost.INKY))   ? Color.cyan   : Color.magenta);
 		imageTrySet(image, clyde.getX(),  clyde.getY(),  (!b.ghostIsEdible(Ghost.CLYDE))  ? Color.orange : Color.magenta);
-		imageTrySet(image, pacman.getX(), pacman.getY(), Color.yellow);
-		
-		Point2D.Double p = pacman;
-		int distance = ActivatorDataMinimal.distanceNearestDotFF(b, pacman, p);
-		imageTrySet(image, p.x, p.y, Color.orange);
-		
+		imageTrySet(image, pacman.getX(), pacman.getY(), Color.yellow);	
 		return image;
 	}
 	
