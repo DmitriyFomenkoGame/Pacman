@@ -1,129 +1,62 @@
 package Anji;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.awt.geom.Point2D.Double;
 
 import Pacman.Board;
-import Pacman.Ghost;
+import Pacman.PacmanGame;
+import Pacman.Board.Dot;
 import Pacman.PacmanGame.Dir;
-import Pacman.PacmanScore;
 
 public class ActivatorDataMinimal extends ActivatorData {
-	
-	public ActivatorDataMinimal() {
-		super();
-	}
-	
-	public double[] getData(Board board, PacmanScore score, Ghost.Mode mode, int maxgameticks) {
-		ArrayList<Double> result = new ArrayList<Double>();
-		
-		//Pacman data
-		addPosition(result, board.getPacmanPosition());
-		addDirection(result, board.getPacmanDirection());
-		//Blinky data
-		
-		addPosition(result, board.getBlinkyPosition());
-		addDirection(result, board.getBlinkyDirection());
-		
-		//Pacman/blinky relation
-		result.add((double) distanceToBlinkyFF(board, board.getPacmanPosition()));
-		
-		//Nearest dot data
-		Point2D.Double dot = board.getPacmanPosition();
-		int distToDot = distanceNearestDotFF(board, board.getPacmanPosition(), dot);
-		addPosition(result, dot);
 
-		//Pacman/dot relation
-		result.add((double) distToDot);
-		
-		return ActivatorData.toArray(result);
-	}	
-	
-	public static int distanceToBlinkyFF(Board b, Point2D.Double from) {
-		Queue<Point> points = new LinkedList<Point>();
-		Queue<Point> checked = new LinkedList<Point>();
-		Point f = Board.pointToGrid(from);
-		points.add(f);
-		for (int i = 0; i < 60; i++) {
-			Queue<Point> points2 = new LinkedList<Point>();
-			while (!points.isEmpty()) {
-				Point p = points.remove();
-				if (p.equals(Board.pointToGrid(b.getBlinkyPosition()))) {
-					return i;
-				}
-				checked.add(p);
-				Point2D.Double newpoint = new Point2D.Double(p.x, p.y);
-				for (Dir d : Dir.values()) {
-					if (b.directionFree(newpoint, d)) {
-						Point q = b.getNextTile(p, d);
-						if (!checked.contains(q)) {
-							points2.add(q);
-						}
+	public double[] getNetworkInput(PacmanGame game, int timeSinceLastDot) {
+		double[] input = new double[5];
+		input[0] = changeDirtoDouble(game.getBoard().getPacmanDirection());
+		input[1] = changeDirtoDouble(game.getBoard().getBlinkyDirection());
+		input[2] = calcEuclDist(game.getBoard().getBlinkyPosition(),game.getBoard().getPacmanPosition());
+		input[3] = getClosestDot(game.getBoard());
+		input[4] = (double) timeSinceLastDot;
+		return input;
+	}
+
+	private double getClosestDot(Board board) {
+		double dist = 100000000.0;
+		Dot[][] dots = board.getDots();
+		for (int i = 0; i < 28; i++){
+			for (int j = 0; j > 31; j++){
+				if (dots[i][j] == Dot.DOT){
+					double d = calcEuclDist(new Point2D.Double(i,j), board.getPacmanPosition());
+					if (d < dist){
+						dist = d;
 					}
-				}				
-			}
-			points.clear();
-			points.addAll(points2);
-		}
-		return 60;
-	}
-	public static int distanceNearestDotFF(Board b, Point2D.Double from, Point2D.Double result) {
-		Queue<Point> points = new LinkedList<Point>();
-		Queue<Point> checked = new LinkedList<Point>();
-		Point f = Board.pointToGrid(from);
-		points.add(f);
-		for (int i = 0; i < 60; i++) {
-			Queue<Point> points2 = new LinkedList<Point>();
-			while (!points.isEmpty()) {
-				Point p = points.remove();
-				if (b.isDot(p)) {
-					result.setLocation(p.x, p.y);
-					return i;
 				}
-				checked.add(p);
-				Point2D.Double newpoint = new Point2D.Double(p.x, p.y);
-				for (Dir d : Dir.values()) {
-					if (b.directionFree(newpoint, d)) {
-						Point q = b.getNextTile(p, d);
-						if (!checked.contains(q)) {
-							points2.add(q);
-						}
-					}
-				}				
 			}
-			points.clear();
-			points.addAll(points2);
 		}
-		return 60;
+		return dist;
 	}
-	
-	private static double manhattanDist(Point p1, Point p2) {
-		return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+
+	private double calcEuclDist(Double blinkyPosition, Double pacmanPosition) {
+		double x1 = blinkyPosition.x;
+		double y1 = blinkyPosition.y;
+		double x2 = pacmanPosition.x;
+		double y2 = pacmanPosition.y;
+		return Math.sqrt(( Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))); 
 	}
-	private static double manhattanDist(Point2D.Double p1, Point2D.Double p2) {
-		return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
-	}
-	
-	private void addDistance(ArrayList<Double> list, Point2D.Double p1, Point2D.Double p2) {
-		list.add(p1.distance(p2));
-	}
-	
-	private void addPosition(ArrayList<Double> list, Point2D.Double p) {
-		list.add(p.x);
-		list.add(p.y);
-	}
-	private void addDirection(ArrayList<Double> list, Dir d) {
-		list.add(directionToDouble(d));
-	}
-	private double directionToDouble(Dir d) {
-		switch (d) {
-			case UP:    return 0.0;
-			case RIGHT: return 1.0;
-			case DOWN:  return 2.0;
-			default:    return 3.0;
+
+	private double changeDirtoDouble(Dir pacmanDirection) {
+		if (pacmanDirection == Dir.UP){
+			return 0.25;
+		}
+		else if (pacmanDirection == Dir.RIGHT){
+			return 0.5;
+		}
+		else if (pacmanDirection == Dir.DOWN){
+			return 0.75;
+		}
+		else{
+			return 1.0;			
 		}
 	}
+
 }
