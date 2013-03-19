@@ -50,12 +50,7 @@ public class ActivatorDataMinimal extends ActivatorData {
 			}
 		}
 		node current = new node(Board.pointToGrid(from));
-		for (int i = 0; i < nodes.size(); i++){
-			if (nodes.get(i).equals(current)){
-				nodes.get(i).distance = 0;
-				break;
-			}
-		}
+		current.distance = 0;
 		while (!nodes.isEmpty()){
 			current = getMinDistance(nodes);
 			if (current.equals(new node(Board.pointToGrid(from)))){
