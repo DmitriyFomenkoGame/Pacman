@@ -60,6 +60,9 @@ public class ActivatorDataMinimal extends ActivatorData {
 				checked.add(p);
 				Point2D.Double newpoint = new Point2D.Double(p.x, p.y);
 				for (Dir d : Dir.values()) {
+					if (newpoint.x < 0 || newpoint.x > 27){
+						break;
+					}
 					if (board.directionFree(newpoint, d)) {
 						Point q = board.getNextTile(p, d);
 						if (!checked.contains(q)) {
