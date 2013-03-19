@@ -32,9 +32,8 @@ public class PacmanWorkerThread extends Thread {
 	private boolean showGUI;
 	private int guiTimeout;
 	private int recurrentCycles;
-	private int currentDots = 0;
-	private int timeSinceLastDot;
-	private PacmanFitnessScore fitness;
+	private double deathModifier;
+	private double deathPenalty;
 
 	public PacmanWorkerThread(Chromosome c, boolean showGUI) {
 		super();
@@ -51,6 +50,8 @@ public class PacmanWorkerThread extends Thread {
 		energizerScore = properties.getIntProperty("game.score.energizer", 50);
 		ghostScore 	   = properties.getIntProperty("game.score.ghost", 100);
 		timePenalty    = properties.getIntProperty("game.score.time.penalty", 1);
+		deathPenalty   = properties.getDoubleProperty("game.score.death.penalty",0.0);
+		deathModifier  = properties.getDoubleProperty("game.score.death.modifier",1.0);
 		expectedStimuli= properties.getIntProperty("stimulus.size");
 		showGUI    = properties.getBooleanProperty("game.gui.show", false) || showGUI;
 		guiTimeout = properties.getIntProperty("game.gui.timeout", 50);
@@ -63,9 +64,6 @@ public class PacmanWorkerThread extends Thread {
 			gameType = Type.DEFAULT;
 		}
 		activatorData  = new ActivatorDataMinimal();
-		fitness = new PacmanFitnessScore();
-		fitness.init(properties);
-		timeSinceLastDot = 0;
 	}
 
 	public void run() {
@@ -97,7 +95,7 @@ public class PacmanWorkerThread extends Thread {
 		}
 		int fitness = 0;
 		while (game.getStatus() == Status.BUSY) {
-			double[] networkInput = activatorData.getNetworkInput(game,timeSinceLastDot);
+			double[] networkInput = activatorData.getNetworkInput(game);
 			if (networkInput.length != expectedStimuli) {
 				System.out.printf("Andere lengte van de array :/ %d (expected: %d)\n", networkInput.length, expectedStimuli);
 				System.exit(1);
@@ -117,36 +115,24 @@ public class PacmanWorkerThread extends Thread {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		fitness = updateFitness(game.getScore(),game, fitness);
-		}
-		if (game.getStatus() == Status.GAME_OVER){
-			fitness -= game.getScore().getGameticks()/5;
+			fitness = generateFitness(game.getScore());
 		}
 		if (fitness < 0){
 			fitness = 0;
 		}
 		return fitness;
 	}
-	
-	private int updateFitness(PacmanScore score, PacmanGame game, int fitness){
-		if (currentDots == score.getDots()){
-			timeSinceLastDot += 1;
-			if (timeSinceLastDot > (20 + 1/4 * currentDots)){
-				fitness -= 1;
-			}
+
+		private int generateFitness(PacmanScore score) {
+			int fitness = 0;
+			fitness += dotScore * score.getDots();
+			fitness += energizerScore * score.getEnergizers();
+			fitness += ghostScore * score.getGhosts();
+			fitness -= timePenalty * score.getGameticks();
+			fitness -= deathPenalty;
+			fitness *= deathModifier;
+			return fitness;
 		}
-		else{
-			timeSinceLastDot = 0;
-			currentDots += 1;
-			if (game.getBoard().getDotsRemaining() < 25){
-				fitness += (dotScore*dotScore);
-			}
-			else {
-				fitness += dotScore;
-			}
-		}
-		return fitness;
-	}
 
 	private Dir getDirection(double[] networkOutput) {
 		double d = networkOutput[0];

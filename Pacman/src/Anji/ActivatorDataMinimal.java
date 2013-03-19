@@ -13,13 +13,12 @@ import Pacman.PacmanGame.Dir;
 
 public class ActivatorDataMinimal extends ActivatorData {
 
-	public double[] getNetworkInput(PacmanGame game, int timeSinceLastDot) {
-		double[] input = new double[5];
+	public double[] getNetworkInput(PacmanGame game) {
+		double[] input = new double[4];
 		input[0] = changeDirtoDouble(game.getBoard().getPacmanDirection());
 		input[1] = changeDirtoDouble(game.getBoard().getBlinkyDirection());
-		input[2] = calcFloodDist(game.getBoard().getBlinkyPosition(),game.getBoard().getPacmanPosition(),game.getBoard());
+		input[2] = calcFloodDist(game.getBoard().getPacmanPosition(),game.getBoard().getBlinkyPosition(),game.getBoard());
 		input[3] = getClosestDot(game.getBoard());
-		input[4] = (double) timeSinceLastDot;
 		return input;
 	}
 
