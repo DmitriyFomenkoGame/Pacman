@@ -17,15 +17,15 @@ public class ActivatorDataMinimal extends ActivatorData {
 		double[] input = new double[11];
 		input[0] = changeDirtoDouble(game.getBoard().getPacmanDirection());
 		input[1] = changeDirtoDouble(game.getBoard().getBlinkyDirection());
-		input[2] = calcFloodDist(game.getBoard().getBlinkyPosition(),game.getBoard().getPacmanPosition(),game.getBoard());
+		input[2] = calcFloodDist(game.getBoard().getPacmanPosition(),game.getBoard().getBlinkyPosition(),game.getBoard());
 		input[3] = getClosestDot(game.getBoard());
 		input[4] = (double) timeSinceLastDot;
 		input[5] = changeDirtoDouble(game.getBoard().getInkyDirection());
-		input[6] = calcFloodDist(game.getBoard().getInkyPosition(), game.getBoard().getPacmanPosition(), game.getBoard());
+		input[6] = calcFloodDist(game.getBoard().getPacmanPosition(), game.getBoard().getInkyPosition(), game.getBoard());
 		input[7] = changeDirtoDouble(game.getBoard().getPinkyDirection());
-		input[8] = calcFloodDist(game.getBoard().getPinkyPosition(), game.getBoard().getPacmanPosition(), game.getBoard());
+		input[8] = calcFloodDist(game.getBoard().getPacmanPosition(), game.getBoard().getPinkyPosition(), game.getBoard());
 		input[9] = changeDirtoDouble(game.getBoard().getClydeDirection());
-		input[10] = calcFloodDist(game.getBoard().getInkyPosition(), game.getBoard().getPacmanPosition(), game.getBoard());
+		input[10] = calcFloodDist(game.getBoard().getPacmanPosition(), game.getBoard().getClydePosition(), game.getBoard());
 		return input;
 	}
 
