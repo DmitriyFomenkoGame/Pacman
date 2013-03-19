@@ -1,7 +1,10 @@
 package Anji;
 
 import java.awt.geom.Point2D;
+import java.awt.Point;
 import java.awt.geom.Point2D.Double;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import Pacman.Board;
 import Pacman.PacmanGame;
@@ -14,7 +17,7 @@ public class ActivatorDataMinimal extends ActivatorData {
 		double[] input = new double[5];
 		input[0] = changeDirtoDouble(game.getBoard().getPacmanDirection());
 		input[1] = changeDirtoDouble(game.getBoard().getBlinkyDirection());
-		input[2] = calcEuclDist(game.getBoard().getBlinkyPosition(),game.getBoard().getPacmanPosition());
+		input[2] = calcFloodDist(game.getBoard().getBlinkyPosition(),game.getBoard().getPacmanPosition(),game.getBoard());
 		input[3] = getClosestDot(game.getBoard());
 		input[4] = (double) timeSinceLastDot;
 		return input;
@@ -26,7 +29,7 @@ public class ActivatorDataMinimal extends ActivatorData {
 		for (int i = 0; i < 28; i++){
 			for (int j = 0; j > 31; j++){
 				if (dots[i][j] == Dot.DOT){
-					double d = calcEuclDist(new Point2D.Double(i,j), board.getPacmanPosition());
+					double d = calcFloodDist(new Point2D.Double(i,j), board.getPacmanPosition(),board);
 					if (d < dist){
 						dist = d;
 					}
@@ -36,11 +39,40 @@ public class ActivatorDataMinimal extends ActivatorData {
 		return dist;
 	}
 
-	private double calcEuclDist(Double blinkyPosition, Double pacmanPosition) {
-		double x1 = blinkyPosition.x;
-		double y1 = blinkyPosition.y;
-		double x2 = pacmanPosition.x;
-		double y2 = pacmanPosition.y;
+	private double calcFloodDist(Point2D.Double from, Point2D.Double to, Board board) {
+		Queue<Point> points = new LinkedList<Point>();
+		Queue<Point> checked = new LinkedList<Point>();
+		Point f = Board.pointToGrid(from);
+		points.add(f);
+		for (int i = 0; i < 60; i++) {
+			Queue<Point> points2 = new LinkedList<Point>();
+			while (!points.isEmpty()) {
+				Point p = points.remove();
+				if (p.equals(Board.pointToGrid(to))) {
+					return i;
+				}
+				checked.add(p);
+				Point2D.Double newpoint = new Point2D.Double(p.x, p.y);
+				for (Dir d : Dir.values()) {
+					if (board.directionFree(newpoint, d)) {
+						Point q = board.getNextTile(p, d);
+						if (!checked.contains(q)) {
+							points2.add(q);
+						}
+					}
+				}				
+			}
+			points.clear();
+			points.addAll(points2);
+		}
+		return 60;
+	}
+
+	private double calcEuclDist(Double pos1, Double pos2) {
+		double x1 = pos1.x;
+		double y1 = pos1.y;
+		double x2 = pos2.x;
+		double y2 = pos2.y;
 		return Math.sqrt(( Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))); 
 	}
 

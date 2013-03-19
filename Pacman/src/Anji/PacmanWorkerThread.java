@@ -120,7 +120,7 @@ public class PacmanWorkerThread extends Thread {
 		fitness = updateFitness(game.getScore(),game, fitness);
 		}
 		if (game.getStatus() == Status.GAME_OVER){
-			fitness = 50*currentDots;
+			fitness -= game.getScore().getGameticks()/5;
 		}
 		if (fitness < 0){
 			fitness = 0;
@@ -131,14 +131,19 @@ public class PacmanWorkerThread extends Thread {
 	private int updateFitness(PacmanScore score, PacmanGame game, int fitness){
 		if (currentDots == score.getDots()){
 			timeSinceLastDot += 1;
-			if (timeSinceLastDot > 20){
+			if (timeSinceLastDot > (20 + 1/4 * currentDots)){
 				fitness -= 1;
 			}
 		}
 		else{
 			timeSinceLastDot = 0;
 			currentDots += 1;
-			fitness += dotScore;
+			if (game.getBoard().getDotsRemaining() < 25){
+				fitness += (dotScore*dotScore);
+			}
+			else {
+				fitness += dotScore;
+			}
 		}
 		return fitness;
 	}
