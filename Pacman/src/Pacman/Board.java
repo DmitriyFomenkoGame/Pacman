@@ -197,6 +197,15 @@ public class Board implements Cloneable {
 	public Dir getBlinkyDirection() {
 		return ghosts[Ghost.BLINKY].getDirection();
 	}
+	public Dir getInkyDirection() {
+		return ghosts[Ghost.BLINKY].getDirection();
+	}
+	public Dir getPinkyDirection() {
+		return ghosts[Ghost.BLINKY].getDirection();
+	}
+	public Dir getClydeDirection() {
+		return ghosts[Ghost.BLINKY].getDirection();
+	}
 	public Dir getPacmanDirection() {
 		return pacman.getDirection();
 	}
