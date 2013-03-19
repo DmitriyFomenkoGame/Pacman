@@ -40,25 +40,30 @@ public class ActivatorDataMinimal extends ActivatorData {
 	}
 
 	private double dijkstra(Point2D.Double from, Point2D.Double to, Board board){
-		ArrayList<node> nodes = new ArrayList<node>();
+		ArrayList<Node> nodes = new ArrayList<Node>();
 		Dot[][] dots = board.getDots();
 		for (int i =0; i < 28; i++){
 			for (int j = 0; j < 31; j++){
 				if (dots[i][j] == Dot.DOT){
-					nodes.add(new node(Board.pointToGrid(new Point2D.Double(i,j))));
+					nodes.add(new Node(Board.pointToGrid(new Point2D.Double(i,j))));
 				}
 			}
 		}
-		node current = new node(Board.pointToGrid(from));
-		current.distance = 0;
+		Node current = new Node(Board.pointToGrid(from));
+		for (int i = 0; i < nodes.size(); i++){
+			if (nodes.get(i).equals(current)){
+				nodes.get(i).distance = 0;
+				break;
+			}
+		}
 		while (!nodes.isEmpty()){
 			current = getMinDistance(nodes);
-			if (current.equals(new node(Board.pointToGrid(from)))){
+			if (current.equals(new Node(Board.pointToGrid(from)))){
 				break;
 			}
 			int index = nodes.indexOf(current);
 			nodes.remove(index);
-			ArrayList<node> neighbours = getNeighbours(current, board);
+			ArrayList<Node> neighbours = getNeighbours(current, board);
 			for (int i =0; i < neighbours.size(); i++){
 				int distance = current.distance + 1;
 				if (neighbours.get(i).distance > distance){
@@ -75,7 +80,7 @@ public class ActivatorDataMinimal extends ActivatorData {
 		return route.size();
 	}
 	
-	private node getMinDistance(ArrayList<node> unvisited) {
+	private Node getMinDistance(ArrayList<Node> unvisited) {
 		int distance = -1;
 		int minI = -1;
 		for (int i = 0; i < unvisited.size(); i++){
@@ -87,31 +92,31 @@ public class ActivatorDataMinimal extends ActivatorData {
 		return unvisited.get(minI);
 	}
 
-	private ArrayList<node> getNeighbours(node current, Board b) {
-		ArrayList<node> neighbours = new ArrayList<node>();
+	private ArrayList<Node> getNeighbours(Node current, Board b) {
+		ArrayList<Node> neighbours = new ArrayList<Node>();
 		Point2D.Double newpoint = new Point2D.Double(current.p.x, current.p.y);
 		for (Dir d : Dir.values()) {
 			if (b.directionFree(newpoint, d)) {
-				neighbours.add(new node((Board.pointToGrid(newpoint))));
+				neighbours.add(new Node((Board.pointToGrid(newpoint))));
 			}
 		}				
 		return neighbours;
 	}
 
-	private class node{
+	private class Node{
 		int distance;
 		Point p;
-		node previous;
+		Node previous;
 		boolean visited;
 		
-		node(Point point){
+		Node(Point point){
 			p = point;
 			distance = 10000000;
 			previous = null;
 			visited = false;
 		}
 		
-		public boolean equals(node n){
+		public boolean equals(Node n){
 			if (p.equals(n.p)){
 				return true;
 			}
