@@ -3,6 +3,7 @@ package Anji;
 import java.awt.geom.Point2D;
 import java.awt.Point;
 import java.awt.geom.Point2D.Double;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -17,7 +18,7 @@ public class ActivatorDataMinimal extends ActivatorData {
 		double[] input = new double[4];
 		input[0] = changeDirtoDouble(game.getBoard().getPacmanDirection());
 		input[1] = changeDirtoDouble(game.getBoard().getBlinkyDirection());
-		input[2] = calcFloodDist(game.getBoard().getPacmanPosition(),game.getBoard().getBlinkyPosition(),game.getBoard());
+		input[2] = dijkstra(game.getBoard().getPacmanPosition(),game.getBoard().getBlinkyPosition(),game.getBoard());
 		input[3] = getClosestDot(game.getBoard());
 		return input;
 	}
@@ -28,7 +29,7 @@ public class ActivatorDataMinimal extends ActivatorData {
 		for (int i = 0; i < 28; i++){
 			for (int j = 0; j > 31; j++){
 				if (dots[i][j] == Dot.DOT){
-					double d = calcFloodDist(new Point2D.Double(i,j), board.getPacmanPosition(),board);
+					double d = dijkstra(new Point2D.Double(i,j), board.getPacmanPosition(),board);
 					if (d < dist){
 						dist = d;
 					}
@@ -36,6 +37,91 @@ public class ActivatorDataMinimal extends ActivatorData {
 			}
 		}
 		return dist;
+	}
+
+	private double dijkstra(Point2D.Double from, Point2D.Double to, Board board){
+		ArrayList<node> nodes = new ArrayList<node>();
+		Dot[][] dots = board.getDots();
+		for (int i =0; i < 28; i++){
+			for (int j = 0; j < 31; j++){
+				if (dots[i][j] == Dot.DOT){
+					nodes.add(new node(Board.pointToGrid(new Point2D.Double(i,j))));
+				}
+			}
+		}
+		node current = new node(Board.pointToGrid(from));
+		for (int i = 0; i < nodes.size(); i++){
+			if (nodes.get(i).equals(current)){
+				nodes.get(i).distance = 0;
+				break;
+			}
+		}
+		while (!nodes.isEmpty()){
+			current = getMinDistance(nodes);
+			if (current.equals(new node(Board.pointToGrid(from)))){
+				break;
+			}
+			int index = nodes.indexOf(current);
+			nodes.remove(index);
+			ArrayList<node> neighbours = getNeighbours(current, board);
+			for (int i =0; i < neighbours.size(); i++){
+				int distance = current.distance + 1;
+				if (neighbours.get(i).distance > distance){
+					neighbours.get(i).distance = distance;
+					neighbours.get(i).previous = current;
+				}
+			}
+		}
+		ArrayList<Point> route = new ArrayList<Point>();
+		while(current.previous != null){                                   
+			route.add(0, current.p);                              
+			current = current.previous;
+		}
+		return route.size();
+	}
+	
+	private node getMinDistance(ArrayList<node> unvisited) {
+		int distance = -1;
+		int minI = -1;
+		for (int i = 0; i < unvisited.size(); i++){
+			if (unvisited.get(i).distance < distance || distance < 0){
+				distance = unvisited.get(i).distance;
+				minI = i;
+			}
+		}
+		return unvisited.get(minI);
+	}
+
+	private ArrayList<node> getNeighbours(node current, Board b) {
+		ArrayList<node> neighbours = new ArrayList<node>();
+		Point2D.Double newpoint = new Point2D.Double(current.p.x, current.p.y);
+		for (Dir d : Dir.values()) {
+			if (b.directionFree(newpoint, d)) {
+				neighbours.add(new node((Board.pointToGrid(newpoint))));
+			}
+		}				
+		return neighbours;
+	}
+
+	private class node{
+		int distance;
+		Point p;
+		node previous;
+		boolean visited;
+		
+		node(Point point){
+			p = point;
+			distance = 10000000;
+			previous = null;
+			visited = false;
+		}
+		
+		public boolean equals(node n){
+			if (p.equals(n.p)){
+				return true;
+			}
+			return false;
+		}
 	}
 
 	private double calcFloodDist(Point2D.Double from, Point2D.Double to, Board board) {
